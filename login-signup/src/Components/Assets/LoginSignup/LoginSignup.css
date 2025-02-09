@@ -1,6 +1,6 @@
 /* Tổng thể container */
 /* Đặt màu nền cho toàn bộ trang */
-body {
+.loginbody {
     background: url('../Assets/couple-backgroundjpg.png') no-repeat center center fixed;
     background-size: cover;
     min-height: 100vh;
@@ -9,6 +9,7 @@ body {
     align-items: center;
     font-family: 'Poppins', sans-serif;
     margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -22,7 +23,7 @@ body {
     margin-top: 50px;
     transition: 0.3s ease-in-out;
     position: relative;
-    top: -130px; /* Đẩy form lên trên 30px */
+    top: 230px; /* Bỏ đẩy lên trên */
 }
 
 
