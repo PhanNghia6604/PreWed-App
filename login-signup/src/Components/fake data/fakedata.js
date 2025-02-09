@@ -14,12 +14,12 @@ export const navlink = [
     text: "Services",
   },
   {
-    url: "/portfolio",
-    text: "Portfolio",
+    url: "/lists",
+    text: "List of consultants",
   },
   {
-    url: "/testimonials",
-    text: "Testimonials",
+    url: "/quiz",
+    text: "Do Quiz",
   },
   {
     url: "/blog",

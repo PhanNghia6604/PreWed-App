@@ -12,8 +12,6 @@ export const Page = () => {
     <>
       <Router>
         <Header/>
-        
-
       </Router>
     </>
   )
