@@ -133,7 +133,7 @@ section {
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url("../public/images/home-bg.png");
+  background-image: url("../public/images/smallwed.png");
   background-size: cover;
   background-attachment: fixed;
   z-index: -1;
@@ -207,7 +207,7 @@ section {
   position: relative;
 }
 .hero.counter::after {
-  background-image: url("../public/images/some-facts-bg.png");
+  background-image: url("../public/images/smallwed.png");
   height: 50vh;
 }
 .counter h1 {

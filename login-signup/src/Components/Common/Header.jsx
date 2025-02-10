@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { navlink } from '../fake data/fakedata.js'
+import { navlink } from '../fake data/data.js'
 import logo from '../fake data/images/logo.png'
 import { Menu } from '@mui/icons-material'
 import { useState } from 'react'
