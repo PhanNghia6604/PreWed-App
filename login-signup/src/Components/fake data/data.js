@@ -41,11 +41,12 @@ export const home = [
 ]
 export const about = [
   {
-    desc: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur",
-    desc1: "magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor si voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur",
-    cover: "./images/man.png",
+    desc: "Welcome to WedWise, your trusted companion on the journey to a happy and lasting marriage. We understand that marriage is not just a significant event but the beginning of a new chapter filled with love, growth, and meaningful challenges.",
+    desc1: "With the support of experienced experts, we provide valuable advice, pre-marital skill courses, and detailed wedding planning guides to help you confidently step into your new life together.",
+    cover: "./images/wedding.png",
   },
 ]
+
 export const services = [
   {
     id: 1,
