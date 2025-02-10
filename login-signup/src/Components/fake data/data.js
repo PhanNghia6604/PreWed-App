@@ -34,9 +34,9 @@ export const home = [
   {
     text: "HELLO WE'RE",
     name: "Premarital Counselors Before Marriage",
-    post: "WEB DESIGNER",
-    design: "UI / UX DESIGNER",
-    desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    post: "WEBSITE HELP PREPARE FOR MARRIAGE",
+    design: "IN-DEPTH CONSULTATION FROM PSYCHOLOGISTS AND MARRIAGE AND FAMILY EXPERTS",
+    desc: "The Marrige is built with the standard of supporting your goals in the most comprehensive way, from next communication skills, family financial management, to psychological advice and secrets to maintaining long-term happiness. We bring you:",
   },
 ]
 export const about = [
