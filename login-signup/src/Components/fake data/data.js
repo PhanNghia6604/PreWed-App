@@ -1,4 +1,4 @@
-import { Favorite, Event, EmojiPeople, School, Chat, Checklist , CloudOutlined, FavoriteBorder, Public, PersonOutlined, AddLocationAltOutlined, PhoneIphone, EmailOutlined, Facebook, Twitter, Instagram, YouTube } from "@mui/icons-material"
+import { Favorite, Event, EmojiPeople, School, Chat, Checklist , EventAvailable, PeopleAlt, AddLocationAltOutlined, PhoneIphone, EmailOutlined, Facebook, Twitter, Instagram, YouTube } from "@mui/icons-material"
 
 export const navlink = [
   {
@@ -88,29 +88,29 @@ export const services = [
 export const project = [
   {
     id: 1,
-    icon: <CloudOutlined />,
-    num: "89",
-    title: "HAPPY CLIENTS",
+    icon: <Favorite />,
+    num: "40",
+    title: "HAPPY COUPLES",
   },
   {
     id: 2,
-    icon: <FavoriteBorder />,
-    num: "231",
-    title: "PROJECTS COMPLEATED",
+    icon: <EventAvailable />,
+    num: "75",
+    title: "SUCCESSFUL EVENTS",
   },
   {
     id: 3,
-    icon: <Public />,
-    num: "108",
-    title: "FILES DOWNLOADED",
+    icon: <PeopleAlt />,
+    num: "320",
+    title: "CONSULTATIONS PROVIDED",
   },
   {
     id: 4,
-    icon: <PersonOutlined />,
-    num: "1446",
-    title: "LIENS OF CODE",
+    icon: <School />,
+    num: "50",
+    title: "WORKSHOPS ORGANIZED",
   },
-]
+];
 export const portfolio = [
   {
     id: 1,
