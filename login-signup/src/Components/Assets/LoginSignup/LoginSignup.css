@@ -1,0 +1,134 @@
+/* Tổng thể container */
+/* Đặt màu nền cho toàn bộ trang */
+.loginbody {
+    background: url('../Assets/couple-backgroundjpg.png') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 400px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.5); /* Màu trắng trong suốt 50% */
+    box-shadow: 0px 10px 30px rgba(255, 105, 180, 0.3);
+    border-radius: 15px;
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    transition: 0.3s ease-in-out;
+    position: relative;
+    top: 230px; /* Bỏ đẩy lên trên */
+}
+
+
+.container:hover {
+    transform: scale(1.02);
+}
+
+/* Header */
+.header {
+    font-size: 26px;
+    font-weight: bold;
+    color: #e91e63;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.underline {
+    width: 80px;
+    height: 4px;
+    background: #ff4081;
+    margin: 8px auto;
+    border-radius: 2px;
+}
+
+/* Input fields */
+.inputs {
+    margin-top: 20px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    background: #fce4ec;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+    border: 2px solid transparent;
+}
+
+.input:hover {
+    border-color: #ff80ab;
+}
+
+.input img {
+    width: 22px;
+    margin-right: 10px;
+}
+
+.input input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Forgot password */
+.forgot-password {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 15px;
+    
+}
+
+.forgot-password span {
+    color: #e91e63;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.forgot-password span:hover {
+    color: #ff4081;
+    text-decoration: underline;
+}
+
+/* Submit buttons */
+.submit-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.submit {
+    flex: 1;
+    background: linear-gradient(135deg, #ff4081, #e91e63);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+    margin: 5px;
+    box-shadow: 0px 5px 15px rgba(255, 105, 180, 0.3);
+}
+
+.submit:hover {
+    background: linear-gradient(135deg, #e91e63, #d81b60);
+    box-shadow: 0px 8px 20px rgba(255, 105, 180, 0.5);
+    transform: translateY(-2px);
+}
+.gray{
+    background : #eaeaea;
+    color: #676767;
+}
