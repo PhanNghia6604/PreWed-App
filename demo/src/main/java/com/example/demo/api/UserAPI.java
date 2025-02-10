@@ -1,0 +1,32 @@
+package com.example.demo.api;
+
+import com.example.demo.entity.User;
+import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/user")
+public class UserAPI {
+    @Autowired
+    UserService userService;
+    @PostMapping
+    public ResponseEntity create(@Valid @RequestBody User user){
+    User newUser =userService.create(user);
+    return ResponseEntity.ok(newUser);
+    }
+    @GetMapping
+    public ResponseEntity getAllUser(){
+        List<User> users =userService.getAllUser();
+    return ResponseEntity.ok(users);
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@PathVariable long id){
+        User user =userService.delete(id);
+        return ResponseEntity.ok(user);
+    }
+}
