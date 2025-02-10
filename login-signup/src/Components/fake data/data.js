@@ -1,4 +1,4 @@
-import { Settings, CropRotate, ViewInAr, PieChart, Code, BarChart, CloudOutlined, FavoriteBorder, Public, PersonOutlined, AddLocationAltOutlined, PhoneIphone, EmailOutlined, Facebook, Twitter, Instagram, YouTube } from "@mui/icons-material"
+import { Favorite, Event, EmojiPeople, School, Chat, Checklist , CloudOutlined, FavoriteBorder, Public, PersonOutlined, AddLocationAltOutlined, PhoneIphone, EmailOutlined, Facebook, Twitter, Instagram, YouTube } from "@mui/icons-material"
 
 export const navlink = [
   {
@@ -50,41 +50,41 @@ export const about = [
 export const services = [
   {
     id: 1,
-    icon: <Settings />,
-    title: "Creative Design",
-    desc: "Lorem Ipsum simply text of the printing and type setting industry when an unknown printing simply",
+    icon: <Favorite />,
+    title: "Relationship Counseling",
+    desc: "Providing expert advice to help couples strengthen their emotional connection and resolve conflicts effectively.",
   },
   {
     id: 2,
-    icon: <CropRotate />,
-    title: "Clean Code",
-    desc: "Lorem Ipsum simply text of the printing and type setting industry when an unknown printing simply",
+    icon: <Event />,
+    title: "Wedding Planning Guidance",
+    desc: "Step-by-step support in planning your dream wedding, from venue selection to managing event details seamlessly.",
   },
   {
     id: 3,
-    icon: <ViewInAr />,
-    title: "Responsive Design",
-    desc: "Lorem Ipsum simply text of the printing and type setting industry when an unknown printing simply",
+    icon: <EmojiPeople />,
+    title: "Pre-marital Workshops",
+    desc: "Interactive workshops covering essential topics like communication, financial management, and shared responsibilities.",
   },
   {
     id: 4,
-    icon: <PieChart />,
-    title: "Material UI	",
-    desc: "Lorem Ipsum simply text of the printing and type setting industry when an unknown printing simply",
+    icon: <School />,
+    title: "Life Skills Coaching",
+    desc: "Develop key life skills for a successful marriage, including problem-solving, empathy, and stress management.",
   },
   {
     id: 5,
-    icon: <Code />,
-    title: "Material UI Icons",
-    desc: "Lorem Ipsum simply text of the printing and type setting industry when an unknown printing simply",
+    icon: <Chat />,
+    title: "Expert Consultations",
+    desc: "One-on-one sessions with relationship experts to address specific concerns and provide personalized advice.",
   },
   {
     id: 6,
-    icon: <BarChart />,
-    title: "Awesome Support",
-    desc: "Lorem Ipsum simply text of the printing and type setting industry when an unknown printing simply",
+    icon: <Checklist />,
+    title: "Marriage Preparation Checklist",
+    desc: "Comprehensive checklists to ensure you cover all important aspects before saying 'I do'.",
   },
-]
+];
 export const project = [
   {
     id: 1,
