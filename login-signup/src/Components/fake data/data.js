@@ -14,12 +14,12 @@ export const navlink = [
     text: "Services",
   },
   {
-    url: "/portfolio",
-    text: "Portfolio",
+    url: "/lists",
+    text: "List of consultants",
   },
   {
-    url: "/testimonials",
-    text: "Testimonials",
+    url: "/quiz",
+    text: "Do Quiz",
   },
   {
     url: "/blog",
@@ -32,8 +32,8 @@ export const navlink = [
 ]
 export const home = [
   {
-    text: "HELLO I'M",
-    name: "ALAMIN MUSA",
+    text: "HELLO WE'RE",
+    name: "Premarital Counselors Before Marriage",
     post: "WEB DESIGNER",
     design: "UI / UX DESIGNER",
     desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
