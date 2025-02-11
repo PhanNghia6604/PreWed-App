@@ -181,29 +181,29 @@ export const testimonials = [
 export const blog = [
   {
     id: 1,
-    title: "Master These Awesome",
-    date: "Jun 27, 2022",
-    author: "Dorian Gray",
-    desc: "Lorem Ipsum has been standard. Lorem Ipsum is simply text of the printing and typesetting industry. Lorem Ipsum has been",
+    title: "9 Essential Conversations Before You Say 'I do'",
+    date: "Feb 10, 2025",
+    author: "Gary Thomas & Drs.Steve & Rebeeca Wilke",
+    desc: "Discover the key topics every couple should discuss before tying the knot, from financial planning to family expectations.",
     cover: "./images/blog/b1.png",
   },
   {
     id: 2,
-    title: "Best Design Items to Appeal",
-    date: "Jun 27, 2022",
-    author: "Dorian Gray",
-    desc: "Lorem Ipsum has been standard. Lorem Ipsum is simply text of the printing and typesetting industry. Lorem Ipsum has been",
+    title: "What is emotional intimacy?",
+    date: "Jan 25, 2025",
+    author: "Michael Carter",
+    desc: "Learn effective strategies to strengthen trust and deepen emotional connection in your relationship before marriage.",
     cover: "./images/blog/b2.png",
   },
   {
     id: 3,
-    title: "The 20 Best Lightroom Presets",
-    date: "Jun 27, 2022",
-    author: "Dorian Gray",
-    desc: "Lorem Ipsum has been standard. Lorem Ipsum is simply text of the printing and typesetting industry. Lorem Ipsum has been",
+    title: "Tips for Managing Wedding Stress Together",
+    date: "Dec 15, 2024",
+    author: "Rock My Wedding",
+    desc: "Planning a wedding can be overwhelming. Here are 10 tips to help you and your partner manage stress and enjoy the process.",
     cover: "./images/blog/b3.png",
   },
-]
+];
 export const contact = [
   {
     icon: <AddLocationAltOutlined />,

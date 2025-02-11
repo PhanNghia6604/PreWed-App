@@ -8,6 +8,8 @@ import { Home } from '../Home/Home'
 import { About } from './About';
 import { Services } from '../Home/Services';
 import { Portfolio } from './Portfolio';
+import { Blog } from './Blog';
+import { Contact } from './Contact';
 
 export const Page = () => {
   return (
@@ -19,6 +21,8 @@ export const Page = () => {
          <Route exact path="/about" element={<About />} />
          <Route exact path="/services" element={<Services/>} />
          <Route exact path="/portfolio" element={<Portfolio/>} />
+         <Route exact path="/blog" element={<Blog/>} />
+         <Route exact path="/contact" element={<Contact/>} />
         </Routes>
       </Router>
     </>
