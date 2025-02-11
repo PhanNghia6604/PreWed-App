@@ -392,10 +392,32 @@ footer i {
     padding-bottom: 50px;
   }
 }
-.logo img{
-  width: 180px;
-  height: auto;
+
+
+.logo {
+  position: relative; 
+  display: inline-block;
+  overflow: hidden;       /* Giữ để ngăn tràn nội dung nếu cần */
+  border-radius: 8px;     /* Bo góc mềm mại (tuỳ chọn) */
+  transition: transform 0.3s ease-in-out; 
 }
+
+.logo img {
+  width: 120px;        
+  height: auto;        
+  display: block;
+  position: relative;
+  z-index: 0;          
+  transition: all 0.3s ease-in-out; 
+}
+
+/* Hiệu ứng phóng nhẹ khi hover (nếu muốn giữ lại) */
+.logo:hover {
+  transform: scale(1.05);  
+}
+
+
+
 header .nav{
   display:flex;
   gap:15pxpx

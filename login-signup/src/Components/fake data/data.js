@@ -14,8 +14,8 @@ export const navlink = [
     text: "Services",
   },
   {
-    url: "/lists",
-    text: "List of consultants",
+    url: "/portfolio",
+    text: "Portfolio",
   },
   {
     url: "/quiz",
@@ -32,16 +32,16 @@ export const navlink = [
 ]
 export const home = [
   {
-    text: "HELLO WE'RE",
-    name: "Premarital Counselors Before Marriage",
-    post: "WEBSITE HELP PREPARE FOR MARRIAGE",
-    design: "IN-DEPTH CONSULTATION FROM PSYCHOLOGISTS AND MARRIAGE AND FAMILY EXPERTS",
-    desc: "The Marrige is built with the standard of supporting your goals in the most comprehensive way, from next communication skills, family financial management, to psychological advice and secrets to maintaining long-term happiness. We bring you:",
+    text: "WELCOME TO",
+    name: "Premarital Preparation Hub",
+    post: "YOUR GUIDE TO A HAPPY AND SUCCESSFUL MARRIAGE",
+    design: "EXPERT CONSULTATION FROM PSYCHOLOGISTS AND MARRIAGE COUNSELORS",
+    desc: "Our platform is designed to support couples in the most comprehensive way, from effective communication skills, family financial management, to psychological counseling and secrets for maintaining long-term happiness. We are here to help you build a strong foundation for your future together.",
   },
 ]
 export const about = [
   {
-    desc: "Welcome to WedWise, your trusted companion on the journey to a happy and lasting marriage. We understand that marriage is not just a significant event but the beginning of a new chapter filled with love, growth, and meaningful challenges.",
+    desc: "Welcome to Premarital Preparation Hub, your trusted companion on the journey to a happy and lasting marriage. We understand that marriage is not just a significant event but the beginning of a new chapter filled with love, growth, and meaningful challenges.",
     desc1: "With the support of experienced experts, we provide valuable advice, pre-marital skill courses, and detailed wedding planning guides to help you confidently step into your new life together.",
     cover: "./images/wedding.png",
   },
@@ -114,47 +114,47 @@ export const project = [
 export const portfolio = [
   {
     id: 1,
-    cover: "../images/port/port1.jpg",
-    name: "Brand",
-    category: "marketing",
-    title: "Brex Logo",
+    cover: '../images/port/port1.png',
+    name: "Workshop",
+    category: "Education",
+    title: "Effective Communication Skills",
   },
   {
     id: 2,
-    cover: "../images/port/port2.jpg",
-    name: "Brand",
-    category: "design",
-    title: "Brex Logo",
+    cover: "../images/port/port2.png",
+    name: "Consultation",
+    category: "Counseling",
+    title: "One-on-One Relationship Counseling",
   },
   {
     id: 3,
-    cover: "../images/port/port3.jpg",
-    name: "Brand",
-    category: "development",
-    title: "Brex Logo",
+    cover: "../images/port/port3.png",
+    name: "Guidance",
+    category: "Finance",
+    title: "Family Financial Management",
   },
   {
     id: 4,
-    cover: "../images/port/port4.jpg",
-    name: "Brand",
-    category: "marketing",
-    title: "Brex Logo",
+    cover: "../images/port/port4.png",
+    name: "Retreat",
+    category: "Events",
+    title: "Couple Retreat for Stronger Bonds",
   },
   {
     id: 5,
-    cover: "../images/port/port5.jpg",
-    name: "Brand",
-    category: "design",
-    title: "Brex Logo",
+    cover: "../images/port/port5.png",
+    name: "Seminar",
+    category: "Education",
+    title: "Conflict Resolution Strategies",
   },
   {
     id: 6,
-    cover: "../images/port/port6.jpg",
-    name: "Brand",
-    category: "development",
-    title: "Brex Logo",
+    cover: "../images/port/port6.png",
+    name: "Toolkit",
+    category: "Resources",
+    title: "Comprehensive Marriage Preparation Checklist",
   },
-]
+];
 export const testimonials = [
   {
     id: 1,
