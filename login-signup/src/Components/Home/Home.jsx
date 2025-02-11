@@ -6,6 +6,7 @@ import { Counter } from '../Page/Counter'
 import { Portfolio } from '../Page/Portfolio'
 import { Blog } from '../Page/Blog'
 
+
 export const Home = () => {
   return (
     <>
@@ -15,6 +16,7 @@ export const Home = () => {
       <Counter/>
       <Portfolio/>
       <Blog/>
+
     </>
   )
   

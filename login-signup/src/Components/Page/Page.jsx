@@ -10,6 +10,7 @@ import { Services } from '../Home/Services';
 import { Portfolio } from './Portfolio';
 import { Blog } from './Blog';
 import { Contact } from './Contact';
+import Footer from '../Common/footer';
 
 export const Page = () => {
   return (
@@ -24,6 +25,7 @@ export const Page = () => {
          <Route exact path="/blog" element={<Blog/>} />
          <Route exact path="/contact" element={<Contact/>} />
         </Routes>
+        <Footer/>
       </Router>
     </>
   )
