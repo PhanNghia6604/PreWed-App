@@ -83,27 +83,27 @@
 }
 
 /* Forgot password */
-.forgot-password {
+.forgot_password {
     font-size: 14px;
     color: #777;
     margin-bottom: 15px;
     
 }
 
-.forgot-password span {
+.forgot_password span {
     color: #e91e63;
     cursor: pointer;
     font-weight: bold;
     transition: 0.3s;
 }
 
-.forgot-password span:hover {
+.forgot_password span:hover {
     color: #ff4081;
     text-decoration: underline;
 }
 
 /* Submit buttons */
-.submit-container {
+.submit_container {
     display: flex;
     justify-content: space-between;
 }
