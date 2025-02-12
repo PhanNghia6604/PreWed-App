@@ -1,6 +1,7 @@
 package com.example.demo.api;
 
 import com.example.demo.entity.User;
+import com.example.demo.entity.request.UserRequest;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class UserAPI {
     @Autowired
     UserService userService;
     @PostMapping
-    public ResponseEntity create(@Valid @RequestBody User user){
+    public ResponseEntity create(@Valid @RequestBody UserRequest user){
     User newUser =userService.create(user);
     return ResponseEntity.ok(newUser);
     }
