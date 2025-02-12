@@ -1,6 +1,7 @@
 package com.example.demo.entity.request;
 
 public class UserRequest {
+
     public String name;
     public String password;
     public String email;

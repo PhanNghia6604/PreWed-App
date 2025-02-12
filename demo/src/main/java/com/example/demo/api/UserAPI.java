@@ -17,7 +17,7 @@ public class UserAPI {
     UserService userService;
     @PostMapping
     public ResponseEntity create(@Valid @RequestBody UserRequest user){
-    User newUser =userService.create(user);
+    User newUser = userService.create(user);
     return ResponseEntity.ok(newUser);
     }
     @GetMapping

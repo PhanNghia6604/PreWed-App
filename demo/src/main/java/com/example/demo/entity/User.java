@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,11 +25,11 @@ public class User implements UserDetails {
     public String name;
     @NotBlank(message = "Password cannot be blank")
     public String password;
-    @NotBlank(message = "Phone cannot be blank")
+    @Pattern(regexp = "/(84|0[3|5|7|8|9])+([0-9]{8})\\b/g", message = "Phone number do not match struct!")
     public String phone;
     @NotBlank(message = "Address cannot be blank")
     public String address;
-    @NotBlank(message = "Email cannot be blank")
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email do not match email pattern!")
     public String email;
     public boolean isDeleted = false;
     @Enumerated(value = EnumType.STRING)
