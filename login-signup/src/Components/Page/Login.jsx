@@ -23,7 +23,7 @@ export const Login = () => {
               <label>Email</label>
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -33,7 +33,7 @@ export const Login = () => {
               <label>Password</label>
               <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -52,7 +52,7 @@ export const Login = () => {
 
             <div className={styles["register-link"]}>
               Don't have an account?{" "}
-              <span onClick={() => navigate("/register")}>Sign Up</span>
+              <span onClick={() => navigate("/register")}>Register</span>
             </div>
           </form>
         </div>
