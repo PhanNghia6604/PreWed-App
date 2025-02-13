@@ -17,10 +17,6 @@ export const navlink = [
     url: "/contact",
     text: "Contact",
   },
-  {
-    url: "/login",
-    text: "Login",
-  }
 ]
 export const home = [
   {
