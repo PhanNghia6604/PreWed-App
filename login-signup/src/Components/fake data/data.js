@@ -6,20 +6,8 @@ export const navlink = [
     text: "Home",
   },
   {
-    url: "/about",
-    text: "About",
-  },
-  {
     url: "/services",
     text: "Services",
-  },
-  {
-    url: "/portfolio",
-    text: "Portfolio",
-  },
-  {
-    url: "/quiz",
-    text: "Do Quiz",
   },
   {
     url: "/blog",
@@ -29,6 +17,10 @@ export const navlink = [
     url: "/contact",
     text: "Contact",
   },
+  {
+    url: "/login",
+    text: "Login",
+  }
 ]
 export const home = [
   {
