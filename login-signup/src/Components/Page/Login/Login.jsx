@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Nếu bạn dùng React Router
-import { Heading } from "../Common/Heading"; // Dùng lại Heading để đồng bộ
+import { Heading } from "../../Common/Heading"; // Dùng lại Heading để đồng bộ
 
 export const Login = () => {
   const [email, setEmail] = useState("");

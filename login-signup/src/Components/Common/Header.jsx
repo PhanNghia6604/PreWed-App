@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { navlink } from '../fake data/data.js';
 import logo from '../fake data/images/logo.png';
 import { Menu } from '@mui/icons-material';
+import './Header.css';
+
 
 export const Header = () => {
     const [responsive, setResponsive] = useState(false);
