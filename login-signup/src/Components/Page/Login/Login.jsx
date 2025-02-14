@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heading } from "../Common/Heading";
+import { Heading } from "../../Common/Heading";
 import styles from "./Login.module.css"; // ✅ Import CSS module
 
 export const Login = () => {
