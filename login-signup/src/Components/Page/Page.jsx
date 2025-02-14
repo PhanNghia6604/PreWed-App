@@ -8,7 +8,7 @@ import { Home } from '../Home/Home'
 import { Services } from '../Home/Services';
 import { Blog } from './Blog';
 import { Contact } from './Contact';
-import { Login } from './Login/Login';
+import { Login } from '../Page/Login/Login';
 import Footer from '../Common/footer';
 
 
