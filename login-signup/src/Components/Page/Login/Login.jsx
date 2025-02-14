@@ -13,14 +13,14 @@ export const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
-      setError("Email và mật khẩu không được để trống!");
+      setError("Email and password cannot be empty!");
       return;
     }
 
     // Kiểm tra định dạng email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Email không hợp lệ! ");
+      setError("Invalid email! ");
       return;
     }
 
