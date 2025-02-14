@@ -8,9 +8,9 @@ import { Home } from '../Home/Home'
 import { Services } from '../Home/Services';
 import { Blog } from '../Page/Blog/Blog';
 import { Contact } from './Contact';
-import { Login } from '../Page/Login/Login';
 import Footer from '../Common/footer';
 import { BlogDetail } from './Blog/BlogDetai';
+import { Login } from './Login';
 
 
 export const Page = () => {
