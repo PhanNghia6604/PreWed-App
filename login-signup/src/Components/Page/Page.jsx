@@ -7,10 +7,19 @@ import { Header } from '../Common/Header';
 import { Home } from '../Home/Home'
 import { Services } from '../Home/Services';
 import { Blog } from '../Page/Blog/Blog';
+
+import { Login } from '../Page/Login/Login';
 import { Contact } from './Contact';
 import Footer from '../Common/footer';
-import { BlogDetail } from './Blog/BlogDetai';
-import { Login } from './Login';
+
+
+
+
+import { Register } from "./Login/Register";
+
+
+
+
 
 
 export const Page = () => {
@@ -22,9 +31,11 @@ export const Page = () => {
          <Route exact path="/" element={<Home />} />
          <Route exact path="/services" element={<Services/>} />
          <Route exact path="/blog" element={<Blog/>} />
-         <Route exact path="/blog/:id" element={<BlogDetail />} />
          <Route exact path="/contact" element={<Contact/>} />
          <Route exact path="/login" element={<Login/>} />
+         <Route exact path="/register" element={<Register/>} />
+         
+
         </Routes>
         <Footer/>
       </Router>

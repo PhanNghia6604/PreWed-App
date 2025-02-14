@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 import { Heading } from '../../Common/Heading'
 import { blog } from '../../fake data/data'
 
+
+
+
 export const Blog = () => {
   return (
     <section className='blog'>
