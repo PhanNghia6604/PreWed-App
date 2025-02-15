@@ -234,6 +234,12 @@ export const experts = [
     fullName: "Dr. Nguyễn Văn A",
     specialty: "Tư vấn tâm lý hôn nhân",
     experience: 10,
+    description: "Dr. Nguyễn Văn A có hơn 10 năm kinh nghiệm trong lĩnh vực tư vấn hôn nhân và gia đình. Ông đã giúp hàng trăm cặp đôi cải thiện mối quan hệ và tìm ra giải pháp cho các vấn đề trong cuộc sống hôn nhân.",
+    certifications: [
+      "Chứng chỉ tư vấn tâm lý - Đại học Quốc gia Hà Nội",
+      "Thành viên Hiệp hội Tâm lý học Việt Nam",
+      "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
+    ],
   },
   {
     id: 2,

@@ -18,6 +18,20 @@ export const ExpertDetail = () => {
         <h2>{expert.fullName}</h2>
         <p className={style.specialty}>{expert.specialty}</p>
         <p className={style.experience}>{expert.experience} năm kinh nghiệm</p>
+
+        {/* Mô tả chuyên gia */}
+        <p className={style.description}>{expert.description}</p>
+
+        {/* Danh sách chứng chỉ */}
+        <div className={style.certifications}>
+          <h3>Bằng cấp & Chứng chỉ:</h3>
+          <ul>
+            {expert.certifications.map((cert, index) => (
+              <li key={index}>{cert}</li>
+            ))}
+          </ul>
+        </div>
+
         <button className={style.bookButton}>Đặt lịch tư vấn</button>
       </div>
     </div>
