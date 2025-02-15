@@ -13,7 +13,8 @@ export const BlogDetail = () => {
   return (
     <div className={styles.container}>
       <div className={styles.img}>
-        <img src={item.cover} alt={item.title} />
+      <img src={item.cover.startsWith('.') ? item.cover.replace('.', '') : item.cover} alt={item.title} />
+
       </div>
       <h1 className={styles.title}>{item.title}</h1>
       <p className={styles.meta}>
