@@ -18,6 +18,8 @@ import Footer from '../Common/footer';
 
 import { Register } from "./Login/Register";
 import { BlogDetail } from './Blog/BlogDetai';
+import { ExpertsList } from './Consultant/Expert';
+import { ExpertDetail } from './Consultant/ExpertDetail';
 
 
 
@@ -35,6 +37,8 @@ export const Page = () => {
          <Route exact path="/blog" element={<Blog/>} />
          <Route exact path="/blog/:id" element={<BlogDetail/>} />
          <Route exact path="/contact" element={<Contact/>} />
+         <Route exact path='/expert' element={<ExpertsList/>}/>
+         <Route exact path='/expert/:id' element={<ExpertDetail/>}/>
          <Route exact path="/login" element={<Login/>} />
          <Route exact path="/register" element={<Register/>} />
          

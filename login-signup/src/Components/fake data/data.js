@@ -17,6 +17,10 @@ export const navlink = [
     url: "/contact",
     text: "Contact",
   },
+  {
+    url: "/expert",
+    text: "Expert",
+  },
 ]
 export const home = [
   {
@@ -223,3 +227,47 @@ export const social = [
     icon: <YouTube />,
   },
 ]
+export const experts = [
+  {
+    id: 1,
+    avatar: "/images/experts/experts1.png",
+    fullName: "Dr. Nguyễn Văn A",
+    specialty: "Tư vấn tâm lý hôn nhân",
+    experience: 10,
+  },
+  {
+    id: 2,
+    avatar: "/images/experts/experts2.png",
+    fullName: "ThS. Lê Văn B",
+    specialty: "Tư vấn tài chính gia đình",
+    experience: 8,
+  },
+  {
+    id: 3,
+    avatar: "/images/experts/experts3.png",
+    fullName: "Luật sư Trần Thị C",
+    specialty: "Tư vấn pháp lý hôn nhân",
+    experience: 12,
+  },
+  // {
+  //   id: 4,
+  //   avatar: "../images/experts/expert4.png",
+  //   fullName: "Dr. Hoàng Minh D",
+  //   specialty: "Tư vấn sức khỏe sinh sản",
+  //   experience: 9,
+  // },
+  // {
+  //   id: 5,
+  //   avatar: "../images/experts/expert5.png",
+  //   fullName: "TS. Phạm Hồng E",
+  //   specialty: "Tư vấn giao tiếp và quản lý xung đột",
+  //   experience: 15,
+  // },
+  // {
+  //   id: 6,
+  //   avatar: "../images/experts/expert6.png",
+  //   fullName: "TS. Nguyễn Văn F",
+  //   specialty: "Tư vấn giá trị gia đình",
+  //   experience: 7,
+  // }
+];

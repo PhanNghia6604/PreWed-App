@@ -1,0 +1,46 @@
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    margin-top: 15px;
+}
+
+.button:hover {
+    background: #0056b3;
+}
