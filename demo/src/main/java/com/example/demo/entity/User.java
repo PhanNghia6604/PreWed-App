@@ -62,7 +62,7 @@ public class User implements UserDetails {
     })
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(this.roleEnum.toString()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.roleEnum.name())); // Nối "ROLE_"
         return authorities;
     }
 

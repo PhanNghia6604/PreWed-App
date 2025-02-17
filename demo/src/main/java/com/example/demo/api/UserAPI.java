@@ -6,6 +6,8 @@ import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 public class UserAPI {
+    @GetMapping("/profile")
+    public String getProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        return "Welcome, " + userDetails.getUsername();
+    }
     @Autowired
     UserService userService;
     @PostMapping

@@ -5,6 +5,9 @@ import com.example.demo.entity.request.UserRequest;
 import com.example.demo.enums.RoleEnum;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,8 +37,16 @@ public class UserService implements UserDetailsService {
         return newUser;
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     public List<User> getAllUser() {
         return userRepository.findUsersByIsDeletedFalse();
+    }
+    @PreAuthorize("hasRole('CUSTOMER') or hasRole('MANAGER')")
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Lấy username từ SecurityContext
+        return userRepository.findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     public User delete(long id) {
@@ -46,6 +57,13 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        User user = userRepository.findByName(username) // Tìm user theo tên
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getName())
+                .password(user.getPassword()) // Mật khẩu đã mã hóa
+                .roles(user.getRoleEnum().name()) // Thêm role
+                .build();
     }
 }
