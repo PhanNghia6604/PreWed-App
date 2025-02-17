@@ -17,6 +17,10 @@ export const navlink = [
     url: "/contact",
     text: "Contact",
   },
+  {
+    url: "/expert",
+    text: "Expert",
+  },
 ]
 export const home = [
   {
@@ -173,7 +177,7 @@ export const blog = [
     date: "Feb 10, 2025",
     author: "Gary Thomas & Drs.Steve & Rebeeca Wilke",
     desc: "Discover the key topics every couple should discuss before tying the knot, from financial planning to family expectations.",
-    cover: "./images/blog/b1.png",
+    cover: "/images/blog/b1.png",
   },
   {
     id: 2,
@@ -181,7 +185,7 @@ export const blog = [
     date: "Jan 25, 2025",
     author: "Michael Carter",
     desc: "Learn effective strategies to strengthen trust and deepen emotional connection in your relationship before marriage.",
-    cover: "./images/blog/b2.png",
+    cover: "/images/blog/b2.png",
   },
   {
     id: 3,
@@ -189,7 +193,7 @@ export const blog = [
     date: "Dec 15, 2024",
     author: "Rock My Wedding",
     desc: "Planning a wedding can be overwhelming. Here are 10 tips to help you and your partner manage stress and enjoy the process.",
-    cover: "./images/blog/b3.png",
+    cover: "/images/blog/b3.png",
   },
 ];
 export const contact = [
@@ -223,3 +227,53 @@ export const social = [
     icon: <YouTube />,
   },
 ]
+export const experts = [
+  {
+    id: 1,
+    avatar: "/images/experts/experts1.png",
+    fullName: "Dr. Nguyễn Văn A",
+    specialty: "Tư vấn tâm lý hôn nhân",
+    experience: 10,
+    description: "Dr. Nguyễn Văn A có hơn 10 năm kinh nghiệm trong lĩnh vực tư vấn hôn nhân và gia đình. Ông đã giúp hàng trăm cặp đôi cải thiện mối quan hệ và tìm ra giải pháp cho các vấn đề trong cuộc sống hôn nhân.",
+    certifications: [
+      "Chứng chỉ tư vấn tâm lý - Đại học Quốc gia Hà Nội",
+      "Thành viên Hiệp hội Tâm lý học Việt Nam",
+      "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
+    ],
+  },
+  {
+    id: 2,
+    avatar: "/images/experts/experts2.png",
+    fullName: "ThS. Lê Văn B",
+    specialty: "Tư vấn tài chính gia đình",
+    experience: 8,
+  },
+  {
+    id: 3,
+    avatar: "/images/experts/experts3.png",
+    fullName: "Luật sư Trần Thị C",
+    specialty: "Tư vấn pháp lý hôn nhân",
+    experience: 12,
+  },
+  // {
+  //   id: 4,
+  //   avatar: "../images/experts/expert4.png",
+  //   fullName: "Dr. Hoàng Minh D",
+  //   specialty: "Tư vấn sức khỏe sinh sản",
+  //   experience: 9,
+  // },
+  // {
+  //   id: 5,
+  //   avatar: "../images/experts/expert5.png",
+  //   fullName: "TS. Phạm Hồng E",
+  //   specialty: "Tư vấn giao tiếp và quản lý xung đột",
+  //   experience: 15,
+  // },
+  // {
+  //   id: 6,
+  //   avatar: "../images/experts/expert6.png",
+  //   fullName: "TS. Nguyễn Văn F",
+  //   specialty: "Tư vấn giá trị gia đình",
+  //   experience: 7,
+  // }
+];

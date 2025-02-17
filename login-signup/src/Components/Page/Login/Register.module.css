@@ -1,4 +1,4 @@
-.login {
+.register {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -6,7 +6,7 @@
     background: linear-gradient(135deg, #1e1f1f 30%, #292a2a 100%);
   }
   
-  .login .container {
+  .register .container {
     width: 400px;
     background: rgba(47, 48, 48, 0.9);
     backdrop-filter: blur(10px);
@@ -17,14 +17,14 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
-  .login h2 {
+  .register h2 {
     color: var(--primaryColor);
     font-size: 26px;
     font-weight: 600;
     margin-bottom: 20px;
   }
   
-  .login-form {
+  .register-form {
     display: flex;
     flex-direction: column;
   }
@@ -58,23 +58,6 @@
     border-bottom: 2px solid var(--primaryColor);
   }
   
-  .forgot-password {
-    text-align: right;
-    margin-bottom: 15px;
-  }
-  
-  .forgot-password span {
-    color: var(--primaryColor);
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.3s;
-  }
-  
-  .forgot-password span:hover {
-    text-decoration: underline;
-    color: #ffcc00;
-  }
-  
   .btn {
     width: 100%;
     background: var(--primaryColor);
@@ -95,18 +78,18 @@
     box-shadow: 0px 6px 15px rgba(224, 168, 13, 0.5);
   }
   
-  .register-link {
+  .login-link {
     margin-top: 15px;
     font-size: 14px;
   }
   
-  .register-link span {
+  .login-link span {
     color: var(--primaryColor);
     cursor: pointer;
     transition: 0.3s;
   }
   
-  .register-link span:hover {
+  .login-link span:hover {
     text-decoration: underline;
     color: #ffcc00;
   }
@@ -123,7 +106,15 @@
     }
   }
   
-  .login .container {
+  .register .container {
     animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .error-box {
+    color: red;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 15px;
   }
   

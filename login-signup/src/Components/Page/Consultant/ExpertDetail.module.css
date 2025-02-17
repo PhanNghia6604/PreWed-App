@@ -1,0 +1,128 @@
+/* Căn giữa toàn bộ trang */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background-color: #f5f7fa;
+    padding: 20px;
+}
+
+/* Thẻ chứa thông tin chuyên gia */
+.card {
+    max-width: 700px;
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Ảnh đại diện chuyên gia */
+.avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 5px solid #007bff;
+}
+
+/* Tên chuyên gia */
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* Chuyên môn */
+.specialty {
+    font-size: 18px;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+/* Kinh nghiệm */
+.experience {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Nút đặt lịch */
+.bookButton {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0px 3px 8px rgba(0, 123, 255, 0.4);
+}
+
+.bookButton:hover {
+    background: #0056b3;
+}
+
+/* Mô tả chuyên gia */
+/* Mô tả chuyên gia */
+.description {
+    font-size: 16px;
+    color: #444;
+    text-align: left;
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+/* Phần chứng chỉ và bằng cấp */
+.certifications {
+    font-size: 14px;
+    color: #666;
+    text-align: left;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+.certifications h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.certifications ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.certifications li {
+    margin-bottom: 5px;
+}
+
+/* Khi không tìm thấy chuyên gia */
+.notFound {
+    text-align: center;
+    font-size: 20px;
+    color: red;
+    margin-top: 50px;
+}
+
+/* Nút quay lại */
+.backButton {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #ff4d4d;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.backButton:hover {
+    background: #cc0000;
+}
