@@ -71,5 +71,6 @@ export const Register = () => {
         </div>
       </div>
     </section>
+    
   );
 };
