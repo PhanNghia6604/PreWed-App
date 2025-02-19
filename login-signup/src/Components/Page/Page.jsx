@@ -21,6 +21,8 @@ import { BlogDetail } from './Blog/BlogDetai';
 import { ExpertsList } from './Consultant/Expert';
 import { ExpertDetail } from './Consultant/ExpertDetail';
 import Profile from './Menu Customer/Profile';
+import {Test} from './Menu Customer/Test';
+
 
 
 
@@ -49,6 +51,8 @@ export const Page = () => {
          <Route exact path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>} />
          <Route exact path="/profile" element={<Profile/>} />
          <Route exact path="/register" element={<Register/>} />
+         <Route exact path="/test" element={<Test/>} />
+
         </Routes>
         <Footer/>
       </Router>
