@@ -20,6 +20,7 @@ import { Register } from "./Login/Register";
 import { BlogDetail } from './Blog/BlogDetai';
 import { ExpertsList } from './Consultant/Expert';
 import { ExpertDetail } from './Consultant/ExpertDetail';
+import Profile from './Menu Customer/Profile';
 
 
 
@@ -46,6 +47,7 @@ export const Page = () => {
          <Route exact path='/expert' element={<ExpertsList/>}/>
          <Route exact path='/expert/:id' element={<ExpertDetail/>}/>
          <Route exact path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>} />
+         <Route exact path="/profile" element={<Profile/>} />
          <Route exact path="/register" element={<Register/>} />
         </Routes>
         <Footer/>
