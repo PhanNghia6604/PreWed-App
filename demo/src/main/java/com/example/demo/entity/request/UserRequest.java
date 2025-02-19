@@ -3,10 +3,19 @@ package com.example.demo.entity.request;
 public class UserRequest {
 
     public String name;
+    public String username;
     public String password;
     public String email;
     public String phone;
     public String address;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getPhone() {
         return phone;

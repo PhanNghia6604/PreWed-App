@@ -16,7 +16,7 @@ export const Contact = () => {
                             <input type='text' placeholder='Email'/>
                         </div>
                         <input type="text" placeholder='Subject'/>
-                        <textarea name="" id="" cols='30' rows='10'></textarea>
+                        <textarea username="" id="" cols='30' rows='10'></textarea>
                         <button>Submit</button>
                     </form>
                 </div>

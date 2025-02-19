@@ -1,7 +1,9 @@
 package com.example.demo.api;
 
 import com.example.demo.entity.User;
+import com.example.demo.entity.request.AuthenticationRequest;
 import com.example.demo.entity.request.UserRequest;
+import com.example.demo.entity.response.UserResponse;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +15,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("api")
 public class UserAPI {
-    @GetMapping("/profile")
-    public String getProfile(@AuthenticationPrincipal UserDetails userDetails) {
-        return "Welcome, " + userDetails.getUsername();
-    }
+
     @Autowired
     UserService userService;
-    @PostMapping
+
+    @PostMapping("login")
+    public ResponseEntity login(@RequestBody AuthenticationRequest authenticationRequest){
+        UserResponse userResponse =userService.login(authenticationRequest);
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @PostMapping("register")
     public ResponseEntity create(@Valid @RequestBody UserRequest user){
     User newUser = userService.create(user);
     return ResponseEntity.ok(newUser);

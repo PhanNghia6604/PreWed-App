@@ -5,7 +5,7 @@ import {Heading} from '../../Common/Heading';
 import styles from "./Register.module.css"; // ✅ Import CSS module
 
 export const Register = () => {
-  const [name, setName] = useState("");
+  const [username, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
@@ -15,7 +15,7 @@ export const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !password.trim() || !phone.trim() || !address.trim()) {
+    if (!username.trim() || !email.trim() || !password.trim() || !phone.trim() || !address.trim()) {
       setError("Please fill in all the required fields!");
       return;
     }
@@ -28,7 +28,7 @@ export const Register = () => {
     }
 
     setError(""); // Xóa lỗi nếu nhập đúng
-    console.log("Đăng ký thành công:", { name, email, password, phone, address });
+    console.log("Đăng ký thành công:", { username, email, password, phone, address });
     navigate("/login"); // Chuyển hướng về trang đăng nhập sau khi đăng ký thành công
   };
 
@@ -43,7 +43,7 @@ export const Register = () => {
           <form onSubmit={handleRegister} className="register-form">
             <div className={styles["input-box"]}>
               <label>Name</label>
-              <input type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
+              <input type="text" placeholder="Your Name" value={username} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className={styles["input-box"]}>
               <label>Email</label>

@@ -10,7 +10,7 @@ export const Hero = () => {
                 <div className="heroContent">
                     <h3>{val.text}</h3>
                     <h1>
-                        <Typewriter options ={{strings :  [`${val.name}`,`${val.post}`,`${val.design}`],
+                        <Typewriter options ={{strings :  [`${val.username}`,`${val.post}`,`${val.design}`],
                         autoStart: true, loop: true
                     }} />
                     </h1>

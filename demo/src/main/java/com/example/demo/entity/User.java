@@ -23,9 +23,11 @@ public class User implements UserDetails {
     public long id;
     @NotBlank(message = "Name cannot be blank")
     public String name;
+    @NotBlank(message = "username cannot be blank")
+    public String username;
     @NotBlank(message = "Password cannot be blank")
     public String password;
-    @Pattern(regexp = "/(84|0[3|5|7|8|9])+([0-9]{8})\\b/g", message = "Phone number do not match struct!")
+    @NotBlank(message = "Number cannot be blank")
     public String phone;
     @NotBlank(message = "Address cannot be blank")
     public String address;
@@ -37,6 +39,10 @@ public class User implements UserDetails {
 
     public User() {
 
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public long getId() {
@@ -72,27 +78,27 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     public void setPassword(String password) {

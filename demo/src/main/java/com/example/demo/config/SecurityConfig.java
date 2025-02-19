@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.security.JwtAuthenticationFilter;
+
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,17 +22,11 @@ import org.springframework.web.cors.CorsUtils;
 @Configuration
 public class SecurityConfig {
 
-
-    private final UserService userService;
-    private final Filter filter;
-
-    public SecurityConfig(UserService userService, Filter filter) {
-        this.userService = userService;
-        this.filter = filter;
-    }
+    @Autowired
+    UserService userService;
 
     @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    Filter filter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,20 +34,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(UserService userService) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(provider);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors().and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Cho phép tất cả request
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().authenticated() // Cho phép tất cả request
                 )
+
+                .userDetailsService(userService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
