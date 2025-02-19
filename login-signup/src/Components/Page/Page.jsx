@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     BrowserRouter as Router,Routes,
     Route,
@@ -26,11 +26,17 @@ import { ExpertDetail } from './Consultant/ExpertDetail';
 
 
 
+
 export const Page = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
   return (
-    <>
+   <>
       <Router>
-        <Header/>
+        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
         <Routes>
          <Route exact path="/" element={<Home />} />
          <Route exact path="/services" element={<Services/>} />
@@ -39,13 +45,11 @@ export const Page = () => {
          <Route exact path="/contact" element={<Contact/>} />
          <Route exact path='/expert' element={<ExpertsList/>}/>
          <Route exact path='/expert/:id' element={<ExpertDetail/>}/>
-         <Route exact path="/login" element={<Login/>} />
+         <Route exact path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>} />
          <Route exact path="/register" element={<Register/>} />
-         
-
         </Routes>
         <Footer/>
       </Router>
-    </>
+      </>
   )
 }
