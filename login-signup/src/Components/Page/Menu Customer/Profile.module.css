@@ -46,6 +46,31 @@
     margin: 8px 0;
 }
 
+/* Thêm style cho input và textarea */
+.profileDetails input,
+.profileDetails textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 5px;
+    transition: 0.3s;
+}
+
+.profileDetails textarea {
+    resize: none;
+    height: 80px;
+}
+
+/* Hiệu ứng focus */
+.profileDetails input:focus,
+.profileDetails textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
 /* Nút chỉnh sửa */
 .profileEditButton {
     display: block;
@@ -63,4 +88,23 @@
 
 .profileEditButton:hover {
     background: #0056b3;
+}
+
+/* Nút Lưu (Save Button) */
+.profileSaveButton {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.profileSaveButton:hover {
+    background: #218838;
 }

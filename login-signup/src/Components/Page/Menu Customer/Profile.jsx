@@ -13,7 +13,6 @@ const Profile = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -45,6 +44,20 @@ const Profile = () => {
 
         fetchProfile();
     }, []);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedUser, setEditedUser] = useState({ ...user });
+    // Hàm xử lý khi nhập vào input
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEditedUser({ ...editedUser, [name]: value });
+    };
+
+    // Hàm lưu thông tin đã chỉnh sửa
+    const handleSave = () => {
+        setUser(editedUser); // Cập nhật dữ liệu trong React state
+        setIsEditing(false);  // Thoát chế độ chỉnh sửa
+    };
+    
 
     if (loading) return <p>Đang tải...</p>;
     if (error) return <p>{error}</p>;
@@ -53,7 +66,6 @@ const Profile = () => {
         <div className={styles.profileContainer}>
             <h2 className={styles.profileTitle}>Thông Tin Cá Nhân</h2>
 
-            {/* Phần avatar + username */}
             <div className={styles.profileHeader}>
                 <img src={user.avatar} alt="Avatar" className={styles.profileAvatar} />
                 <div className={styles.profileMainInfo}>
@@ -62,18 +74,30 @@ const Profile = () => {
                 </div>
             </div>
 
-            {/* Phần thông tin chi tiết */}
             <div className={styles.profileDetails}>
-                <p className={styles.profileInfo}><strong>Email:</strong> {user.email}</p>
-                <p className={styles.profileInfo}><strong>Phone:</strong> {user.phone}</p>
-                <p className={styles.profileInfo}><strong>Address:</strong> {user.address}</p>
-                <p className={styles.profileInfo}><strong>Giới thiệu:</strong> {user.bio}</p>
+                <p className={styles.profileInfo}>
+                    <strong>Email:</strong> 
+                    {isEditing ? <input type="email" name="email" value={editedUser.email} onChange={handleChange} /> : user.email}
+                </p>
+                <p className={styles.profileInfo}>
+                    <strong>Phone:</strong> 
+                    {isEditing ? <input type="text" name="phone" value={editedUser.phone} onChange={handleChange} /> : user.phone}
+                </p>
+                <p className={styles.profileInfo}>
+                    <strong>Address:</strong> 
+                    {isEditing ? <input type="text" name="address" value={editedUser.address} onChange={handleChange} /> : user.address}
+                </p>
+                <p className={styles.profileInfo}>
+                    <strong>Giới thiệu:</strong> 
+                    {isEditing ? <textarea name="bio" value={editedUser.bio} onChange={handleChange} /> : user.bio}
+                </p>
             </div>
 
-            {/* Nút chỉnh sửa */}
-            <button className={styles.profileEditButton} onClick={() => alert("Tính năng cập nhật sắp có!")}>
-                Chỉnh sửa thông tin
-            </button>
+            {isEditing ? (
+                <button className={styles.profileSaveButton} onClick={handleSave}>Lưu</button>
+            ) : (
+                <button className={styles.profileEditButton} onClick={() => setIsEditing(true)}>Chỉnh sửa thông tin</button>
+            )}
         </div>
     );
 };

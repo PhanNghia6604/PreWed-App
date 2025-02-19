@@ -49,10 +49,11 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
                                 open={Boolean(anchorEl)}
                                 onClose={() => setAnchorEl(null)}
                             >
-                                <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                                <MenuItem onClick={() => navigate("/test-history")}>Test History</MenuItem>
-                                <MenuItem onClick={() => navigate("/settings")}>Settings</MenuItem>
-                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                <MenuItem onClick={() => navigate("/profile")}>Trang cá nhân</MenuItem>
+                                <MenuItem onClick={() => navigate("/test")}>Làm kiểm tra</MenuItem>
+                                <MenuItem onClick={() => navigate("")}>Lịch sử làm bài kiểm tra</MenuItem>
+                                <MenuItem onClick={() => navigate("")}>Lịch hẹn</MenuItem>
+                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
                             </Menu>
                         </>
                     )}
