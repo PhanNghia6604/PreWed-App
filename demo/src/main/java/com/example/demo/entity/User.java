@@ -25,7 +25,7 @@ public class User implements UserDetails {
     public String name;
     @NotBlank(message = "Password cannot be blank")
     public String password;
-    @Pattern(regexp = "/(84|0[3|5|7|8|9])+([0-9]{8})\\b/g", message = "Phone number do not match struct!")
+    @NotBlank
     public String phone;
     @NotBlank(message = "Address cannot be blank")
     public String address;

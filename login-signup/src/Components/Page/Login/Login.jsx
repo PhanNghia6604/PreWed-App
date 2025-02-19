@@ -1,77 +1,78 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heading } from "../../Common/Heading";
-import styles from "./Login.module.css"; // ✅ Import CSS module
+import styles from "./Login.module.css";
 
-export const Login = () => {
-  const [email, setEmail] = useState("");
+export const Login = ({setIsLoggedIn}) => {
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [message, setMessage] = useState('');  // Ensure setMessage is defined
   const [error, setError] = useState("");
 
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      setError("Email and password cannot be empty!");
-      return;
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, password }),
+      });
+      const data = await response.json();
+      if (data.status) {
+        alert(data.message);
+        // Handle successful login (e.g., save token, redirect)
+        localStorage.setItem('token', data.token);
+        setIsLoggedIn(true); 
+        setMessage('Login succeeded');
+        navigate('/');
+      } else {
+        setMessage(data.message || 'Login failed');
+      }
+    } catch (error) {
+      setMessage('Login failed, please try again.');
+      console.error('Error during login:', error);
     }
-
-    // Kiểm tra định dạng email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Invalid email! ");
-      return;
-    }
-
-    setError(""); // Xóa lỗi nếu nhập đúng
-    console.log("Email:", email, "Password:", password);
   };
-
-
 
   return (
     <section className={styles.login}>
-
       <div className={styles.container}>
         <Heading title="Login" />
-
         {error && <div className={styles["error-box"]}>{error}</div>}
+        {message && <div className={styles["message-box"]}>{message}</div>} {/* Display message */}
         <div className={styles.content}>
           <form onSubmit={handleLogin} className="login-form">
             <div className={styles["input-box"]}>
-              <label>Email</label>
+              <label>Name</label>
               <input
                 type="text"
-                placeholder="Email"
+                placeholder="Name"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
-
             <div className={styles["input-box"]}>
               <label>Password</label>
               <input
-                type="text"
+                type="password" // Changed to password type for security
                 placeholder="Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-
             <div className={styles["forgot-password"]}>
               <span onClick={() => alert("Redirect to Forgot Password")}>
                 Forgot Password?
               </span>
             </div>
-
             <button type="submit" className={styles.btn}>
               Login
             </button>
-
             <div className={styles["register-link"]}>
               Don't have an account?{" "}
               <span onClick={() => navigate("/register")}>Register</span>
