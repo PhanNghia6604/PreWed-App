@@ -31,12 +31,17 @@ public class User implements UserDetails {
     public String address;
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email do not match email pattern!")
     public String email;
+    public String username;
     public boolean isDeleted = false;
     @Enumerated(value = EnumType.STRING)
     public RoleEnum roleEnum;
 
     public User() {
 
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public long getId() {
@@ -72,27 +77,27 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     public void setPassword(String password) {
