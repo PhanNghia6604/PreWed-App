@@ -247,6 +247,12 @@ export const experts = [
     fullName: "ThS. Lê Văn B",
     specialty: "Tư vấn tài chính gia đình",
     experience: 8,
+    description: "Dr. Nguyễn Văn A có hơn 10 năm kinh nghiệm trong lĩnh vực tư vấn hôn nhân và gia đình. Ông đã giúp hàng trăm cặp đôi cải thiện mối quan hệ và tìm ra giải pháp cho các vấn đề trong cuộc sống hôn nhân.",
+    certifications: [
+      "Chứng chỉ tư vấn tâm lý - Đại học Quốc gia Hà Nội",
+      "Thành viên Hiệp hội Tâm lý học Việt Nam",
+      "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
+    ],
   },
   {
     id: 3,
@@ -254,6 +260,12 @@ export const experts = [
     fullName: "Luật sư Trần Thị C",
     specialty: "Tư vấn pháp lý hôn nhân",
     experience: 12,
+    description: "Dr. Nguyễn Văn A có hơn 10 năm kinh nghiệm trong lĩnh vực tư vấn hôn nhân và gia đình. Ông đã giúp hàng trăm cặp đôi cải thiện mối quan hệ và tìm ra giải pháp cho các vấn đề trong cuộc sống hôn nhân.",
+    certifications: [
+      "Chứng chỉ tư vấn tâm lý - Đại học Quốc gia Hà Nội",
+      "Thành viên Hiệp hội Tâm lý học Việt Nam",
+      "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
+    ],
   },
   // {
   //   id: 4,

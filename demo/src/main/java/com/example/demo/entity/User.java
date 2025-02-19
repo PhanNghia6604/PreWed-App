@@ -23,11 +23,9 @@ public class User implements UserDetails {
     public long id;
     @NotBlank(message = "Name cannot be blank")
     public String name;
-    @NotBlank(message = "username cannot be blank")
-    public String username;
     @NotBlank(message = "Password cannot be blank")
     public String password;
-    @NotBlank(message = "Number cannot be blank")
+    @NotBlank
     public String phone;
     @NotBlank(message = "Address cannot be blank")
     public String address;
@@ -39,10 +37,6 @@ public class User implements UserDetails {
 
     public User() {
 
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public long getId() {
@@ -78,27 +72,27 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return false;
     }
 
     public void setPassword(String password) {
