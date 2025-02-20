@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Heading } from "../../Common/Heading";
 import styles from "./Login.module.css";
 
-export const Login = ({setIsLoggedIn}) => {
+export const Login = ({ setIsLoggedIn }) => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -12,25 +12,36 @@ export const Login = ({setIsLoggedIn}) => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setError(""); // Xóa lỗi cũ trước khi gửi request
+    setMessage("");
+
     try {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-  
+
       const data = await response.json();
-      console.log("🔹 API Response:", data); // Kiểm tra dữ liệu trả về
-  
+      console.log("🔹 API Response:", data);
+
       if (!response.ok) {
-        console.log("🚨 Lỗi từ server:", response.status);
-        setMessage(`Error: ${data.message || "Login failed"}`);
+        console.log("🚨 Lỗi từ server:", response.status, data);
+        setError(data.message || "Login failed, please check your credentials.");
         return;
       }
-  
+
       if (data.token) {
         console.log("✔ Đăng nhập thành công, lưu token:", data.token);
         localStorage.setItem("token", data.token);
+
+        // Kiểm tra dữ liệu trước khi lưu
+        if (data.username) {
+          localStorage.setItem("user", JSON.stringify(data));
+        } else {
+          console.warn("⚠ Dữ liệu user không hợp lệ:", data);
+        }
+
         setIsLoggedIn(true);
         navigate("/");
       } else {
@@ -39,10 +50,11 @@ export const Login = ({setIsLoggedIn}) => {
       }
     } catch (error) {
       console.error("❌ Lỗi trong quá trình login:", error);
-      setMessage("Login failed, please try again.");
+      setError("Login failed, please try again.");
     }
   };
-  
+
+
   return (
     <section className={styles.login}>
       <div className={styles.container}>
