@@ -4,7 +4,7 @@ import { Heading } from "../../Common/Heading";
 import styles from "./Login.module.css";
 
 export const Login = ({setIsLoggedIn}) => {
-  const [name, setName] = useState("");
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [message, setMessage] = useState('');  // Ensure setMessage is defined
@@ -13,19 +13,18 @@ export const Login = ({setIsLoggedIn}) => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, password }),
+        body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      if (data.status) {
+      if (data.status && data.token) {
         alert(data.message);
-        // Handle successful login (e.g., save token, redirect)
         localStorage.setItem('token', data.token);
-        setIsLoggedIn(true); 
+        setIsLoggedIn(true);
         setMessage('Login succeeded');
         navigate('/');
       } else {
@@ -46,13 +45,13 @@ export const Login = ({setIsLoggedIn}) => {
         <div className={styles.content}>
           <form onSubmit={handleLogin} className="login-form">
             <div className={styles["input-box"]}>
-              <label>Name</label>
+              <label>User Name</label>
               <input
                 type="text"
-                placeholder="Name"
+                placeholder="User Name"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
               />
             </div>
             <div className={styles["input-box"]}>
