@@ -32,7 +32,7 @@ public class UserAPI {
     User newUser = userService.create(user);
     return ResponseEntity.ok(newUser);
     }
-    @GetMapping
+    @GetMapping("get")
     public ResponseEntity getAllUser(){
         List<User> users =userService.getAllUser();
     return ResponseEntity.ok(users);
