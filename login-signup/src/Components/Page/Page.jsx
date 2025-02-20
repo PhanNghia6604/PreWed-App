@@ -34,8 +34,12 @@ export const Page = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+  console.log("Token từ localStorage:", token); // Kiểm tra log
+  if (token) {
+    setIsLoggedIn(true);
+  }
   }, []);
+  
   return (
    <>
       <Router>
