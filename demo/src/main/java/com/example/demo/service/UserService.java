@@ -90,7 +90,8 @@ public class UserService implements UserDetailsService {
     userResponse.setEmail(user.getEmail());
     userResponse.setId(user.getId());
     userResponse.setFullName(user.getName());
-    userResponse.setEmail(user.getEmail());
+    userResponse.setPhone(user.getPhone());
+    userResponse.setAddress(user.getAddress());
     userResponse.setRoleEnum(user.getRoleEnum());
     userResponse.setToken(token);
     return userResponse;

@@ -12,8 +12,26 @@ public String email;
     public RoleEnum roleEnum;
     public String token;
     public String username;
+    public String phone;
+    public String address;
 
     public UserResponse() {
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public long getId() {
