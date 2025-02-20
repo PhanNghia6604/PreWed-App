@@ -13,29 +13,36 @@ export const Login = ({setIsLoggedIn}) => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
+  
       const data = await response.json();
-      if (data.status && data.token) {
-        alert(data.message);
-        localStorage.setItem('token', data.token);
+      console.log("🔹 API Response:", data); // Kiểm tra dữ liệu trả về
+  
+      if (!response.ok) {
+        console.log("🚨 Lỗi từ server:", response.status);
+        setMessage(`Error: ${data.message || "Login failed"}`);
+        return;
+      }
+  
+      if (data.token) {
+        console.log("✔ Đăng nhập thành công, lưu token:", data.token);
+        localStorage.setItem("token", data.token);
         setIsLoggedIn(true);
-        setMessage('Login succeeded');
-        navigate('/');
+        navigate("/");
       } else {
-        setMessage(data.message || 'Login failed');
+        console.log("❌ Không có token trong response:", data);
+        setMessage("Login failed: No token received");
       }
     } catch (error) {
-      setMessage('Login failed, please try again.');
-      console.error('Error during login:', error);
+      console.error("❌ Lỗi trong quá trình login:", error);
+      setMessage("Login failed, please try again.");
     }
   };
-
+  
   return (
     <section className={styles.login}>
       <div className={styles.container}>

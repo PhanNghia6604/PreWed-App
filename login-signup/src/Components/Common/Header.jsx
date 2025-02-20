@@ -6,6 +6,7 @@ import { Menu as MenuIcon, AccountCircle } from '@mui/icons-material';
 import { Menu, MenuItem, IconButton } from "@mui/material";
 
 export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+    console.log("isLoggedIn trong Header:", isLoggedIn);
     const [responsive, setResponsive] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const navigate = useNavigate();
