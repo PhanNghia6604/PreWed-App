@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Heading } from "../../Common/Heading";
 import styles from "./Login.module.css";
 
-export const Login = ({setIsLoggedIn}) => {
-  const [name, setName] = useState("");
+export const Login = ({ setIsLoggedIn }) => {
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [message, setMessage] = useState('');  // Ensure setMessage is defined
@@ -12,30 +12,48 @@ export const Login = ({setIsLoggedIn}) => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setError(""); // Xóa lỗi cũ trước khi gửi request
+    setMessage("");
+
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, password }),
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       });
+
       const data = await response.json();
-      if (data.status) {
-        alert(data.message);
-        // Handle successful login (e.g., save token, redirect)
-        localStorage.setItem('token', data.token);
-        setIsLoggedIn(true); 
-        setMessage('Login succeeded');
-        navigate('/');
+      console.log("🔹 API Response:", data);
+
+      if (!response.ok) {
+        console.log("🚨 Lỗi từ server:", response.status, data);
+        setError(data.message || "Login failed, please check your credentials.");
+        return;
+      }
+
+      if (data.token) {
+        console.log("✔ Đăng nhập thành công, lưu token:", data.token);
+        localStorage.setItem("token", data.token);
+
+        // Kiểm tra dữ liệu trước khi lưu
+        if (data.username) {
+          localStorage.setItem("user", JSON.stringify(data));
+        } else {
+          console.warn("⚠ Dữ liệu user không hợp lệ:", data);
+        }
+
+        setIsLoggedIn(true);
+        navigate("/");
       } else {
-        setMessage(data.message || 'Login failed');
+        console.log("❌ Không có token trong response:", data);
+        setMessage("Login failed: No token received");
       }
     } catch (error) {
-      setMessage('Login failed, please try again.');
-      console.error('Error during login:', error);
+      console.error("❌ Lỗi trong quá trình login:", error);
+      setError("Login failed, please try again.");
     }
   };
+
 
   return (
     <section className={styles.login}>
@@ -46,13 +64,13 @@ export const Login = ({setIsLoggedIn}) => {
         <div className={styles.content}>
           <form onSubmit={handleLogin} className="login-form">
             <div className={styles["input-box"]}>
-              <label>Name</label>
+              <label>User Name</label>
               <input
                 type="text"
-                placeholder="Name"
+                placeholder="User Name"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
               />
             </div>
             <div className={styles["input-box"]}>

@@ -5,6 +5,7 @@ import styles from "./Register.module.css";
 
 export const Register = () => {
   const [name, setName] = useState("");
+  const [username,setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
@@ -14,7 +15,7 @@ export const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !password.trim() || !phone.trim() || !address.trim()) {
+    if (!name.trim() || !username.trim() || !email.trim() || !password.trim() || !phone.trim() || !address.trim()) {
       setError("Please fill in all the required fields!");
       return;
     }
@@ -28,12 +29,12 @@ export const Register = () => {
     setError("");
 
     try {
-      const response = await fetch('/api/user', {
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, password, phone, address }),
+        body: JSON.stringify({ name,username, email, password, phone, address }),
       });
   
       if (!response.ok) {
@@ -61,6 +62,10 @@ export const Register = () => {
               <label>Name</label>
               <input type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
+            <div className={styles["input-box"]}>
+              <label>User Name</label>
+              <input type="text" placeholder="You User Name" value={username} onChange={(e) => setUserName(e.target.value)}/>
+            </div> 
             <div className={styles["input-box"]}>
               <label>Email</label>
               <input type="email" placeholder="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
