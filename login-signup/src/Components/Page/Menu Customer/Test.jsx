@@ -2,30 +2,24 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Test.module.css";
 
-const questions = {
-  finance: [
-    { id: 1, text: "Do you keep track of your monthly expenses?" },
-    { id: 2, text: "Do you have an emergency fund?" },
-  ],
-  parenting: [
-    { id: 1, text: "Do you set clear rules for your children?" },
-    { id: 2, text: "Do you encourage open communication with your child?" },
-  ],
-  communication: [
-    { id: 1, text: "Do you feel comfortable expressing your feelings?" },
-    { id: 2, text: "Do you listen actively when someone is speaking?" },
-  ],
-};
+const questions = [
+  { id: 1, text: "How well do you and your partner discuss financial matters?" },
+  { id: 2, text: "How comfortable are you with your partner's spending habits?" },
+  { id: 3, text: "Do you and your partner align on future family planning?" },
+  { id: 4, text: "How well do you handle conflicts with your partner?" },
+  { id: 5, text: "Are you both clear about each other's life goals?" },
+  { id: 6, text: "How satisfied are you with your partner's communication style?" },
+  { id: 7, text: "Do you trust your partner with major life decisions?" },
+  { id: 8, text: "How do you feel about your partner's approach to responsibilities?" },
+  { id: 9, text: "Are you and your partner aligned on career expectations?" },
+  { id: 10, text: "How confident are you about your emotional compatibility?" },
+];
+
+const levels = ["Not Good", "Neutral", "Good", "Very Good"];
 
 export const Test = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [answers, setAnswers] = useState({});
   const navigate = useNavigate();
-
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-    setAnswers({});
-  };
 
   const handleAnswerChange = (questionId, value) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -33,61 +27,35 @@ export const Test = () => {
 
   const handleSubmit = () => {
     console.log("User Answers:", answers);
-    navigate("/result"); // Chuyển hướng đến trang kết quả
+    navigate("/result"); // Navigate to result page
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Select a Test Category</h1>
-      <div className={styles.categories}>
-        {["finance", "parenting", "communication"].map((category) => (
-          <button
-            key={category}
-            className={`${styles.category} ${
-              selectedCategory === category ? styles.active : ""
-            }`}
-            onClick={() => handleCategorySelect(category)}
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </button>
-        ))}
-      </div>
-
-      {selectedCategory && (
-        <div className={styles.testSection}>
-          <h2 className={styles.sectionTitle}>
-            {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Test
-          </h2>
-          {questions[selectedCategory].map((q) => (
-            <div key={q.id} className={styles.questionBox}>
-              <p className={styles.questionText}>{q.text}</p>
-              <div className={styles.options}>
-                <label className={styles.option}>
+      <h1 className={styles.title}>Pre-Marital Compatibility Test</h1>
+      <div className={styles.testSection}>
+        {questions.map((q) => (
+          <div key={q.id} className={styles.questionBox}>
+            <p className={styles.questionText}>{q.text}</p>
+            <div className={styles.options}>
+              {levels.map((level) => (
+                <label key={level} className={styles.option}>
                   <input
                     type="radio"
                     name={`question-${q.id}`}
-                    value="Yes"
-                    onChange={() => handleAnswerChange(q.id, "Yes")}
+                    value={level}
+                    onChange={() => handleAnswerChange(q.id, level)}
                   />
-                  Yes
+                  {level}
                 </label>
-                <label className={styles.option}>
-                  <input
-                    type="radio"
-                    name={`question-${q.id}`}
-                    value="No"
-                    onChange={() => handleAnswerChange(q.id, "No")}
-                  />
-                  No
-                </label>
-              </div>
+              ))}
             </div>
-          ))}
-          <button className={styles.submitBtn} onClick={handleSubmit}>
-            Submit Test
-          </button>
-        </div>
-      )}
+          </div>
+        ))}
+        <button className={styles.submitBtn} onClick={handleSubmit}>
+          Submit Test
+        </button>
+      </div>
     </div>
   );
 };
