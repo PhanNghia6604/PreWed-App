@@ -13,9 +13,15 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user"); 
+        localStorage.removeItem("expertData"); 
+        localStorage.removeItem("bookings");
+    
         setIsLoggedIn(false);
-        setAnchorEl(null); // Đóng menu sau khi logout
+        setAnchorEl(null); 
+    
         navigate("/");
+        window.location.reload(); // Refresh lại trang
     };
 
     return (
