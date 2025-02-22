@@ -240,6 +240,7 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
+    pricePerSession: 500000,
   },
   {
     id: 2,
@@ -253,6 +254,7 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
+    pricePerSession: 500000,
   },
   {
     id: 3,
@@ -266,26 +268,48 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
+    pricePerSession: 500000,
   },
-  // {
-  //   id: 4,
-  //   avatar: "../images/experts/expert4.png",
-  //   fullName: "Dr. Hoàng Minh D",
-  //   specialty: "Tư vấn sức khỏe sinh sản",
-  //   experience: 9,
-  // },
-  // {
-  //   id: 5,
-  //   avatar: "../images/experts/expert5.png",
-  //   fullName: "TS. Phạm Hồng E",
-  //   specialty: "Tư vấn giao tiếp và quản lý xung đột",
-  //   experience: 15,
-  // },
-  // {
-  //   id: 6,
-  //   avatar: "../images/experts/expert6.png",
-  //   fullName: "TS. Nguyễn Văn F",
-  //   specialty: "Tư vấn giá trị gia đình",
-  //   experience: 7,
-  // }
+  {
+    id: 4,
+    avatar: "../images/experts/expert4.png",
+    fullName: "Dr. Hoàng Minh D",
+    specialty: "Tư vấn sức khỏe sinh sản",
+    experience: 9,
+    description: "Dr. Nguyễn Văn A có hơn 10 năm kinh nghiệm trong lĩnh vực tư vấn hôn nhân và gia đình. Ông đã giúp hàng trăm cặp đôi cải thiện mối quan hệ và tìm ra giải pháp cho các vấn đề trong cuộc sống hôn nhân.",
+    certifications: [
+      "Chứng chỉ tư vấn tâm lý - Đại học Quốc gia Hà Nội",
+      "Thành viên Hiệp hội Tâm lý học Việt Nam",
+      "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
+    ],
+    pricePerSession: 500000,
+  },
+  {
+    id: 5,
+    avatar: "../images/experts/expert5.png",
+    fullName: "TS. Phạm Hồng E",
+    specialty: "Tư vấn giao tiếp và quản lý xung đột",
+    experience: 15,
+    description: "Dr. Nguyễn Văn A có hơn 10 năm kinh nghiệm trong lĩnh vực tư vấn hôn nhân và gia đình. Ông đã giúp hàng trăm cặp đôi cải thiện mối quan hệ và tìm ra giải pháp cho các vấn đề trong cuộc sống hôn nhân.",
+    certifications: [
+      "Chứng chỉ tư vấn tâm lý - Đại học Quốc gia Hà Nội",
+      "Thành viên Hiệp hội Tâm lý học Việt Nam",
+      "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
+    ],
+    pricePerSession: 500000,
+  },
+  {
+    id: 6,
+    avatar: "../images/experts/expert6.png",
+    fullName: "TS. Nguyễn Văn F",
+    specialty: "Tư vấn giá trị gia đình",
+    experience: 7,
+    description: "Dr. Nguyễn Văn A có hơn 10 năm kinh nghiệm trong lĩnh vực tư vấn hôn nhân và gia đình. Ông đã giúp hàng trăm cặp đôi cải thiện mối quan hệ và tìm ra giải pháp cho các vấn đề trong cuộc sống hôn nhân.",
+    certifications: [
+      "Chứng chỉ tư vấn tâm lý - Đại học Quốc gia Hà Nội",
+      "Thành viên Hiệp hội Tâm lý học Việt Nam",
+      "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
+    ],
+    pricePerSession: 500000,
+  }
 ];

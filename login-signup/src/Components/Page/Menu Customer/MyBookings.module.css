@@ -1,0 +1,76 @@
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .bookingList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .bookingItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    margin: 10px 0;
+    border-radius: 8px;
+  }
+  
+  .expertAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .bookingInfo {
+    flex-grow: 1;
+    margin-left: 15px;
+  }
+  
+  .expertName {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .specialty {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .dateTime {
+    font-size: 14px;
+    color: black;
+  }
+  
+  .cancelButton {
+    padding: 8px 12px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .cancelButton:hover {
+    background-color: darkred;
+  }
+  
+  .missingExpert {
+    color: red;
+    font-weight: bold;
+  }
+  

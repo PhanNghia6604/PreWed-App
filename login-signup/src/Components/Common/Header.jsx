@@ -53,7 +53,7 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
                                 <MenuItem onClick={() => navigate("/profile")}>Trang cá nhân</MenuItem>
                                 <MenuItem onClick={() => navigate("/test")}>Làm kiểm tra</MenuItem>
                                 <MenuItem onClick={() => navigate("")}>Lịch sử làm bài kiểm tra</MenuItem>
-                                <MenuItem onClick={() => navigate("")}>Lịch hẹn</MenuItem>
+                                <MenuItem onClick={() => navigate("/my-booking")}>Lịch đã đặt</MenuItem>
                                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
                             </Menu>
                         </>

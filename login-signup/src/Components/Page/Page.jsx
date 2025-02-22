@@ -23,6 +23,8 @@ import { ExpertDetail } from './Consultant/ExpertDetail';
 import Profile from './Menu Customer/Profile';
 import {Test} from './Menu Customer/Test';
 import Result from './Menu Customer/Result';
+import { MyBookings } from './Menu Customer/MyBooking';
+import { BookingPayment } from './Menu Customer/BookingPayment';
 
 
 
@@ -55,6 +57,8 @@ export const Page = () => {
          <Route exact path='/expert/:id' element={<ExpertDetail/>}/>
          <Route exact path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>} />
          <Route exact path="/profile" element={<Profile/>} />
+         <Route exact path='/my-booking' element={<MyBookings/>}/>
+         <Route exact path="/booking-payment/:expertId/:date/:time/:sessionCount" element={<BookingPayment/>} />
          <Route exact path="/register" element={<Register/>} />
          <Route exact path="/test" element={<Test/>} />
          <Route exact path="/result" element={<Result/>} />

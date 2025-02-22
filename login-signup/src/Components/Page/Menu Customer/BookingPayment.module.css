@@ -1,0 +1,87 @@
+/* BookingPayment.module.css */
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    color: #fff;
+  }
+  
+  h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #ffcc00;
+  }
+  
+  .bookingInfo {
+    background: #2a2a2a;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .bookingInfo p {
+    margin: 8px 0;
+    font-size: 16px;
+  }
+  
+  .bookingInfo strong {
+    color: #ffcc00;
+  }
+  
+  h3 {
+    font-size: 18px;
+    margin: 20px 0 10px;
+    color: #ffcc00;
+  }
+  
+  .paymentOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: start;
+    padding: 10px 20px;
+  }
+  
+  .paymentOptions label {
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .paymentOptions input {
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+  
+  .payButton {
+    margin-top: 20px;
+    background: #ffcc00;
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .payButton:hover {
+    background: #e6b800;
+  }
+  
+  .notFound {
+    text-align: center;
+    font-size: 18px;
+    color: red;
+    margin-top: 20px;
+  }
+  
