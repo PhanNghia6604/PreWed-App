@@ -10,7 +10,7 @@ export const ExpertDetail = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [user, setUser] = useState(null);
   const [sessionCount, setSessionCount] = useState(1);
 
@@ -32,8 +32,12 @@ export const ExpertDetail = () => {
   };
 
   const handleConfirmBooking = () => {
-    if (!date || !time) {
-      alert("Vui lòng chọn ngày và giờ!");
+    if (!date || !endDate) {
+      alert("Vui lòng chọn ngày bắt đầu và ngày kết thúc!");
+      return;
+    }
+    if (new Date(endDate) < new Date(date)) {
+      alert("Ngày kết thúc không được trước ngày bắt đầu!");
       return;
     }
   
@@ -42,7 +46,7 @@ export const ExpertDetail = () => {
       expertId: id,
       expertName: expert.fullName,
       date,
-      time,
+      endDate,
       sessionCount, // Lưu số buổi vào booking
       status: "Chờ thanh toán",
     };
@@ -54,7 +58,7 @@ export const ExpertDetail = () => {
     alert("Đặt lịch thành công! Chuyển đến trang thanh toán...");
   
     // Điều hướng đến trang thanh toán (chuyển thêm sessionCount)
-    navigate(`/booking-payment/${id}/${date}/${time}/${sessionCount}`);
+    navigate(`/booking-payment/${id}/${date}/${endDate}/${sessionCount}`);
   };
 
   return (
@@ -64,7 +68,6 @@ export const ExpertDetail = () => {
         <h2>{expert.fullName}</h2>
         <p className={style.specialty}>{expert.specialty}</p>
         <p className={style.experience}>{expert.experience} năm kinh nghiệm</p>
-
         <p className={style.description}>{expert.description}</p>
 
         <div className={style.certifications}>
@@ -83,8 +86,10 @@ export const ExpertDetail = () => {
         {showForm && (
           <div className={style.bookingForm}>
             <h3>Đặt lịch tư vấn với {expert.fullName}</h3>
+            <label>Ngày bắt đầu</label>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-            <input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+            <label>Ngày kết thúc</label>
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             <label>Chọn số buổi:</label>
             <input
               type="number"

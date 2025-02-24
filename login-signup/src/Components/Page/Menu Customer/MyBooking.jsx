@@ -47,7 +47,7 @@ export const MyBookings = () => {
                     <div className={style.bookingInfo}>
                       <strong className={style.expertName}>{expert.fullName}</strong>
                       <p className={style.specialty}>🛠 {expert.specialty}</p>
-                      <p className={style.dateTime}>📅 Ngày: {b.date} | 🕒 Giờ: {b.time}</p>
+                      <p className={style.dateTime}>📅 Ngày bắt đầu: {b.date} | 🕒 Ngày kết thúc: {b.endDate}</p>
                     </div>
                     <button className={style.cancelButton} onClick={() => handleCancelBooking(index)}>
                       ❌ Hủy lịch

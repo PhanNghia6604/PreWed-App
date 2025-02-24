@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap');
+
 * {
   padding: 0;
   margin: 0;
@@ -409,23 +411,18 @@ footer i {
 }
 
 .logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70px; /* Tăng size nếu cần để phù hợp với navbar */
-  height: 70px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
+  font-size: 20px; /* Chữ lớn, dễ nhìn */
+  font-weight: bold; /* In đậm để nổi bật */
+  font-family: "Poppins", sans-serif; /* Font hiện đại */
+  color: #FFD700; /* Vàng Gold Premium */
+  text-transform: uppercase; /* Viết hoa */
+  letter-spacing: 2px; /* Giãn cách chữ */
+  display: inline-block;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
 }
 
-.logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Phủ kín logo trong hình tròn */
-}
-
+/* Hiệu ứng đổi màu khi hover */
 .logo:hover {
-  transform: scale(1.1);
+  color: #FFC300; /* Màu vàng đậm hơn khi hover */
 }

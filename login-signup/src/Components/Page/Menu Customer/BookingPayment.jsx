@@ -4,7 +4,7 @@ import { experts } from "../../fake data/data"; // Import danh sách chuyên gia
 import style from "./BookingPayment.module.css";
 
 export const BookingPayment = () => {
-  const { expertId, date, time, sessionCount } = useParams();
+  const { expertId, date, endDate, sessionCount } = useParams();
   const navigate = useNavigate();
   const [booking, setBooking] = useState(null);
   const [user, setUser] = useState(null);
@@ -18,7 +18,7 @@ export const BookingPayment = () => {
     if (storedUser) {
       const userBookings = JSON.parse(localStorage.getItem(`bookings_${storedUser.id}`)) || [];
       const foundBooking = userBookings.find(
-        (b) => b.expertId === expertId && b.date === date && b.time === time
+        (b) => b.expertId === expertId && b.date === date && b.endDate === endDate
       );
       setBooking(foundBooking);
 
@@ -31,7 +31,7 @@ export const BookingPayment = () => {
 
       setTotalAmount(sessionNum * pricePerSession); // Tính tổng tiền
     }
-  }, [expertId, date, time, sessionCount]);
+  }, [expertId, date, endDate, sessionCount]);
 
   const handlePayment = () => {
     if (!paymentMethod) {
@@ -46,7 +46,7 @@ export const BookingPayment = () => {
 
     const updatedBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
     const newBookings = updatedBookings.map((b) =>
-      b.expertId === booking.expertId && b.date === booking.date && b.time === booking.time
+      b.expertId === booking.expertId && b.date === booking.date && b.endDate === booking.endDate
         ? { ...b, status: "Đã thanh toán", amountPaid: totalAmount }
         : b
     );
@@ -71,7 +71,7 @@ export const BookingPayment = () => {
       <div className={style.bookingInfo}>
         <p><strong>Chuyên gia:</strong> {booking.expertName}</p>
         <p><strong>Ngày:</strong> {booking.date}</p>
-        <p><strong>Giờ:</strong> {booking.time}</p>
+        <p><strong>Ngày kết thúc:</strong> {booking.endDate}</p>
         <p><strong>Số buổi:</strong> {sessionCount}</p>
         <p><strong>Trạng thái:</strong> {booking.status || "Chưa thanh toán"}</p>
         <p className={style.totalAmount}>

@@ -28,7 +28,7 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
         <header>
             <div className="container flexsb">
                 <div className="logo">
-                    <img src={logo} alt="" />
+                    Premarital Preparation Hub
                 </div>
 
                 <div className={responsive ? "hideMenu" : "nav"}>

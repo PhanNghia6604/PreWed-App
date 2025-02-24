@@ -1,128 +1,145 @@
-/* Căn giữa toàn bộ trang */
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
-    background-color: #f5f7fa;
+    min-height: 100vh;
+    background-color: #f4f4f9;
     padding: 20px;
 }
 
-/* Thẻ chứa thông tin chuyên gia */
 .card {
-    max-width: 700px;
     background: white;
-    border-radius: 16px;
-    padding: 30px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 600px;
     text-align: center;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Ảnh đại diện chuyên gia */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .avatar {
-    width: 180px;
-    height: 180px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 20px;
-    border: 5px solid #007bff;
+    margin-bottom: 15px;
+    border: 3px solid #007bff;
 }
 
-/* Tên chuyên gia */
 h2 {
     font-size: 24px;
-    font-weight: bold;
+    margin-bottom: 5px;
     color: #333;
-    margin-bottom: 8px;
 }
 
-/* Chuyên môn */
 .specialty {
-    font-size: 18px;
-    color: #555;
-    font-style: italic;
+    font-size: 16px;
+    color: #666;
     margin-bottom: 10px;
 }
 
-/* Kinh nghiệm */
 .experience {
-    font-size: 16px;
-    color: #666;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
     margin-bottom: 20px;
 }
 
-/* Nút đặt lịch */
+.certifications {
+    text-align: left;
+    margin-top: 15px;
+}
+
+.certifications h3 {
+    font-size: 18px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.certifications ul {
+    padding-left: 20px;
+    list-style: square;
+    color: #444;
+}
+
 .bookButton {
-    display: inline-block;
-    padding: 12px 25px;
     background: #007bff;
     color: white;
     border: none;
+    padding: 10px 15px;
     font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
-    transition: 0.3s ease-in-out;
-    box-shadow: 0px 3px 8px rgba(0, 123, 255, 0.4);
+    transition: 0.3s;
+    margin-top: 15px;
 }
 
 .bookButton:hover {
     background: #0056b3;
 }
 
-/* Mô tả chuyên gia */
-/* Mô tả chuyên gia */
-.description {
-    font-size: 16px;
-    color: #444;
-    text-align: left;
-    margin: 20px 0;
-    line-height: 1.6;
+/* Form đặt lịch */
+.bookingForm {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Phần chứng chỉ và bằng cấp */
-.certifications {
-    font-size: 14px;
-    color: #666;
-    text-align: left;
-    margin-top: 15px;
-    font-style: italic;
-}
-
-.certifications h3 {
+.bookingForm h3 {
     font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.bookingForm label {
+    display: block;
+    font-size: 14px;
+    margin: 10px 0 5px;
     font-weight: bold;
-    color: #333;
+}
+
+.bookingForm input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
     margin-bottom: 10px;
 }
 
-.certifications ul {
-    list-style-type: disc;
-    padding-left: 20px;
-}
-
-.certifications li {
-    margin-bottom: 5px;
-}
-
-/* Khi không tìm thấy chuyên gia */
-.notFound {
-    text-align: center;
-    font-size: 20px;
-    color: red;
-    margin-top: 50px;
-}
-
-/* Nút quay lại */
-.backButton {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #ff4d4d;
+.bookingForm button {
+    width: 100%;
+    background: #28a745;
     color: white;
-    border-radius: 6px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
 }
 
-.backButton:hover {
-    background: #cc0000;
+.bookingForm button:hover {
+    background: #218838;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card {
+        padding: 20px;
+    }
 }
