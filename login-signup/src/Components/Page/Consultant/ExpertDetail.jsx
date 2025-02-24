@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { experts } from "../../fake data/data";
+import { experts, servicePackages } from "../../fake data/data";
 import style from "./ExpertDetail.module.css";
 
 export const ExpertDetail = () => {
@@ -10,9 +10,8 @@ export const ExpertDetail = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [date, setDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [user, setUser] = useState(null);
-  const [sessionCount, setSessionCount] = useState(1);
+  const [selectedPackage, setSelectedPackage] = useState(servicePackages[0] || null);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user")) || null;
@@ -23,42 +22,72 @@ export const ExpertDetail = () => {
     return <div className={style.notFound}>Chuyên gia không tồn tại!</div>;
   }
 
+  // Hàm tính ngày kết thúc dựa trên số buổi của gói dịch vụ
+  const calculateEndDate = (startDate, sessions) => {
+    if (!startDate) return ""; // Trả về chuỗi rỗng nếu ngày bắt đầu chưa chọn
+    const start = new Date(startDate);
+    if (isNaN(start.getTime())) return ""; // Kiểm tra xem startDate có hợp lệ không
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + sessions - 1);
+
+    // Format theo MM/DD/YY
+    const month = String(end.getMonth() + 1).padStart(2, "0"); // Tháng tính từ 0 nên +1
+    const day = String(end.getDate()).padStart(2, "0");
+    const year = String(end.getFullYear()).slice(-2); // Lấy 2 chữ số cuối của năm
+
+    return `${month}/${day}/${year}`;
+  };
   const handleBooking = () => {
     if (!user) {
       alert("Bạn cần đăng nhập để đặt lịch!");
       return;
     }
+    setSelectedPackage(servicePackages[0]); // Chọn gói mặc định
     setShowForm(true);
   };
 
   const handleConfirmBooking = () => {
-    if (!date || !endDate) {
-      alert("Vui lòng chọn ngày bắt đầu và ngày kết thúc!");
+    if (!date) {
+      alert("Vui lòng chọn ngày bắt đầu!");
       return;
     }
-    if (new Date(endDate) < new Date(date)) {
-      alert("Ngày kết thúc không được trước ngày bắt đầu!");
+    if (!selectedPackage) {
+      alert("Vui lòng chọn gói dịch vụ!");
       return;
     }
-  
+
+    console.log("Selected Package:", selectedPackage); // Kiểm tra giá trị
+
+    const chosenPackage = selectedPackage; // Sửa lại chỗ này
+
+    if (!chosenPackage) {
+      alert("Gói dịch vụ không hợp lệ!");
+      return;
+    }
+
+    console.log("Chosen Package:", chosenPackage);
+
+    const calculatedEndDate = calculateEndDate(date, chosenPackage.sessionCount);
+
     const booking = {
       id: new Date().getTime(),
       expertId: id,
       expertName: expert.fullName,
       date,
-      endDate,
-      sessionCount, // Lưu số buổi vào booking
+      endDate: calculatedEndDate,
+      packageName: chosenPackage.name,
+      sessionCount: chosenPackage.sessionCount,
       status: "Chờ thanh toán",
     };
-  
+
     const userBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
     localStorage.setItem(`bookings_${user.id}`, JSON.stringify([...userBookings, booking]));
-  
+
     setShowForm(false);
-    alert("Đặt lịch thành công! Chuyển đến trang thanh toán...");
-  
-    // Điều hướng đến trang thanh toán (chuyển thêm sessionCount)
-    navigate(`/booking-payment/${id}/${date}/${endDate}/${sessionCount}`);
+    alert("Đặt lịch thành công! Lịch đặt tư vấn");
+
+    navigate('/my-booking');
   };
 
   return (
@@ -87,17 +116,35 @@ export const ExpertDetail = () => {
           <div className={style.bookingForm}>
             <h3>Đặt lịch tư vấn với {expert.fullName}</h3>
             <label>Ngày bắt đầu</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-            <label>Ngày kết thúc</label>
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-            <label>Chọn số buổi:</label>
             <input
-              type="number"
-              min="1"
-              value={sessionCount}
-              onChange={(e) => setSessionCount(Number(e.target.value))}
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
-            <button onClick={handleConfirmBooking}>Xác nhận & Thanh toán</button>
+
+            <label>Chọn gói dịch vụ:</label>
+            <select
+              value={selectedPackage?.id}
+              onChange={(e) => {
+                const selected = servicePackages.find(pkg => pkg.id === e.target.value);
+                setSelectedPackage(selected);
+                console.log("Gói đã chọn:", selected);
+              }}
+            >
+              {servicePackages.map((pkg) => (
+                <option key={pkg.id} value={pkg.id}>
+                  {pkg.name} - {pkg.price.toLocaleString()} VND
+                </option>
+              ))}
+            </select>
+
+            <p><strong>Ngày kết thúc dự kiến:</strong>
+              {date ? <span className={style.endDateDisplay}>{calculateEndDate(date, selectedPackage.sessionCount)}</span> : "Chưa chọn"}
+            </p>
+
+
+
+            <button onClick={handleConfirmBooking}>Xác nhận gói dịch vụ</button>
           </div>
         )}
       </div>

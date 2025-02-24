@@ -98,6 +98,7 @@ h2 {
     border-radius: 8px;
     margin-top: 20px;
     animation: fadeIn 0.3s ease-in-out;
+    text-align: left;
 }
 
 .bookingForm h3 {
@@ -112,7 +113,8 @@ h2 {
     font-weight: bold;
 }
 
-.bookingForm input {
+.bookingForm input,
+.bookingForm select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
@@ -135,6 +137,39 @@ h2 {
 
 .bookingForm button:hover {
     background: #218838;
+}
+
+/* Chỉnh dropdown có icon đẹp hơn */
+.bookingForm select {
+    appearance: none;
+    background: white;
+    padding-right: 30px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23007bff'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+.bookingForm select:hover {
+    border-color: #007bff;
+}
+
+.bookingForm select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Hiển thị ngày kết thúc */
+.endDateDisplay {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d9534f;
+    background: #f8d7da;
+    padding: 8px 12px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
 }
 
 /* Responsive */

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { experts } from "../../fake data/data"; // Import danh sách chuyên gia
+import { servicePackages } from "../../fake data/data"; // Import danh sách chuyên gia
 import style from "./BookingPayment.module.css";
 
 export const BookingPayment = () => {
-  const { expertId, date, endDate, sessionCount } = useParams();
+  const { expertId, date, calculatedEndDate, sessionCount } = useParams();
+  console.log("Received endDate from URL:", calculatedEndDate);
+  console.log("Received sessionCount from URL:", sessionCount);
   const navigate = useNavigate();
   const [booking, setBooking] = useState(null);
   const [user, setUser] = useState(null);
@@ -14,25 +16,30 @@ export const BookingPayment = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user")) || null;
     setUser(storedUser);
-
+  
     if (storedUser) {
       const userBookings = JSON.parse(localStorage.getItem(`bookings_${storedUser.id}`)) || [];
+  
+      // Tìm lịch đặt của người dùng
       const foundBooking = userBookings.find(
-        (b) => b.expertId === expertId && b.date === date && b.endDate === endDate
+        (b) => Number(b.expertId) === Number(expertId) && b.date === date && b.endDate === calculatedEndDate
       );
-      setBooking(foundBooking);
-
-      // Lấy giá chuyên gia từ danh sách
-      const expert = experts.find((exp) => exp.id === Number(expertId));
-
-      // Kiểm tra dữ liệu hợp lệ trước khi tính toán
-      const sessionNum = Number(sessionCount) || 1; // Chuyển đổi sessionCount thành số, mặc định là 1 nếu lỗi
-      const pricePerSession = expert?.pricePerSession || 0; // Đảm bảo có giá hợp lệ
-
-      setTotalAmount(sessionNum * pricePerSession); // Tính tổng tiền
+  
+      if (foundBooking) {
+        setBooking(foundBooking);
+  
+        // Lấy giá của gói dịch vụ
+        const selectedPackage = servicePackages.find(pkg => pkg.name === foundBooking.packageName);
+        const packagePrice = selectedPackage ? selectedPackage.price : 0;
+        
+        console.log("Selected Package:", selectedPackage);
+        console.log("Final Price:", packagePrice);
+        
+        setTotalAmount(packagePrice); // Không nhân với sessionNum
+        
+      }
     }
-  }, [expertId, date, endDate, sessionCount]);
-
+  }, [expertId, date, calculatedEndDate, sessionCount]);
   const handlePayment = () => {
     if (!paymentMethod) {
       alert("Vui lòng chọn phương thức thanh toán!");
@@ -44,16 +51,21 @@ export const BookingPayment = () => {
       return;
     }
 
+    if (booking.status !== "Chờ thanh toán" && booking.status !== "Chờ chấp nhận") {
+      alert("Lịch hẹn chưa được chuyên gia chấp nhận hoặc đã thanh toán.");
+      return;
+    }
+
     const updatedBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
     const newBookings = updatedBookings.map((b) =>
-      b.expertId === booking.expertId && b.date === booking.date && b.endDate === booking.endDate
+      Number(b.expertId) === Number(booking.expertId) && b.date === booking.date && b.endDate === booking.endDate
         ? { ...b, status: "Đã thanh toán", amountPaid: totalAmount }
         : b
     );
 
     localStorage.setItem(`bookings_${user.id}`, JSON.stringify(newBookings));
 
-    alert(`Thanh toán thành công ${totalAmount.toLocaleString()} VNĐ!`);
+    alert(`Thanh toán thành công ${totalAmount.toLocaleString()} VNĐ bằng ${paymentMethod}!`);
     navigate("/my-booking");
   };
 
@@ -84,8 +96,8 @@ export const BookingPayment = () => {
         <label>
           <input
             type="radio"
-            value="creditCard"
-            checked={paymentMethod === "creditCard"}
+            value="Thẻ tín dụng"
+            checked={paymentMethod === "Thẻ tín dụng"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
           💳 Thẻ tín dụng / Ghi nợ
@@ -93,8 +105,8 @@ export const BookingPayment = () => {
         <label>
           <input
             type="radio"
-            value="momo"
-            checked={paymentMethod === "momo"}
+            value="MoMo"
+            checked={paymentMethod === "MoMo"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
           📱 Ví MoMo
@@ -102,8 +114,8 @@ export const BookingPayment = () => {
         <label>
           <input
             type="radio"
-            value="bankTransfer"
-            checked={paymentMethod === "bankTransfer"}
+            value="Chuyển khoản ngân hàng"
+            checked={paymentMethod === "Chuyển khoản ngân hàng"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
           🏦 Chuyển khoản ngân hàng

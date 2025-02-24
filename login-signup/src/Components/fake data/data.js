@@ -240,7 +240,7 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
-    pricePerSession: 500000,
+    
   },
   {
     id: 2,
@@ -254,7 +254,7 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
-    pricePerSession: 500000,
+    
   },
   {
     id: 3,
@@ -268,7 +268,7 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
-    pricePerSession: 500000,
+    
   },
   {
     id: 4,
@@ -282,7 +282,7 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
-    pricePerSession: 500000,
+    
   },
   {
     id: 5,
@@ -296,7 +296,7 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
-    pricePerSession: 500000,
+   
   },
   {
     id: 6,
@@ -310,6 +310,11 @@ export const experts = [
       "Thành viên Hiệp hội Tâm lý học Việt Nam",
       "Khóa đào tạo chuyên sâu về trị liệu hôn nhân - Hoa Kỳ"
     ],
-    pricePerSession: 500000,
+    
   }
+];
+export const servicePackages = [
+  { id: "basic", name: "Gói Cơ Bản",  sessionCount: 3, price: 500000 },
+  { id: "standard", name: "Gói Tiêu Chuẩn",  sessionCount: 5, price: 800000 },
+  { id: "premium", name: "Gói Cao Cấp",  sessionCount: 10, price: 1500000 },
 ];
