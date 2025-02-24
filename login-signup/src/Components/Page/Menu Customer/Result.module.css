@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #eceff1, #f5f5f5);
+  text-align: center;
+  padding: 20px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #37474f;
+  margin-bottom: 20px;
+}
+
+.message {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #455a64;
+  background: rgba(255, 255, 255, 0.4);
+  padding: 15px 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.8s ease-in-out;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.expertBtn {
+  margin-top: 30px;
+  padding: 14px 28px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #37474f;
+  background: #b0bec5;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 6px 12px rgba(176, 190, 197, 0.3);
+}
+
+.expertBtn:hover {
+  background: #90a4ae;
+  box-shadow: 0px 8px 16px rgba(144, 164, 174, 0.4);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -16,7 +16,7 @@ import { BlogDetail } from './Blog/BlogDetai';
 import { ExpertsList } from './Consultant/Expert';
 import { ExpertDetail } from './Consultant/ExpertDetail';
 import Profile from './Menu Customer/Profile';
-import { Test } from './Menu Customer/Test';
+import  Test  from './Menu Customer/Test';
 import Result from './Menu Customer/Result';
 import { MyBookings } from './Menu Customer/MyBooking';
 import { BookingPayment } from './Menu Customer/BookingPayment';
