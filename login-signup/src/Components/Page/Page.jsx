@@ -25,6 +25,7 @@ import { ChooseRole } from '../Common/ChooseRole';
 import { ExpertLogin } from './Menu Expert/ExpertLogin';
 import ExpertDashboard from './Menu Expert/ExpertDashboard';
 import ExpertRegister from './Menu Expert/ExpertRegister';
+import ExpertProfile from './Menu Expert/ExpertProfile';
 
 export const Page = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -51,7 +52,7 @@ export const Page = () => {
          {userRole === "expert" ? (
                 <ExpertHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
             ) : (
-                <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}  />
             )}
         <Routes>
           <Route exact path="/" element={<Home />} />
@@ -63,10 +64,11 @@ export const Page = () => {
           <Route exact path="/expert/:id" element={<ExpertDetail />} />
           <Route exact path="/login" element={<ChooseRole/>} />
           <Route exact path="/customer-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-          <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} />} />
+          <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole}/>} />
           <Route exact path="/expert-register" element={<ExpertRegister/>}/>
 
           <Route exact path='/expert-dashboard' element={<ExpertDashboard/>}/>
+          <Route path="expert-profile" element={<ExpertProfile/>}/>
 
 
           <Route exact path="/profile" element={<Profile />} />

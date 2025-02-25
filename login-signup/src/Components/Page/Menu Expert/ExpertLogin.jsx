@@ -1,28 +1,42 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../Menu Expert/ExpertLogin.module.css";
-import { Heading } from "../../Common/Heading"; // Import nếu chưa có
+import { Heading } from "../../Common/Heading"; 
 
-export const ExpertLogin = () => {
+export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Thêm state để hiển thị lỗi
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setError(""); // Xóa lỗi trước đó
+    setError("");
 
-    // Giả lập dữ liệu expert (thực tế bạn sẽ gọi API)
-    const mockExpert = { username: "expert", password: "123456" };
+    const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
 
-    if (username === mockExpert.username && password === mockExpert.password) {
-      localStorage.setItem("token", "expert-token"); // Lưu token
-      localStorage.setItem("userRole", "expert"); // Đánh dấu vai trò là Expert
-      navigate("/expert-dashboard"); // Chuyển đến Dashboard Expert
-      window.location.reload(); // Refresh trang để cập nhật header
+    if (!Array.isArray(storedExperts)) {
+      console.error("Dữ liệu trong localStorage không hợp lệ!");
+      setError("Lỗi hệ thống, vui lòng thử lại!");
+      return;
+    }
+
+    const expert = storedExperts.find(
+      (exp) => exp.username === username && exp.password === password
+    );
+
+    if (expert) {
+      localStorage.setItem("currentExpert", expert.username); // Lưu username đang đăng nhập
+      localStorage.setItem("token", "expert-token");
+      localStorage.setItem("userRole", "expert");
+
+      // Cập nhật state ngay lập tức
+      setIsLoggedIn(true);
+      setUserRole("expert");
+
+      navigate("/expert-dashboard");
     } else {
-      setError("Tên đăng nhập hoặc mật khẩu không đúng!"); // Hiển thị lỗi
+      setError("Tên đăng nhập hoặc mật khẩu không đúng!");
     }
   };
 

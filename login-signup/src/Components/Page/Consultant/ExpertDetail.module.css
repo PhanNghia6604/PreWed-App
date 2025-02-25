@@ -1,180 +1,241 @@
+/* ======= Container chính ======= */
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: #f4f4f9;
     padding: 20px;
+    background-color: #f4f6f9;
+    min-height: 100vh;
 }
 
+/* ======= Card chứa thông tin chuyên gia ======= */
 .card {
-    background: white;
+    background: #ffffff;
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
     width: 100%;
-    max-width: 600px;
     text-align: center;
-    animation: fadeIn 0.5s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* ======= Avatar chuyên gia ======= */
+.avatarContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
 }
 
 .avatar {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 15px;
-    border: 3px solid #007bff;
+    border: 4px solid #007bff;
+    transition: transform 0.3s ease-in-out;
 }
 
+.avatar:hover {
+    transform: scale(1.05);
+}
+
+.avatarPlaceholder {
+    width: 130px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ddd;
+    color: #666;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* ======= Tiêu đề & Nội dung ======= */
 h2 {
-    font-size: 24px;
-    margin-bottom: 5px;
+    color: #222;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 15px;
+    color: #555;
+    margin: 6px 0;
+    line-height: 1.5;
+}
+
+strong {
     color: #333;
 }
 
-.specialty {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 10px;
-}
-
-.experience {
-    font-weight: bold;
-    color: #007bff;
-    margin-bottom: 15px;
-}
-
-.description {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #444;
-    margin-bottom: 20px;
-}
-
+/* ======= Danh sách chứng chỉ ======= */
+/* ======= Danh sách chứng chỉ ======= */
 .certifications {
+    margin-top: 20px;
     text-align: left;
-    margin-top: 15px;
 }
 
 .certifications h3 {
-    font-size: 18px;
-    color: #007bff;
-    margin-bottom: 10px;
+    font-size: 16px;
+    color: #222;
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
 .certifications ul {
-    padding-left: 20px;
-    list-style: square;
-    color: #444;
+    list-style: none;
+    padding: 0;
+    color:#222;
 }
 
+.certifications li {
+    background: #ffffff; /* Đổi thành nền trắng để không bị che */
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    border-left: 4px solid #007bff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Thêm bóng nhẹ */
+}
+/* ======= Gói tư vấn ======= */
+.consultingPackages {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.consultingPackages h3 {
+    font-size: 16px;
+    color: #d35400;
+    font-weight: bold;
+}
+
+.consultingPackages ul {
+    list-style: none;
+    padding: 0;
+}
+
+.consultingPackages li {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    border-left: 4px solid #d35400;
+}
+
+/* ======= Nút đặt lịch ======= */
 .bookButton {
     background: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 12px 18px;
     font-size: 16px;
-    border-radius: 8px;
+    font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
-    margin-top: 15px;
+    border-radius: 6px;
+    margin-top: 20px;
+    transition: background 0.3s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
 }
 
 .bookButton:hover {
     background: #0056b3;
 }
 
-/* Form đặt lịch */
+/* ======= Form đặt lịch ======= */
 .bookingForm {
-    background: #fff;
-    border: 1px solid #ddd;
+    background: #fff5e1;
     padding: 20px;
-    border-radius: 8px;
     margin-top: 20px;
-    animation: fadeIn 0.3s ease-in-out;
+    border-radius: 8px;
     text-align: left;
+    box-shadow: 0 2px 8px rgba(211, 84, 0, 0.2);
 }
 
 .bookingForm h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
+    font-size: 16px;
+    color: #d35400;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .bookingForm label {
     display: block;
+    margin-top: 12px;
     font-size: 14px;
-    margin: 10px 0 5px;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .bookingForm input,
 .bookingForm select {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
+    margin-top: 5px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 14px;
-    margin-bottom: 10px;
 }
 
 .bookingForm button {
-    width: 100%;
     background: #28a745;
     color: white;
-    padding: 10px;
     border: none;
-    border-radius: 8px;
+    padding: 12px;
+    margin-top: 15px;
     cursor: pointer;
-    transition: 0.3s;
+    border-radius: 6px;
+    width: 100%;
     font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
 }
 
 .bookingForm button:hover {
     background: #218838;
 }
 
-/* Chỉnh dropdown có icon đẹp hơn */
-.bookingForm select {
-    appearance: none;
-    background: white;
-    padding-right: 30px;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23007bff'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px;
-    cursor: pointer;
-}
-
-.bookingForm select:hover {
-    border-color: #007bff;
-}
-
-.bookingForm select:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-/* Hiển thị ngày kết thúc */
-.endDateDisplay {
-    font-size: 16px;
-    font-weight: bold;
-    color: #d9534f;
-    background: #f8d7da;
-    padding: 8px 12px;
-    border-radius: 5px;
-    display: inline-block;
-    margin-top: 10px;
-}
-
-/* Responsive */
+/* ======= Responsive cho Mobile ======= */
 @media (max-width: 600px) {
     .card {
+        max-width: 90%;
         padding: 20px;
+    }
+
+    .avatar {
+        width: 110px;
+        height: 110px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    .bookButton {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .bookingForm input,
+    .bookingForm select {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .bookingForm button {
+        font-size: 14px;
+        padding: 10px;
     }
 }

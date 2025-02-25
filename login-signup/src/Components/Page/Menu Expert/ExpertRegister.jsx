@@ -35,26 +35,47 @@ const ExpertRegister = () => {
     const updatedCertificates = formData.certificates.filter((_, i) => i !== index);
     setFormData({ ...formData, certificates: updatedCertificates });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Thông tin đăng ký:", formData);
-  
-    // Lưu vào Local Storage
-    localStorage.setItem("expertProfile", JSON.stringify(formData));
-  
-    setMessage("Đăng ký thành công!");
+
+    // Lấy danh sách chuyên gia hiện có từ localStorage
+    const existingExperts = JSON.parse(localStorage.getItem("experts")) || [];
+
+    // Kiểm tra dữ liệu có hợp lệ không
+    if (!Array.isArray(existingExperts)) {
+        console.error("Dữ liệu trong localStorage không hợp lệ!");
+        localStorage.setItem("experts", JSON.stringify([])); // Reset về mảng rỗng
+        return;
+    }
+
+    // Thêm chuyên gia mới với id duy nhất
+    
+    const newId = existingExperts.length + 1; // ID là số thứ tự
+    
+    const newExpert = {
+        id: newId, 
+        ...formData,
+    };
+    
+    const updatedExperts = [...existingExperts, newExpert];
+    localStorage.setItem("experts", JSON.stringify(updatedExperts));
+
+    console.log("Thông tin đăng ký:", newExpert);
+    setMessage("Đăng ký thành công (Dữ liệu đã được lưu vào localStorage)");
+
+    // Reset form
     setFormData({
-      username: "",
-      password: "",
-      name: "",
-      phone: "",
-      address: "",
-      email: "",
-      specialty: "",
-      certificates: [""],
+        username: "",
+        password: "",
+        name: "",
+        phone: "",
+        address: "",
+        email: "",
+        specialty: "",
+        certificates: [""],
     });
-  };
+};
+
   return (
     <div className={styles["register-container"]}>
       <h2>Đăng ký chuyên gia</h2>
@@ -82,23 +103,22 @@ const ExpertRegister = () => {
         <input type="text" name="specialty" value={formData.specialty} onChange={handleChange} required />
 
         <label>Chứng chỉ:</label>
-        {formData.certificates.map((certificate, index) => (
-          <div key={index} className={styles["certificate-group"]}>
-            <input
-              type="text"
-              name="certificates"
-              value={certificate}
-              onChange={(e) => handleChange(e, index)}
-              required
-            />
-            {index > 0 && (
-              <button type="button" onClick={() => handleRemoveCertificate(index)} className={styles["remove-btn"]}>
-                Xóa
-              </button>
-            )}
-          </div>
-        ))}
-
+        {Array.isArray(formData.certificates) && formData.certificates.map((certificate, index) => (
+  <div key={index} className={styles["certificate-group"]}>
+    <input
+      type="text"
+      name="certificates"
+      value={certificate}
+      onChange={(e) => handleChange(e, index)}
+      required
+    />
+    {index > 0 && (
+      <button type="button" onClick={() => handleRemoveCertificate(index)} className={styles["remove-btn"]}>
+        Xóa
+      </button>
+    )}
+  </div>
+))}
         <button type="button" onClick={handleAddCertificate} className={styles["add-btn"]}>+ Thêm chứng chỉ</button>
 
         <button type="submit">Đăng ký</button>
