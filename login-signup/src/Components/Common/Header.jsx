@@ -16,7 +16,8 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
         localStorage.removeItem("user"); 
         localStorage.removeItem("userRole");
         localStorage.removeItem("expertData"); 
-        localStorage.removeItem("bookings");
+        // Xóa bookings_id sau khi logout
+        localStorage.removeItem("bookings_id");
         
         setIsLoggedIn(false);
         setAnchorEl(null); 
