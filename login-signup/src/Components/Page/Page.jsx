@@ -23,6 +23,8 @@ import { MyBookings } from './Menu Customer/MyBooking';
 import { BookingPayment } from './Menu Customer/BookingPayment';
 import { ChooseRole } from '../Common/ChooseRole';
 import { ExpertLogin } from './Menu Expert/ExpertLogin';
+import ExpertDashboard from './Menu Expert/ExpertDashboard';
+import ExpertRegister from './Menu Expert/ExpertRegister';
 
 export const Page = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -62,6 +64,9 @@ export const Page = () => {
           <Route exact path="/login" element={<ChooseRole/>} />
           <Route exact path="/customer-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} />} />
+          <Route exact path="/expert-register" element={<ExpertRegister/>}/>
+
+          <Route exact path='/expert-dashboard' element={<ExpertDashboard/>}/>
 
 
           <Route exact path="/profile" element={<Profile />} />

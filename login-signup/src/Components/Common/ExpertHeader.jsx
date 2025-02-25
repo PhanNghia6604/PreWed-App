@@ -11,15 +11,16 @@ export const ExpertHeader = ({ isLoggedIn, setIsLoggedIn }) => {
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("expertData");
-        localStorage.removeItem("userRole"); // Xóa userRole khỏi localStorage
+        localStorage.removeItem("userRole");
         setIsLoggedIn(false);
-    
-        // Reload lại toàn bộ trang để cập nhật Header đúng
+        setAnchorEl(null); // Đóng menu trước khi điều hướng
+
+        // Chuyển hướng về trang chủ và reload toàn bộ ứng dụng
         setTimeout(() => {
             window.location.href = "/";
         }, 100);
     };
-    
+    console.log(anchorEl)
 
     return (
         <header className={styles.header}>
@@ -37,27 +38,30 @@ export const ExpertHeader = ({ isLoggedIn, setIsLoggedIn }) => {
                     {isLoggedIn && (
                         <>
                             <IconButton
-                                onClick={(e) => setAnchorEl(e.currentTarget)}
+                                onClick={(e) => {
+                                    e.stopPropagation(); // Ngăn chặn sự kiện click gây lỗi
+                                    setAnchorEl(e.currentTarget);
+                                }}
                                 className={styles["menu-icon"]}
                             >
                                 <AccountCircle fontSize="large" />
                             </IconButton>
                             <Menu
-                                anchorEl={anchorEl}
-                                open={Boolean(anchorEl)}
-                                onClose={() => setAnchorEl(null)}
-                                className={styles.menu}
+                              anchorEl={anchorEl}
+                              open={Boolean(anchorEl)}
+                              onClose={() => setAnchorEl(null)}
+                              keepMounted // Giữ lại menu trong DOM để tránh lỗi render
                             >
-                                <MenuItem 
-                                    onClick={() => { 
+                                <MenuItem
+                                    onClick={() => {
                                         navigate("/expert-profile");
-                                        setAnchorEl(null); 
+                                        setAnchorEl(null);
                                     }}
                                     className={styles["menu-item"]}
                                 >
                                     Hồ sơ
                                 </MenuItem>
-                                <MenuItem 
+                                <MenuItem
                                     onClick={handleLogout}
                                     className={styles["menu-item"]}
                                 >
