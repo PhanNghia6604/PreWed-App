@@ -14,9 +14,10 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user"); 
+        localStorage.removeItem("userRole");
         localStorage.removeItem("expertData"); 
         localStorage.removeItem("bookings");
-    
+        
         setIsLoggedIn(false);
         setAnchorEl(null); 
     

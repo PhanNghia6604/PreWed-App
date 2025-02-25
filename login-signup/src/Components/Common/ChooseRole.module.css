@@ -1,0 +1,51 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #121212; /* Nền đen */
+    color: yellow; /* Chữ màu trắng */
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: yellow; /* Màu trắng hơi xám để dịu mắt */
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 30px;
+}
+
+.button {
+    padding: 18px 40px; /* Nút to hơn */
+    font-size: 22px; /* Chữ lớn hơn */
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+}
+
+.customer {
+    background-color: #007bff;
+    color: white;
+}
+
+.customer:hover {
+    background-color: #3391ff;
+    transform: scale(1.07);
+}
+
+.expert {
+    background-color: #28a745;
+    color: white;
+}
+
+.expert:hover {
+    background-color: #3ddc84;
+    transform: scale(1.07);
+}

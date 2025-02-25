@@ -58,7 +58,7 @@ export const Login = ({ setIsLoggedIn }) => {
   return (
     <section className={styles.login}>
       <div className={styles.container}>
-        <Heading title="Login" />
+        <Heading title="Customer Login" />
         {error && <div className={styles["error-box"]}>{error}</div>}
         {message && <div className={styles["message-box"]}>{message}</div>} {/* Display message */}
         <div className={styles.content}>
