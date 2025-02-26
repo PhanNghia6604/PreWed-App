@@ -39,12 +39,16 @@ public class Filter extends OncePerRequestFilter {
             "/swagger-resources/**",
             "/api/login",
             "/api/get",
-            "/api/register",
-            "/api/feedback"
+            "/api/register"
     );
 
-    boolean isPermitted(String uri){
+    boolean isPermitted(HttpServletRequest request){
         AntPathMatcher pathMatcher = new AntPathMatcher();
+        String uri = request.getRequestURI();
+        String method = request.getMethod();
+        if(method.equals("GET") && pathMatcher.match("", uri)){
+            return true;
+        }
         return PUBLIC_API.stream().anyMatch(item -> pathMatcher.match(item, uri));
     }
 
@@ -55,7 +59,7 @@ public class Filter extends OncePerRequestFilter {
         //check trước khi cho truy cập
 
         String uri = request.getRequestURI();
-        if(isPermitted(uri)){
+        if(isPermitted(request)){
             //public API
             filterChain.doFilter(request,response);
         }else{

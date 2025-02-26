@@ -15,10 +15,10 @@ public class FeedbackService {
         Feedback newFeedback = feedbackRepository.save(feedback);
         return newFeedback;
     }
-    public List<Feedback> getAllServicePackage(){
+    public List<Feedback> getAllFeedback(){
         return feedbackRepository.findFeedbacksByIsDeletedFalse();
     }
-    public Feedback getServicesPackageById(long id){
+    public Feedback getFeedbackById(long id){
         return feedbackRepository.findFeedbackById(id);
     }
     public Feedback delete(long id){

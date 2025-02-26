@@ -143,4 +143,16 @@ public class User implements UserDetails {
     public void setRoleEnum(RoleEnum roleEnum) {
         this.roleEnum = roleEnum;
     }
+
+    public User(long id, String name, String password, String phone, String address, String email, String username, boolean isDeleted, RoleEnum roleEnum) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.phone = phone;
+        this.address = address;
+        this.email = email;
+        this.username = username;
+        this.isDeleted = isDeleted;
+        this.roleEnum = roleEnum;
+    }
 }
