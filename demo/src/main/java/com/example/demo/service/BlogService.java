@@ -1,18 +1,21 @@
 package com.example.demo.service;
 
-
 import com.example.demo.entity.Blog;
 import com.example.demo.entity.User;
 import com.example.demo.entity.request.BlogRequest;
 import com.example.demo.entity.response.BlogResponse;
 import com.example.demo.repository.BlogRepository;
 import com.example.demo.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,16 +27,22 @@ public class BlogService {
     @Autowired
     private UserRepository userRepository;
 
+    // Đường dẫn thư mục lưu trữ ảnh
+    private static final String UPLOAD_DIR = "C:/Users/phamg/Downloads/PreWed-App-main (1)/PreWed-App-main/uploads/";
+    // Lưu trữ ảnh trong thư mục uploads tại thư mục gốc của dự án
+
+
     /**
      * Tạo blog mới
      */
-    @Transactional // ✅ Đảm bảo transaction không rollback
     public BlogResponse createBlog(BlogRequest request) {
         System.out.println("Nhận request: " + request); // 🟢 In ra để kiểm tra request có đến không
 
+        // Tìm tác giả từ ID
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new RuntimeException("Author not found!"));
 
+        // Tạo mới đối tượng Blog và thiết lập thông tin
         Blog blog = new Blog();
         blog.setTitle(request.getTitle());
         blog.setContent(request.getContent());
@@ -41,19 +50,45 @@ public class BlogService {
         blog.setCreatedAt(LocalDateTime.now());
         blog.setDeleted(false);
 
-        // 🟢 Lưu vào database
+        // Xử lý ảnh tải lên nếu có
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            String imagePath = saveImage(request.getImage());  // Lưu ảnh và lấy đường dẫn
+            blog.setImagePath(imagePath);  // Lưu đường dẫn ảnh vào blog
+        }
+
+        // Lưu vào database
         Blog savedBlog = blogRepository.save(blog);
         System.out.println("Blog đã lưu: " + savedBlog); // 🟢 Kiểm tra log khi blog được lưu
 
+        // Trả về thông tin blog đã lưu
         return new BlogResponse(
                 savedBlog.getId(),
                 savedBlog.getTitle(),
                 savedBlog.getContent(),
                 savedBlog.getAuthor().getName(),
-                savedBlog.getCreatedAt()
+                savedBlog.getCreatedAt(),
+                savedBlog.getImagePath()  // Trả về đường dẫn ảnh
         );
     }
 
+    /**
+     * Lưu ảnh vào thư mục và trả về đường dẫn ảnh
+     */
+    // Sửa lại đường dẫn trả về thành URL truy cập từ frontend
+    private String saveImage(MultipartFile image) {
+        try {
+            Path path = Paths.get(UPLOAD_DIR + image.getOriginalFilename());
+            Files.createDirectories(path.getParent());  // Tạo thư mục nếu chưa có
+            image.transferTo(path.toFile());
+
+            // Chuyển đường dẫn file thành URL truy cập
+            String url = "http://localhost:8080/uploads/" + image.getOriginalFilename();
+            return url;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Could not save the image.");
+        }
+    }
 
 
     /**
@@ -62,17 +97,16 @@ public class BlogService {
     public List<BlogResponse> getAllBlogs() {
         List<Blog> blogs = blogRepository.findByIsDeletedFalse();
 
-        return blogs.stream().map(blog -> {
-            BlogResponse response = new BlogResponse();
-            response.setId(blog.getId());
-            response.setTitle(blog.getTitle());
-            response.setContent(blog.getContent());
-            response.setAuthorName(blog.getAuthor().getName());
-            response.setCreatedAt(blog.getCreatedAt());
-            return response;
-        }).collect(Collectors.toList());
+        // Chuyển đổi từ Blog entity sang BlogResponse DTO
+        return blogs.stream().map(blog -> new BlogResponse(
+                blog.getId(),
+                blog.getTitle(),
+                blog.getContent(),
+                blog.getAuthor().getName(),
+                blog.getCreatedAt(),
+                blog.getImagePath()  // Trả về đường dẫn ảnh nếu có
+        )).collect(Collectors.toList());
     }
-
 
     /**
      * Lấy thông tin chi tiết blog theo ID
@@ -80,32 +114,39 @@ public class BlogService {
     public BlogResponse getBlogById(Long id) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
+
+        // Chuyển Blog entity sang BlogResponse DTO
         return mapToResponse(blog);
     }
 
     /**
      * Cập nhật blog theo ID
      */
-    public BlogResponse updateBlog(Long id, BlogRequest request) {
+    public BlogResponse updateBlog(Long id, String title, String content, MultipartFile image) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
-        blog.setTitle(request.getTitle());
-        blog.setContent(request.getContent());
+        blog.setTitle(title);
+        blog.setContent(content);
+
+        // Kiểm tra và cập nhật ảnh nếu có
+        if (image != null && !image.isEmpty()) {
+            String imagePath = saveImage(image);
+            blog.setImagePath(imagePath);  // Cập nhật đường dẫn ảnh
+        }
 
         Blog updatedBlog = blogRepository.save(blog);
 
-        // Tạo BlogResponse trực tiếp
-        BlogResponse response = new BlogResponse();
-        response.setId(updatedBlog.getId());
-        response.setTitle(updatedBlog.getTitle());
-        response.setContent(updatedBlog.getContent());
-        response.setAuthorName(updatedBlog.getAuthor().getName());
-        response.setCreatedAt(updatedBlog.getCreatedAt());
-
-        return response;
+        // Trả về BlogResponse với thông tin cập nhật
+        return new BlogResponse(
+                updatedBlog.getId(),
+                updatedBlog.getTitle(),
+                updatedBlog.getContent(),
+                updatedBlog.getAuthor().getName(),
+                updatedBlog.getCreatedAt(),
+                updatedBlog.getImagePath()  // Trả về đường dẫn ảnh
+        );
     }
-
 
     /**
      * Xóa blog (xóa mềm, không xóa vĩnh viễn)
@@ -117,16 +158,15 @@ public class BlogService {
         blog.setDeleted(true);
         Blog deletedBlog = blogRepository.save(blog);
 
-        BlogResponse response = new BlogResponse();
-        response.setId(deletedBlog.getId());
-        response.setTitle(deletedBlog.getTitle());
-        response.setContent(deletedBlog.getContent());
-        response.setAuthorName(deletedBlog.getAuthor().getName());
-        response.setCreatedAt(deletedBlog.getCreatedAt());
-
-        return response; // ✅ Trả về thông tin Blog đã xóa
+        return new BlogResponse(
+                deletedBlog.getId(),
+                deletedBlog.getTitle(),
+                deletedBlog.getContent(),
+                deletedBlog.getAuthor().getName(),
+                deletedBlog.getCreatedAt(),
+                deletedBlog.getImagePath()  // Trả về đường dẫn ảnh nếu có
+        );
     }
-
 
     /**
      * Khôi phục blog đã bị xóa
@@ -141,6 +181,7 @@ public class BlogService {
 
         blog.setDeleted(false);
         Blog restoredBlog = blogRepository.save(blog);
+
         return mapToResponse(restoredBlog);
     }
 
@@ -148,12 +189,13 @@ public class BlogService {
      * Chuyển Blog Entity -> BlogResponse DTO
      */
     private BlogResponse mapToResponse(Blog blog) {
-        BlogResponse response = new BlogResponse();
-        response.setId(blog.getId());
-        response.setTitle(blog.getTitle());
-        response.setContent(blog.getContent());
-        response.setAuthorName(blog.getAuthor().getName()); // Lấy tên tác giả
-        response.setCreatedAt(blog.getCreatedAt());
-        return response;
+        return new BlogResponse(
+                blog.getId(),
+                blog.getTitle(),
+                blog.getContent(),
+                blog.getAuthor().getName(),
+                blog.getCreatedAt(),
+                blog.getImagePath()  // Trả về đường dẫn ảnh
+        );
     }
 }

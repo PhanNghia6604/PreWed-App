@@ -18,7 +18,8 @@ public class Blog {
     @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
     private User author;
 
-
     private LocalDateTime createdAt = LocalDateTime.now();
     private boolean isDeleted = false;
+
+    private String imagePath; // Lưu đường dẫn ảnh
 }

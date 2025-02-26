@@ -1,16 +1,19 @@
 package com.example.demo.api;
 
-
 import com.example.demo.entity.request.BlogRequest;
 import com.example.demo.entity.response.BlogResponse;
 import com.example.demo.service.BlogService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,12 +26,13 @@ public class BlogAPI {
     private BlogService blogService;
 
     @PostMapping
-    public ResponseEntity<BlogResponse> createBlog(@RequestBody BlogRequest request) {
-        System.out.println("🔵 API nhận request: " + request); // 🟢 Log kiểm tra request có đến API không
+    @Operation(summary = "Tạo blog mới", description = "Tạo blog mới với tiêu đề, nội dung và ảnh",
+            requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data",
+                    schema = @Schema(implementation = BlogRequest.class))))
+    public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogRequest request) {
 
+        // Gọi phương thức tạo blog trong service
         BlogResponse blogResponse = blogService.createBlog(request);
-        System.out.println("🟢 API trả response: " + blogResponse); // 🟢 Kiểm tra response có bị null không
-
         return ResponseEntity.ok(blogResponse);
     }
 
@@ -47,7 +51,7 @@ public class BlogAPI {
     @PutMapping("/{id}")
     @Operation(summary = "Cập nhật blog", description = "Cập nhật tiêu đề, nội dung của blog")
     public ResponseEntity<BlogResponse> updateBlog(@PathVariable Long id, @RequestBody BlogRequest request) {
-        return ResponseEntity.ok(blogService.updateBlog(id, request));
+        return ResponseEntity.ok(blogService.updateBlog(id, request.getTitle(), request.getContent(), request.getImage()));
     }
 
     @DeleteMapping("/{id}")
