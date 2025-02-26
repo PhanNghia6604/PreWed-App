@@ -12,17 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SecurityScheme(name = "api", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 @OpenAPIDefinition(info = @Info(title = "Pre-Marriage API", version = "1.0", description = "API"))
 public class PreMarriageApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(PreMarriageApplication.class, args);
 	}
-
-	// RESTFUL API
-	// METHOD
-	/*
-	* GET :  lấy dữ liệu
-	* POST : create new
-	* PUT: update thằng đã tồn tại
-	* DELETE: xóa 1 thằng đã tồn tại
-	* */
 }

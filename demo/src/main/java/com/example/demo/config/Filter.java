@@ -20,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
-import java.security.SignatureException;
 import java.util.List;
 
 @Component
@@ -42,55 +41,97 @@ public class Filter extends OncePerRequestFilter {
             "/api/register"
     );
 
-    boolean isPermitted(HttpServletRequest request){
+    boolean isPermitted(String uri){
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        String uri = request.getRequestURI();
-        String method = request.getMethod();
-        if(method.equals("GET") && pathMatcher.match("", uri)){
-            return true;
-        }
         return PUBLIC_API.stream().anyMatch(item -> pathMatcher.match(item, uri));
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // filterChain.doFilter(request,response); // cho phép truy cập vào controller
-
-        //check trước khi cho truy cập
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
         String uri = request.getRequestURI();
-        if(isPermitted(request)){
-            //public API
-            filterChain.doFilter(request,response);
-        }else{
-            //không phải là public API => check role
+        if (isPermitted(uri)) {
+            // Các API công khai
+            filterChain.doFilter(request, response);
+        } else {
+            // API cần xác thực
             String token = getToken(request);
 
-            if(token == null){
-                // chưa đăng nhập => quăng lỗi
-                resolver.resolveException(request, response, null, new AuthorizeException("Authentication token is missing"));
-            }
-            User user = null;
-            try{
-                user = tokenService.getAccountByToken(token);
-            }catch (MalformedJwtException malformedJwtException){
-                resolver.resolveException(request, response, null, new AuthorizeException("Authentication token is invalid"));
-            }catch (ExpiredJwtException expiredJwtException){
-                resolver.resolveException(request, response, null, new AuthorizeException("Authentication token is expired"));
-            }catch (Exception exception){
-                resolver.resolveException(request, response, null, new AuthorizeException("Authentication token is invalid"));
+            if (token == null) {
+                // Chưa đăng nhập => quăng lỗi
+                resolver.resolveException(
+                        request,
+                        response,
+                        null,
+                        new AuthorizeException("Authentication token is missing")
+                );
+                return; // Dừng tại đây
             }
 
-            // => token chuẩn
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, token, user.getAuthorities());
+            User user = null;
+            try {
+                user = tokenService.getAccountByToken(token);
+            } catch (MalformedJwtException e) {
+                resolver.resolveException(
+                        request,
+                        response,
+                        null,
+                        new AuthorizeException("Authentication token is invalid")
+                );
+                return;
+            } catch (ExpiredJwtException e) {
+                resolver.resolveException(
+                        request,
+                        response,
+                        null,
+                        new AuthorizeException("Authentication token is expired")
+                );
+                return;
+            } catch (Exception e) {
+                resolver.resolveException(
+                        request,
+                        response,
+                        null,
+                        new AuthorizeException("Authentication token is invalid")
+                );
+                return;
+            }
+
+            // Kiểm tra user có null không
+            if (user == null) {
+                // Không tìm thấy user => Quăng lỗi
+                resolver.resolveException(
+                        request,
+                        response,
+                        null,
+                        new AuthorizeException("User not found for token")
+                );
+                return;
+            }
+
+            // => user != null, token chuẩn => Tạo authentication
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            user,
+                            token,
+                            user.getAuthorities()  // Gọi an toàn vì user != null
+                    );
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            // Đặt vào SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authToken);
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
         }
     }
+
     String getToken(HttpServletRequest request){
-        String token = request.getHeader("Authorization");
-        if(token == null) return null;
-        return token.substring(7);
+        String header = request.getHeader("Authorization");
+        if(header == null || !header.startsWith("Bearer ")) {
+            return null;
+        }
+        return header.substring(7);
     }
 }
