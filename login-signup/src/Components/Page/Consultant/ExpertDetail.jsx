@@ -38,20 +38,29 @@ export const ExpertDetail = () => {
       alert("Vui lòng chọn ngày bắt đầu và gói dịch vụ!");
       return;
     }
+  
+    const userBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
+    
+    // Lấy ID cao nhất hiện có
+    const lastId = userBookings.length > 0 ? Math.max(...userBookings.map(b => b.id)) : 0;
+    const newId = lastId + 1; // ID mới = ID lớn nhất + 1
+  
     const booking = {
-      id: new Date().getTime(),
+      id: newId, // ID tự tăng
       expertId: id,
       expertName: expert.name,
       date,
       packageName: selectedPackage,
       status: "Chờ thanh toán",
     };
-    const userBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
+  
+    // Lưu vào localStorage
     localStorage.setItem(`bookings_${user.id}`, JSON.stringify([...userBookings, booking]));
     setShowForm(false);
     alert("Đặt lịch thành công!");
     navigate("/my-booking");
   };
+  
 
   return (
     <div className={style.container}>

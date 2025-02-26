@@ -73,7 +73,7 @@ export const Page = () => {
 
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path="/my-booking" element={<MyBookings />} />
-          <Route exact path="/booking-payment/:expertId/:date/:calculatedEndDate/:sessionCount" element={<BookingPayment />} />
+          <Route exact path="/booking-payment/:expertId/:bookingId" element={<BookingPayment />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/test" element={<Test />} />
           <Route exact path="/result" element={<Result />} />
