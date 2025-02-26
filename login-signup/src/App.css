@@ -426,3 +426,13 @@ footer i {
 .logo:hover {
   color: #FFC300; /* Màu vàng đậm hơn khi hover */
 }
+
+/* CÔNTACT PAGE*/
+.contact button{
+  background:#aaacae ;
+}
+
+.contact button:hover{
+  background-color:#676767 ;
+}
+

@@ -1,94 +1,64 @@
 .container {
-  text-align: center;
-  padding: 2rem;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-}
-
-.gridContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.topicCard {
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 10px;
   text-align: center;
-  padding: 1rem;
-}
-
-.topicCard:hover {
-  transform: scale(1.05);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.topicImage {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.topicName {
-  margin-top: 0.5rem;
-  font-weight: 500;
   color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
 .testSection {
-  text-align: center;
-}
-
-.testTitle {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .questionBox {
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 10px;
-  margin: 1rem auto;
-  width: 80%;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .questionText {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .options {
   display: flex;
-  justify-content: space-around;
-  margin-top: 0.5rem;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .option {
-  cursor: pointer;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #555;
 }
 
 .submitBtn {
-  margin-top: 1.5rem;
-  padding: 0.8rem 1.5rem;
-  background: #ffcc00;
+  margin-top: 20px;
+  padding: 10px;
+  background: #868484;
+  color: white;
   border: none;
-  border-radius: 20px;
-  font-size: 1rem;
-  font-weight: bold;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s;
+  font-size: 16px;
+  text-align: center;
 }
 
 .submitBtn:hover {
-  background: #ffb700;
+  background: #000000;
 }

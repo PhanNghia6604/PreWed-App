@@ -5,7 +5,7 @@ import styles from "./Result.module.css";
 const Result = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const status = location.state?.status || "Tình trạng của bạn có vẻ không ổn. CChúng tôi khuyến khích bạn nên chọn chuyên gia tư vấn về vấn đề của mình !"; 
+  const status = location.state?.status || "Tình trạng của bạn có vẻ không ổn. Chúng tôi khuyến khích bạn nên chọn chuyên gia tư vấn về vấn đề của mình !"; 
 
   return (
     <div className={styles.container}>
@@ -14,7 +14,7 @@ const Result = () => {
         <h2>{status}</h2>
       </div>
       <button className={styles.expertBtn} onClick={() => navigate("/expert")}>
-        Choose an Expert
+        Chọn chuyên gia tư vấn
       </button>
     </div>
   );

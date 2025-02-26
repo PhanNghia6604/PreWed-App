@@ -90,7 +90,7 @@ export const ExpertDetail = () => {
           </ul>
         </div>
 
-        <h3>Các gói tư vấn:</h3>
+        <h3 class="h">Các gói tư vấn:</h3>
         <ul>
           {expert.consultingPrices.length > 0 ? (
             expert.consultingPrices.map((pkg, index) => <li key={index}>{pkg}</li>)
@@ -99,16 +99,16 @@ export const ExpertDetail = () => {
           )}
         </ul>
 
-        {user ? <p>Xin chào, {user.name}!</p> : <p>Bạn chưa đăng nhập.</p>}
+       
 
         <button className={style.bookButton} onClick={handleBooking}>Đặt lịch tư vấn</button>
 
         {showForm && (
           <div className={style.bookingForm}>
             <h3>Đặt lịch tư vấn với {expert.name}</h3>
-            <label>Ngày bắt đầu</label>
+            <label class="lable">Ngày bắt đầu</label>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-            <label>Chọn gói dịch vụ:</label>
+            <label class="lable">Chọn gói dịch vụ:</label>
             <select value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)}>
               {expert.consultingPrices.map((pkg, index) => (
                 <option key={index} value={pkg}>{pkg}</option>

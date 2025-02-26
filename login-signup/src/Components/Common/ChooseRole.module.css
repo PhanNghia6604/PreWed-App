@@ -4,48 +4,54 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #121212; /* Nền đen */
-    color: yellow; /* Chữ màu trắng */
+    background-color: #1a1a1a; /* Nền xám đậm */
+    color: #e0e0e0; /* Chữ màu xám nhạt */
+    font-family: 'Poppins', sans-serif; /* Font hiện đại */
 }
 
 .title {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 30px;
-    color: yellow; /* Màu trắng hơi xám để dịu mắt */
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .buttonGroup {
     display: flex;
-    gap: 30px;
+    gap: 25px;
 }
 
 .button {
-    padding: 18px 40px; /* Nút to hơn */
-    font-size: 22px; /* Chữ lớn hơn */
-    font-weight: bold;
+    padding: 16px 40px;
+    font-size: 20px;
+    font-weight: 600;
     border: none;
-    border-radius: 12px;
+    border-radius: 30px; /* Bo tròn hơn để trông hiện đại */
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out, transform 0.2s;
-}
-
-.customer {
-    background-color: #007bff;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 200px; /* Đảm bảo kích thước đồng đều */
+    background: linear-gradient(135deg, #5a5a5a, #9e9e9e);
     color: white;
+    position: relative;
+    overflow: hidden;
 }
 
-.customer:hover {
-    background-color: #3391ff;
-    transform: scale(1.07);
+/* Hiệu ứng hover cho cả hai nút */
+.button:hover {
+    background: linear-gradient(135deg, #787878, #b3b3b3);
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.2);
 }
 
-.expert {
-    background-color: #28a745;
-    color: white;
-}
-
-.expert:hover {
-    background-color: #3ddc84;
-    transform: scale(1.07);
+/* Hiệu ứng bấm */
+.button:active {
+    transform: scale(0.95);
+    box-shadow: none;
 }
