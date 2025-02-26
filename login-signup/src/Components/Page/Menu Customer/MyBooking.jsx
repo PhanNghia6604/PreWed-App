@@ -36,7 +36,7 @@ export const MyBookings = () => {
     // Encode endDate để tránh lỗi URL
     const encodedEndDate = encodeURIComponent(booking.endDate);
   
-    navigate(`/booking-payment/${booking.expertId}/${booking.date}/${encodedEndDate}/${booking.sessionCount}`);
+    navigate(`/booking-payment/${booking.expertId}/${booking.id}`);
   };
   
   
@@ -63,7 +63,7 @@ export const MyBookings = () => {
                     <div className={style.bookingInfo}>
                       <strong className={style.expertName}>{expert.fullName}</strong>
                       <p className={style.specialty}>🛠 {expert.specialty}</p>
-                      <p className={style.dateTime}>📅 Ngày bắt đầu: {b.date} | 🕒 Ngày kết thúc: {b.endDate}</p>
+                      <p className={style.dateTime}>📅 Ngày bắt đầu: {b.date} | Gói dịch vụ: {b.packageName}</p>
                       <p className={style.status}>📌 Trạng thái: <strong>{b.status}</strong></p>
                     </div>
 
