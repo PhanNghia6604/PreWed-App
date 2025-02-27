@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./MyBookings.module.css";
-import { experts } from "../../fake data/data";
 
 export const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -48,16 +47,16 @@ export const MyBookings = () => {
       ) : (
         <ul className={style.bookingList}>
           {bookings.map((b, index) => {
-             const experts = JSON.parse(localStorage.getItem("experts")) || [];
+            const experts = JSON.parse(localStorage.getItem("experts")) || [];
             const expert = experts.find(e => e.id === Number(b.expertId));
 
             return (
               <li key={index} className={style.bookingItem}>
                 {expert ? (
                   <>
-                    <img src={expert.avatar} alt={expert.fullName} className={style.expertAvatar} />
+                    <img src={expert.avatar} alt={expert.name} className={style.expertAvatar} />
                     <div className={style.bookingInfo}>
-                      <strong className={style.expertName}>{expert.fullName}</strong>
+                      <strong className={style.expertName}>{expert.name}</strong>
                       <p className={style.specialty}>🛠 {expert.specialty}</p>
                       <p className={style.dateTime}>📅 Ngày bắt đầu: {b.date} | Gói dịch vụ: {b.packageName}</p>
                       <p className={style.status}>📌 Trạng thái: <strong>{b.status}</strong></p>
