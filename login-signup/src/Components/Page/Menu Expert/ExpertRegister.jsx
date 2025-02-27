@@ -61,7 +61,7 @@ const ExpertRegister = () => {
     localStorage.setItem("experts", JSON.stringify(updatedExperts));
 
     console.log("Thông tin đăng ký:", newExpert);
-    setMessage("Đăng ký thành công (Dữ liệu đã được lưu vào localStorage)");
+    setMessage("Đăng ký thành công ");
 
     // Reset form
     setFormData({

@@ -10,12 +10,12 @@ export const ExpertsList = () => {
   useEffect(() => {
     const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
     setList(storedExperts);
-    setSpecialties(["all", ...new Set(storedExperts.map((expert) => expert.specialty))]);
+    setSpecialties(["Tất cả chuyên môn", ...new Set(storedExperts.map((expert) => expert.specialty))]);
   }, []);
 
   const filterExperts = (specialty) => {
     const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
-    if (specialty === "all") {
+    if (specialty === "Tất cả chuyên môn") {
       setList(storedExperts);
       return;
     }
