@@ -41,27 +41,42 @@ export const ExpertDetail = () => {
     }
   
     const userBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
-    
+  
     const lastId = userBookings.length > 0 ? Math.max(...userBookings.map(b => b.id)) : 0;
     const newId = lastId + 1;
+  
+    // Chuyển đổi ngày thành thứ
+    const daysMap = {
+      "Monday": "Thứ 2",
+      "Tuesday": "Thứ 3",
+      "Wednesday": "Thứ 4",
+      "Thursday": "Thứ 5",
+      "Friday": "Thứ 6",
+      "Saturday": "Thứ 7",
+      "Sunday": "Chủ Nhật"
+    };
+    
+    const selectedDayEnglish = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
+    const selectedDay = daysMap[selectedDayEnglish] || "";
   
     const booking = {
       id: newId,
       expertId: id,
       expertName: expert.name,
-      userName: user.fullName || "Khách hàng chưa có tên",  // Lấy fullName thay vì username
+      userName: user.fullName || "Khách hàng chưa có tên",
       date,
+      dayOfWeek: selectedDay, // 🆕 Lưu thứ vào lịch
       time,
       packageName: selectedPackage,
       status: "Chờ thanh toán",
     };
-    
   
     localStorage.setItem(`bookings_${user.id}`, JSON.stringify([...userBookings, booking]));
     setShowForm(false);
     alert("Đặt lịch thành công!");
     navigate("/my-booking");
   };
+  
 
   const workingDays = expert.workingSchedule || [];
 

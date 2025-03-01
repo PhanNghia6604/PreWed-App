@@ -37,8 +37,9 @@ export const ExpertAppointments = () => {
                     <thead>
                         <tr>
                             <th>Khách hàng</th>
+                            <th>Thứ</th> {/* 🆕 Thêm cột hiển thị thứ */}
                             <th>Ngày</th>
-                            <th>Thời gian</th>  
+                            <th>Thời gian</th>
                             <th>Gói dịch vụ</th>
                             <th>Trạng thái</th>
                         </tr>
@@ -47,8 +48,9 @@ export const ExpertAppointments = () => {
                         {appointments.map((appt) => (
                             <tr key={appt.id}>
                                 <td>{appt.userName || "Không rõ"}</td>
+                                <td>{appt.dayOfWeek || "N/A"}</td> {/* 🆕 Hiển thị thứ */}
                                 <td>{appt.date}</td>
-                                <td>{appt.time || "Không rõ"}</td> {/* Hiển thị thời gian */}
+                                <td>{appt.time}</td>
                                 <td>{appt.packageName}</td>
                                 <td>{appt.status}</td>
                             </tr>

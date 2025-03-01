@@ -35,6 +35,12 @@ export const MyBookings = () => {
     navigate(`/booking-payment/${booking.expertId}/${booking.id}`);
   };
 
+  const getDayOfWeek = (dateString) => {
+    const daysMap = ["Chủ Nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+    const date = new Date(dateString);
+    return daysMap[date.getDay()];
+  };
+
   if (!user) {
     return <div className={style.notFound}>Bạn chưa đăng nhập!</div>;
   }
@@ -58,7 +64,7 @@ export const MyBookings = () => {
                     <div className={style.bookingInfo}>
                       <strong className={style.expertName}>{expert.name}</strong>
                       <p className={style.specialty}>🛠 {expert.specialty}</p>
-                      <p className={style.dateTime}>📅 Ngày bắt đầu: {b.date} | Gói dịch vụ: {b.packageName}</p>
+                      <p className={style.dateTime}>📅 Ngày: {b.date} ({getDayOfWeek(b.date)}) - ⏰ Giờ: {b.time} | Gói dịch vụ: {b.packageName}</p>
                       <p className={style.status}>📌 Trạng thái: <strong>{b.status}</strong></p>
                       {b.status === "Đã thanh toán" && (
                         <div className={style.consultationLink}>
