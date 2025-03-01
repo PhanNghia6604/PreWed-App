@@ -11,7 +11,7 @@ export const ExpertDetail = () => {
   const [time, setTime] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("");
   const [user, setUser] = useState(null);
-  
+
   useEffect(() => {
     const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
     const storedUser = JSON.parse(localStorage.getItem("user")) || null;
@@ -39,12 +39,27 @@ export const ExpertDetail = () => {
       alert("Vui lòng chọn ngày, giờ và gói dịch vụ!");
       return;
     }
-  
+
+    const allBookings = [];
+    for (let key in localStorage) {
+      if (key.startsWith("bookings_")) {
+        const userBookings = JSON.parse(localStorage.getItem(key)) || [];
+        allBookings.push(...userBookings);
+      }
+    }
+
+    // Kiểm tra xem giờ đã có người đặt chưa (bỏ qua ngày & chuyên gia)
+    const isTimeSlotTaken = allBookings.some((b) => b.time === time);
+
+    if (isTimeSlotTaken) {
+      alert("Khung giờ này đã có người đặt, vui lòng chọn khung giờ khác!");
+      return;
+    }
+
     const userBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
-  
     const lastId = userBookings.length > 0 ? Math.max(...userBookings.map(b => b.id)) : 0;
     const newId = lastId + 1;
-  
+
     // Chuyển đổi ngày thành thứ
     const daysMap = {
       "Monday": "Thứ 2",
@@ -55,10 +70,10 @@ export const ExpertDetail = () => {
       "Saturday": "Thứ 7",
       "Sunday": "Chủ Nhật"
     };
-    
+
     const selectedDayEnglish = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
     const selectedDay = daysMap[selectedDayEnglish] || "";
-  
+
     const booking = {
       id: newId,
       expertId: id,
@@ -68,15 +83,14 @@ export const ExpertDetail = () => {
       dayOfWeek: selectedDay, // 🆕 Lưu thứ vào lịch
       time,
       packageName: selectedPackage,
-      status: "Chờ thanh toán",
+      status: "Chờ chuyên gia xác nhận",
     };
-  
+
     localStorage.setItem(`bookings_${user.id}`, JSON.stringify([...userBookings, booking]));
     setShowForm(false);
     alert("Đặt lịch thành công!");
     navigate("/my-booking");
   };
-  
 
   const workingDays = expert.workingSchedule || [];
 
@@ -90,17 +104,18 @@ export const ExpertDetail = () => {
       "Saturday": "Thứ 7",
       "Sunday": "Chủ Nhật"
     };
-  
+
     const selectedDayEnglish = new Date(selectedDate).toLocaleDateString("en-US", { weekday: "long" });
     const selectedDay = daysMap[selectedDayEnglish] || "";
-  
+
     console.log("Ngày được chọn:", selectedDay);
     console.log("Lịch làm việc:", workingDays);
     console.log("So sánh có khớp không?", workingDays.includes(selectedDay));
-  
+
     return !workingDays.includes(selectedDay);
   };
-  
+
+
   
 
   return (

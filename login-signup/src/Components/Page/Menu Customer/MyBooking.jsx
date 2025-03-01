@@ -10,22 +10,25 @@ export const MyBookings = () => {
   useEffect(() => {
     try {
       const storedUser = JSON.parse(localStorage.getItem("user")) || null;
-      setUser(storedUser);
-
       if (storedUser) {
+        setUser(storedUser); // Cập nhật user chỉ một lần
         const userBookings = JSON.parse(localStorage.getItem(`bookings_${storedUser.id}`)) || [];
         setBookings(userBookings);
       }
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu từ localStorage:", error);
     }
-  }, []);
+  }, []); // 🚀 Chỉ chạy một lần khi component mount
+  
 
   const handleCancelBooking = (index) => {
     if (!user) return;
+    if (!window.confirm("Bạn có chắc muốn hủy lịch hẹn này không?")) return;
 
     setBookings((prevBookings) => {
-      const updatedBookings = prevBookings.filter((_, i) => i !== index);
+      const updatedBookings = prevBookings.map((b, i) =>
+        i === index ? { ...b, status: "Đã hủy & Hoàn tiền" } : b
+      );
       localStorage.setItem(`bookings_${user.id}`, JSON.stringify(updatedBookings));
       return updatedBookings;
     });
@@ -66,7 +69,7 @@ export const MyBookings = () => {
                       <p className={style.specialty}>🛠 {expert.specialty}</p>
                       <p className={style.dateTime}>📅 Ngày: {b.date} ({getDayOfWeek(b.date)}) - ⏰ Giờ: {b.time} | Gói dịch vụ: {b.packageName}</p>
                       <p className={style.status}>📌 Trạng thái: <strong>{b.status}</strong></p>
-                      {b.status === "Đã thanh toán" && (
+                      {b.status === "Đang tư vấn" && (
                         <div className={style.consultationLink}>
                           <a href="https://meet.google.com/new" className={style.link} target="_blank" rel="noopener noreferrer">
                             🌐 Vào phòng tư vấn qua Google Meet
@@ -75,10 +78,8 @@ export const MyBookings = () => {
                       )}
                     </div>
 
-                    {b.status === "Chờ xác nhận" && (
-                      <button className={style.cancelButton} onClick={() => handleCancelBooking(index)}>
-                        ❌ Hủy lịch
-                      </button>
+                    {b.status === "Chờ chuyên gia xác nhận" && (
+                      <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>
                     )}
 
                     {b.status === "Chờ thanh toán" && (
@@ -86,6 +87,12 @@ export const MyBookings = () => {
                         💳 Thanh toán
                       </button>
                     )}
+
+                    {b.status === "Chờ chuyên gia xác nhận" || b.status === "Chờ thanh toán" ? (
+                      <button className={style.cancelButton} onClick={() => handleCancelBooking(index)}>
+                        ❌ Hủy lịch
+                      </button>
+                    ) : null}
                   </>
                 ) : (
                   <p className={style.missingExpert}>⚠ Chuyên gia không tồn tại! (ID: {b.expertId})</p>
