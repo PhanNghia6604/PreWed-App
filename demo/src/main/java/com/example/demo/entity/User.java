@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.enums.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -36,6 +37,9 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     public RoleEnum roleEnum;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Booking> bookings = new ArrayList<>();
     public User() {
 
     }
@@ -155,4 +159,5 @@ public class User implements UserDetails {
         this.isDeleted = isDeleted;
         this.roleEnum = roleEnum;
     }
+
 }

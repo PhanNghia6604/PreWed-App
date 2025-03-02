@@ -46,7 +46,10 @@ public class Filter extends OncePerRequestFilter {
         AntPathMatcher pathMatcher = new AntPathMatcher();
         String uri = request.getRequestURI();
         String method = request.getMethod();
-        if(method.equals("GET") && pathMatcher.match("", uri)){
+        if(method.equals("GET") && pathMatcher.match("/api/feedback/**", uri)){
+            return true;
+        }
+        if(method.equals("GET") && pathMatcher.match("/api/blog/**", uri)){
             return true;
         }
         return PUBLIC_API.stream().anyMatch(item -> pathMatcher.match(item, uri));
