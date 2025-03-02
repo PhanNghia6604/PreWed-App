@@ -42,4 +42,9 @@ public class UserAPI {
         User user =userService.delete(id);
         return ResponseEntity.ok(user);
     }
+    @PutMapping("{id}")
+    public ResponseEntity updateUser(@PathVariable long id, @RequestBody UserRequest userRequest){
+        User user=userService.update(id, userRequest);
+        return ResponseEntity.ok(user);
+    }
 }

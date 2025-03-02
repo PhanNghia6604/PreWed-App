@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.ServicePackage;
 import com.example.demo.entity.User;
 import com.example.demo.entity.request.AuthenticationRequest;
 import com.example.demo.entity.request.UserRequest;
 import com.example.demo.entity.response.UserResponse;
 import com.example.demo.enums.RoleEnum;
+import com.example.demo.exception.exceptions.NotFoundException;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -95,5 +97,17 @@ public class UserService implements UserDetailsService {
     userResponse.setRoleEnum(user.getRoleEnum());
     userResponse.setToken(token);
     return userResponse;
+    }
+
+
+    public User update(long id, UserRequest userRequest) {
+        User user = userRepository.findUserById(id);
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
+        user.setPhone(userRequest.getPhone());
+        user.setAddress(userRequest.getAddress());
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(userRequest.getPassword());
+        return userRepository.save(user);
     }
 }
