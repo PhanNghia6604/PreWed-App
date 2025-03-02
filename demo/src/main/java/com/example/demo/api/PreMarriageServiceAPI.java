@@ -26,7 +26,22 @@ public class PreMarriageServiceAPI {
     }
     @GetMapping
     public ResponseEntity getService(){
-        List<ServicePackage> servicePackages = PreMarriageService.getAllService();
+        List<ServicePackage> servicePackages = preMarriageService.getAllService();
         return ResponseEntity.ok(servicePackages);
+    }
+    @PutMapping("{id}")
+    public ResponseEntity updateSpaService(@PathVariable long id, @RequestBody ServicePackageRequest servicePackageRequest){
+        ServicePackage servicePackage = preMarriageService.updateService(id, servicePackageRequest);
+        return ResponseEntity.ok(servicePackage);
+    }
+    @GetMapping("{id}")
+    public ResponseEntity getSpaServiceById(@PathVariable long id){
+        ServicePackage servicePackage = preMarriageService.getServiceById(id);
+        return ResponseEntity.ok(servicePackage);
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteSpaServiceById(@PathVariable long id){
+        ServicePackage servicePackage = preMarriageService.deleteServiceById(id);
+        return ResponseEntity.ok(servicePackage);
     }
 }
