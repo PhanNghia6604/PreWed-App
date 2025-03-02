@@ -8,6 +8,7 @@ export const ExpertDetail = () => {
   const [expert, setExpert] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("");
   const [user, setUser] = useState(null);
 
@@ -34,32 +35,87 @@ export const ExpertDetail = () => {
   };
 
   const handleConfirmBooking = () => {
-    if (!date || !selectedPackage) {
-      alert("Vui lòng chọn ngày bắt đầu và gói dịch vụ!");
+    if (!date || !time || !selectedPackage) {
+      alert("Vui lòng chọn ngày, giờ và gói dịch vụ!");
       return;
     }
-  
+
+    const allBookings = [];
+    for (let key in localStorage) {
+      if (key.startsWith("bookings_")) {
+        const userBookings = JSON.parse(localStorage.getItem(key)) || [];
+        allBookings.push(...userBookings);
+      }
+    }
+
+    // Kiểm tra xem giờ đã có người đặt chưa (bỏ qua ngày & chuyên gia)
+    const isTimeSlotTaken = allBookings.some((b) => b.time === time);
+
+    if (isTimeSlotTaken) {
+      alert("Khung giờ này đã có người đặt, vui lòng chọn khung giờ khác!");
+      return;
+    }
+
     const userBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
-    
-    // Lấy ID cao nhất hiện có
     const lastId = userBookings.length > 0 ? Math.max(...userBookings.map(b => b.id)) : 0;
-    const newId = lastId + 1; // ID mới = ID lớn nhất + 1
-  
+    const newId = lastId + 1;
+
+    // Chuyển đổi ngày thành thứ
+    const daysMap = {
+      "Monday": "Thứ 2",
+      "Tuesday": "Thứ 3",
+      "Wednesday": "Thứ 4",
+      "Thursday": "Thứ 5",
+      "Friday": "Thứ 6",
+      "Saturday": "Thứ 7",
+      "Sunday": "Chủ Nhật"
+    };
+
+    const selectedDayEnglish = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
+    const selectedDay = daysMap[selectedDayEnglish] || "";
+
     const booking = {
-      id: newId, // ID tự tăng
+      id: newId,
       expertId: id,
       expertName: expert.name,
+      userName: user.fullName || "Khách hàng chưa có tên",
       date,
+      dayOfWeek: selectedDay, // 🆕 Lưu thứ vào lịch
+      time,
       packageName: selectedPackage,
-      status: "Chờ thanh toán",
+      status: "Chờ chuyên gia xác nhận",
     };
-  
-    // Lưu vào localStorage
+
     localStorage.setItem(`bookings_${user.id}`, JSON.stringify([...userBookings, booking]));
     setShowForm(false);
     alert("Đặt lịch thành công!");
     navigate("/my-booking");
   };
+
+  const workingDays = expert.workingSchedule || [];
+
+  const isDateDisabled = (selectedDate) => {
+    const daysMap = {
+      "Monday": "Thứ 2",
+      "Tuesday": "Thứ 3",
+      "Wednesday": "Thứ 4",
+      "Thursday": "Thứ 5",
+      "Friday": "Thứ 6",
+      "Saturday": "Thứ 7",
+      "Sunday": "Chủ Nhật"
+    };
+
+    const selectedDayEnglish = new Date(selectedDate).toLocaleDateString("en-US", { weekday: "long" });
+    const selectedDay = daysMap[selectedDayEnglish] || "";
+
+    console.log("Ngày được chọn:", selectedDay);
+    console.log("Lịch làm việc:", workingDays);
+    console.log("So sánh có khớp không?", workingDays.includes(selectedDay));
+
+    return !workingDays.includes(selectedDay);
+  };
+
+
   
 
   return (
@@ -78,7 +134,7 @@ export const ExpertDetail = () => {
         <p><strong>Email:</strong> {expert.email}</p>
         <p><strong>Địa chỉ:</strong> {expert.address}</p>
         <p><strong>Kinh nghiệm:</strong> {expert.experience || "Chưa có"} năm</p>
-
+        
         <div className={style.certifications}>
           <h3>Bằng cấp & Chứng chỉ:</h3>
           <ul>
@@ -98,8 +154,15 @@ export const ExpertDetail = () => {
             <li>Chưa có gói tư vấn</li>
           )}
         </ul>
-
-        {user ? <p>Xin chào, {user.name}!</p> : <p>Bạn chưa đăng nhập.</p>}
+        
+        <h3>Lịch làm việc:</h3>
+        <ul>
+          {workingDays.length > 0 ? (
+            workingDays.map((day, index) => <li key={index}>{day}</li>)
+          ) : (
+            <li>Chưa cập nhật lịch làm việc</li>
+          )}
+        </ul>
 
         <button className={style.bookButton} onClick={handleBooking}>Đặt lịch tư vấn</button>
 
@@ -107,7 +170,24 @@ export const ExpertDetail = () => {
           <div className={style.bookingForm}>
             <h3>Đặt lịch tư vấn với {expert.name}</h3>
             <label>Ngày bắt đầu</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <input 
+              type="date" 
+              value={date} 
+              onChange={(e) => setDate(e.target.value)} 
+              min={new Date().toISOString().split("T")[0]} 
+              onInput={(e) => {
+                if (isDateDisabled(e.target.value)) {
+                    e.target.value = "";
+                    alert("Chuyên gia không làm việc vào ngày này!");
+                }
+              }}
+            />
+            <label>Chọn giờ hẹn</label>
+            <input 
+              type="time" 
+              value={time} 
+              onChange={(e) => setTime(e.target.value)}
+            />
             <label>Chọn gói dịch vụ:</label>
             <select value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)}>
               {expert.consultingPrices.map((pkg, index) => (

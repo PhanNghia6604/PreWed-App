@@ -5,18 +5,19 @@ import styles from "./ExpertProfile.module.css";
 const ExpertProfile = () => {
     const navigate = useNavigate();
     const [expertData, setExpertData] = useState(null);
-    const [isEditing, setIsEditing] = useState(false); // Trạng thái chỉnh sửa
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const username = localStorage.getItem("currentExpert");
         const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
-
         const currentExpert = storedExperts.find((exp) => exp.username === username);
+
         if (currentExpert) {
             setExpertData({
                 ...currentExpert,
                 certificates: currentExpert.certificates || [],
                 consultingPrices: currentExpert.consultingPrices || [],
+                workingSchedule: currentExpert.workingSchedule || [],
                 avatar: currentExpert.avatar || "",
             });
         } else {
@@ -25,22 +26,19 @@ const ExpertProfile = () => {
         }
     }, [navigate]);
 
-    const handleChange = (e, index) => {
+    // Xử lý thay đổi input
+    const handleChange = (e, index, field) => {
         const { name, value } = e.target;
-
-        if (name === "certificates") {
-            const updatedCertificates = [...expertData.certificates];
-            updatedCertificates[index] = value;
-            setExpertData({ ...expertData, certificates: updatedCertificates });
-        } else if (name === "consultingPrices") {
-            const updatedPrices = [...expertData.consultingPrices];
-            updatedPrices[index] = value;
-            setExpertData({ ...expertData, consultingPrices: updatedPrices });
+        if (field) {
+            const updatedArray = [...expertData[field]];
+            updatedArray[index] = value;
+            setExpertData({ ...expertData, [field]: updatedArray });
         } else {
             setExpertData({ ...expertData, [name]: value });
         }
     };
 
+    // Xử lý tải ảnh đại diện
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -52,38 +50,21 @@ const ExpertProfile = () => {
         }
     };
 
-    const handleAddCertificate = () => {
-        setExpertData({ 
-            ...expertData, 
-            certificates: [...expertData.certificates, ""] 
-        });
+    // Xử lý thêm & xóa phần tử của mảng (chứng chỉ, giá tư vấn, lịch làm việc)
+    const handleAddItem = (field) => {
+        setExpertData({ ...expertData, [field]: [...expertData[field], ""] });
+    };
+    const handleRemoveItem = (index, field) => {
+        const updatedArray = expertData[field].filter((_, i) => i !== index);
+        setExpertData({ ...expertData, [field]: updatedArray });
     };
 
-    const handleRemoveCertificate = (index) => {
-        const updatedCertificates = expertData.certificates.filter((_, i) => i !== index);
-        setExpertData({ ...expertData, certificates: updatedCertificates });
-    };
-
-    const handleAddPrice = () => {
-        setExpertData({ 
-            ...expertData, 
-            consultingPrices: [...expertData.consultingPrices, ""] 
-        });
-    };
-
-    const handleRemovePrice = (index) => {
-        const updatedPrices = expertData.consultingPrices.filter((_, i) => i !== index);
-        setExpertData({ ...expertData, consultingPrices: updatedPrices });
-    };
-
+    // Xử lý lưu thông tin
     const handleSave = () => {
-        if (!expertData) return;
-
         if (!expertData.name || !expertData.phone || !expertData.email || !expertData.specialty) {
             alert("Vui lòng điền đầy đủ thông tin!");
             return;
         }
-
         const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
         const updatedExperts = storedExperts.map((exp) =>
             exp.username === expertData.username ? expertData : exp
@@ -91,7 +72,7 @@ const ExpertProfile = () => {
 
         localStorage.setItem("experts", JSON.stringify(updatedExperts));
         alert("Cập nhật thông tin thành công!");
-        setIsEditing(false); // Quay về trạng thái xem thông tin
+        setIsEditing(false);
     };
 
     const handleLogout = () => {
@@ -105,6 +86,7 @@ const ExpertProfile = () => {
         <div className={styles["profile-container"]}>
             <h2>Hồ sơ chuyên gia</h2>
             <div className={styles["profile-form"]}>
+                {/* Ảnh đại diện */}
                 <label>Ảnh đại diện:</label>
                 <div className={styles["avatar-container"]}>
                     {expertData.avatar ? (
@@ -115,63 +97,73 @@ const ExpertProfile = () => {
                     {isEditing && <input type="file" accept="image/*" onChange={handleImageUpload} />}
                 </div>
 
-                <label>Họ và tên:</label>
-                {isEditing ? (
-                    <input type="text" name="name" value={expertData.name} onChange={handleChange} />
-                ) : (
-                    <p>{expertData.name}</p>
-                )}
+                {/* Thông tin cá nhân */}
+                {["name", "phone", "address", "email", "specialty"].map((field) => (
+                    <div key={field}>
+                        <label>{field === "specialty" ? "Chuyên môn" : field.charAt(0).toUpperCase() + field.slice(1)}:</label>
+                        {isEditing ? (
+                            <input type="text" name={field} value={expertData[field]} onChange={handleChange} />
+                        ) : (
+                            <p>{expertData[field]}</p>
+                        )}
+                    </div>
+                ))}
 
-                <label>Số điện thoại:</label>
-                {isEditing ? (
-                    <input type="text" name="phone" value={expertData.phone} onChange={handleChange} />
-                ) : (
-                    <p>{expertData.phone}</p>
-                )}
+                {/* Chứng chỉ */}
+                <label>Chứng chỉ:</label>
+                <ul>
+                    {expertData.certificates.map((certificate, index) => (
+                        <li key={index}>
+                            {isEditing ? (
+                                <>
+                                    <input type="text" value={certificate} onChange={(e) => handleChange(e, index, "certificates")} />
+                                    <button type="button" onClick={() => handleRemoveItem(index, "certificates")}>Xóa</button>
+                                </>
+                            ) : (
+                                certificate
+                            )}
+                        </li>
+                    ))}
+                </ul>
+                {isEditing && <button type="button" onClick={() => handleAddItem("certificates")}>+ Thêm chứng chỉ</button>}
 
-                <label>Địa chỉ:</label>
-                {isEditing ? (
-                    <input type="text" name="address" value={expertData.address} onChange={handleChange} />
-                ) : (
-                    <p>{expertData.address}</p>
-                )}
+                {/* Giá tư vấn */}
+                <label>Giá tư vấn:</label>
+                <ul>
+                    {expertData.consultingPrices.map((price, index) => (
+                        <li key={index}>
+                            {isEditing ? (
+                                <>
+                                    <input type="text" value={price} onChange={(e) => handleChange(e, index, "consultingPrices")} />
+                                    <button type="button" onClick={() => handleRemoveItem(index, "consultingPrices")}>Xóa</button>
+                                </>
+                            ) : (
+                                price
+                            )}
+                        </li>
+                    ))}
+                </ul>
+                {isEditing && <button type="button" onClick={() => handleAddItem("consultingPrices")}>+ Thêm gói tư vấn</button>}
 
-                <label>Email:</label>
-                {isEditing ? (
-                    <input type="email" name="email" value={expertData.email} onChange={handleChange} />
-                ) : (
-                    <p>{expertData.email}</p>
-                )}
+                {/* Lịch làm việc */}
+                <label>Lịch làm việc:</label>
+                <ul>
+                    {expertData.workingSchedule.map((schedule, index) => (
+                        <li key={index}>
+                            {isEditing ? (
+                                <>
+                                    <input type="text" value={schedule} onChange={(e) => handleChange(e, index, "workingSchedule")} />
+                                    <button type="button" onClick={() => handleRemoveItem(index, "workingSchedule")}>Xóa</button>
+                                </>
+                            ) : (
+                                schedule
+                            )}
+                        </li>
+                    ))}
+                </ul>
+                {isEditing && <button type="button" onClick={() => handleAddItem("workingSchedule")}>+ Thêm lịch làm việc</button>}
 
-                <label>Chuyên môn:</label>
-                {isEditing ? (
-                    <input type="text" name="specialty" value={expertData.specialty} onChange={handleChange} />
-                ) : (
-                    <p>{expertData.specialty}</p>
-                )}
-
-                {isEditing && (
-                    <>
-                        <label>Chứng chỉ:</label>
-                        {expertData?.certificates?.map((certificate, index) => (
-                            <div key={index} className={styles["certificate-group"]}>
-                                <input type="text" name="certificates" value={certificate} onChange={(e) => handleChange(e, index)} />
-                                <button type="button" onClick={() => handleRemoveCertificate(index)}>Xóa</button>
-                            </div>
-                        ))}
-                        <button type="button" onClick={handleAddCertificate} className={styles["add-btn"]}>+ Thêm chứng chỉ</button>
-
-                        <label>Giá tư vấn:</label>
-                        {expertData?.consultingPrices?.map((price, index) => (
-                            <div key={index} className={styles["price-group"]}>
-                                <input type="text" name="consultingPrices" value={price} onChange={(e) => handleChange(e, index)} />
-                                <button type="button" onClick={() => handleRemovePrice(index)}>Xóa</button>
-                            </div>
-                        ))}
-                        <button type="button" onClick={handleAddPrice} className={styles["add-btn"]}>+ Thêm gói tư vấn</button>
-                    </>
-                )}
-
+                {/* Nút hành động */}
                 {isEditing ? (
                     <button onClick={handleSave} className={styles["save-btn"]}>Lưu thay đổi</button>
                 ) : (

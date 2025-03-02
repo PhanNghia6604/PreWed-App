@@ -1,9 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,25 +9,17 @@ import java.time.LocalDateTime;
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long blogId;
+    private Long id;
 
-    @NotBlank(message = "Title cannot be blank")
     private String title;
-
-    @NotBlank(message = "Content cannot be blank")
-    @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime publishDate;
-
     @ManyToOne
-    @JoinColumn(name = "authorId", nullable = false)
-    private User author; // Tác giả của bài viết (phải có UserID)
+    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
+    private User author;
 
+    private LocalDateTime createdAt = LocalDateTime.now();
     private boolean isDeleted = false;
 
-    @PrePersist
-    protected void onCreate() {
-        publishDate = LocalDateTime.now();
-    }
+    private String imagePath; // Lưu đường dẫn ảnh
 }

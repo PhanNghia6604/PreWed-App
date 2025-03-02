@@ -20,7 +20,9 @@ public class ServicePackageAPI {
 
     @PostMapping("createService")
     public ResponseEntity createService(@Valid @RequestBody ServicePackage servicePackage) {
+        System.out.println("🔵 Nhận request tạo ServicePackage: " + servicePackage);
         ServicePackage newServicePackage = servicePackageService.register(servicePackage);
+        System.out.println("🟢 Đã tạo ServicePackage: " + newServicePackage);
         return ResponseEntity.ok(newServicePackage);
     }
 

@@ -32,30 +32,41 @@ export const BookingPayment = () => {
   }, [expertId, bookingId]); 
   const handlePayment = () => {
     if (!paymentMethod) {
-      alert("Vui lòng chọn phương thức thanh toán!");
-      return;
+        alert("Vui lòng chọn phương thức thanh toán!");
+        return;
     }
 
     if (!booking) {
-      alert("Không tìm thấy lịch đặt.");
-      return;
+        alert("Không tìm thấy lịch đặt.");
+        return;
     }
 
     if (booking.status !== "Chờ thanh toán") {
-      alert("Lịch hẹn chưa được chuyên gia chấp nhận hoặc đã thanh toán.");
-      return;
+        alert("Lịch hẹn chưa được chuyên gia chấp nhận hoặc đã thanh toán.");
+        return;
     }
 
-    // Cập nhật lịch đặt thành "Đã thanh toán"
+    // ✅ Cập nhật trạng thái cho user (đặt lịch)
     const updatedBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
     const newBookings = updatedBookings.map((b) =>
-      Number(b.id) === Number(booking.id) ? { ...b, status: "Đã thanh toán", amountPaid: totalAmount } : b
+        Number(b.id) === Number(booking.id) ? { ...b, status: "Đã thanh toán", amountPaid: totalAmount } : b
     );
-
     localStorage.setItem(`bookings_${user.id}`, JSON.stringify(newBookings));
+
+    // ✅ Cập nhật trạng thái trong danh sách chuyên gia
+    Object.keys(localStorage)
+        .filter((key) => key.startsWith("bookings_")) // Lấy danh sách đặt lịch từ tất cả user
+        .forEach((key) => {
+            const userBookings = JSON.parse(localStorage.getItem(key)) || [];
+            const updatedUserBookings = userBookings.map((b) =>
+                Number(b.id) === Number(booking.id) ? { ...b, status: "Chưa bắt đầu tư vấn" } : b
+            );
+            localStorage.setItem(key, JSON.stringify(updatedUserBookings));
+        });
+
     alert(`Thanh toán thành công ${totalAmount.toLocaleString()} VNĐ bằng ${paymentMethod}!`);
     navigate("/my-booking");
-  };
+};
 
   if (!user) return <div className={style.notFound}>Bạn chưa đăng nhập!</div>;
   if (!booking) return <div className={style.notFound}>Lịch đặt không tồn tại!</div>;

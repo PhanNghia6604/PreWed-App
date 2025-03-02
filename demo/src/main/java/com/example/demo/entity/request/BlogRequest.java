@@ -1,17 +1,22 @@
 package com.example.demo.entity.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.validation.constraints.NotNull;
 
 @Data
 public class BlogRequest {
-    @NotBlank(message = "Title cannot be blank")
+
+    @NotNull(message = "Title is required")
     private String title;
 
-    @NotBlank(message = "Content cannot be blank")
+    @NotNull(message = "Content is required")
     private String content;
 
-    @NotNull(message = "Author ID cannot be null")
-    private Long authorId; // ID của người viết bài
+    @NotNull(message = "Author ID is required")
+    private Long authorId; // ID của tác giả
+
+    @NotNull(message = "Image is required")
+    private MultipartFile image; // Ảnh tải lên dưới dạng MultipartFile
 }

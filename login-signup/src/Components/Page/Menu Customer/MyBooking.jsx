@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./MyBookings.module.css";
-import { experts } from "../../fake data/data"; // Import danh sách chuyên gia giả lập
 
 export const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -9,37 +8,41 @@ export const MyBookings = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || null;
-    setUser(storedUser);
-
-    if (storedUser) {
-      const userBookings = JSON.parse(localStorage.getItem(`bookings_${storedUser.id}`)) || [];
-      setBookings(userBookings);
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user")) || null;
+      if (storedUser) {
+        setUser(storedUser); // Cập nhật user chỉ một lần
+        const userBookings = JSON.parse(localStorage.getItem(`bookings_${storedUser.id}`)) || [];
+        setBookings(userBookings);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu từ localStorage:", error);
     }
-  }, []);
+  }, []); // 🚀 Chỉ chạy một lần khi component mount
+  
 
-  // Hủy lịch đặt
   const handleCancelBooking = (index) => {
     if (!user) return;
+    if (!window.confirm("Bạn có chắc muốn hủy lịch hẹn này không?")) return;
 
-    const updatedBookings = bookings.filter((_, i) => i !== index);
-    setBookings(updatedBookings);
-
-    localStorage.setItem(`bookings_${user.id}`, JSON.stringify(updatedBookings));
+    setBookings((prevBookings) => {
+      const updatedBookings = prevBookings.map((b, i) =>
+        i === index ? { ...b, status: "Đã hủy & Hoàn tiền" } : b
+      );
+      localStorage.setItem(`bookings_${user.id}`, JSON.stringify(updatedBookings));
+      return updatedBookings;
+    });
   };
 
-  // Điều hướng đến trang thanh toán
   const handlePayment = (booking) => {
-    console.log("Booking data:", booking);
-    console.log("Session Count:", booking.sessionCount);
-  
-    // Encode endDate để tránh lỗi URL
-    const encodedEndDate = encodeURIComponent(booking.endDate);
-  
     navigate(`/booking-payment/${booking.expertId}/${booking.id}`);
   };
-  
-  
+
+  const getDayOfWeek = (dateString) => {
+    const daysMap = ["Chủ Nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+    const date = new Date(dateString);
+    return daysMap[date.getDay()];
+  };
 
   if (!user) {
     return <div className={style.notFound}>Bạn chưa đăng nhập!</div>;
@@ -53,33 +56,43 @@ export const MyBookings = () => {
       ) : (
         <ul className={style.bookingList}>
           {bookings.map((b, index) => {
+            const experts = JSON.parse(localStorage.getItem("experts")) || [];
             const expert = experts.find(e => e.id === Number(b.expertId));
 
             return (
               <li key={index} className={style.bookingItem}>
                 {expert ? (
                   <>
-                    <img src={expert.avatar} alt={expert.fullName} className={style.expertAvatar} />
+                    <img src={expert.avatar} alt={expert.name} className={style.expertAvatar} />
                     <div className={style.bookingInfo}>
-                      <strong className={style.expertName}>{expert.fullName}</strong>
+                      <strong className={style.expertName}>{expert.name}</strong>
                       <p className={style.specialty}>🛠 {expert.specialty}</p>
-                      <p className={style.dateTime}>📅 Ngày bắt đầu: {b.date} | Gói dịch vụ: {b.packageName}</p>
+                      <p className={style.dateTime}>📅 Ngày: {b.date} ({getDayOfWeek(b.date)}) - ⏰ Giờ: {b.time} | Gói dịch vụ: {b.packageName}</p>
                       <p className={style.status}>📌 Trạng thái: <strong>{b.status}</strong></p>
+                      {b.status === "Đang tư vấn" && (
+                        <div className={style.consultationLink}>
+                          <a href="https://meet.google.com/new" className={style.link} target="_blank" rel="noopener noreferrer">
+                            🌐 Vào phòng tư vấn qua Google Meet
+                          </a>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Nút hủy lịch nếu chưa được chấp nhận */}
-                    {b.status === "Chờ xác nhận" && (
-                      <button className={style.cancelButton} onClick={() => handleCancelBooking(index)}>
-                        ❌ Hủy lịch
-                      </button>
+                    {b.status === "Chờ chuyên gia xác nhận" && (
+                      <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>
                     )}
 
-                    {/* Nút thanh toán nếu chuyên gia đã chấp nhận */}
                     {b.status === "Chờ thanh toán" && (
                       <button className={style.payButton} onClick={() => handlePayment(b)}>
                         💳 Thanh toán
                       </button>
                     )}
+
+                    {b.status === "Chờ chuyên gia xác nhận" || b.status === "Chờ thanh toán" ? (
+                      <button className={style.cancelButton} onClick={() => handleCancelBooking(index)}>
+                        ❌ Hủy lịch
+                      </button>
+                    ) : null}
                   </>
                 ) : (
                   <p className={style.missingExpert}>⚠ Chuyên gia không tồn tại! (ID: {b.expertId})</p>
