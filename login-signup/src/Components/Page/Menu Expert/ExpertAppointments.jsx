@@ -9,32 +9,32 @@ export const ExpertAppointments = () => {
         const storedExperts = JSON.parse(localStorage.getItem("experts")) || null;
         const expertData = Array.isArray(storedExperts) ? storedExperts[0] : storedExperts;
         setExpert(expertData);
-    
+
         if (expertData) {
             // Lấy danh sách lịch hẹn của tất cả user
             const allBooking = Object.keys(localStorage)
                 .filter((key) => key.startsWith("bookings_"))
                 .flatMap((key) => JSON.parse(localStorage.getItem(key)));
-    
+
             // Lọc lịch hẹn theo chuyên gia (expertId)
             let expertAppointments = allBooking.filter(
                 (booking) => String(booking.expertId) === String(expertData.id)
             );
-    
+
             // ✅ Cập nhật trạng thái "Đã thanh toán" thành "Chưa bắt đầu tư vấn" và lấy `fullName`
             let updatedAppointments = expertAppointments.map((appt) => {
                 // 🔹 Lấy thông tin user từ localStorage
-                const userData = JSON.parse(localStorage.getItem("user_" + appt.userId)) || {}; 
-    
+                const userData = JSON.parse(localStorage.getItem("user_" + appt.userId)) || {};
+
                 return {
                     ...appt,
                     status: appt.status === "Đã thanh toán" ? "Chưa bắt đầu tư vấn" : appt.status,
                     fullName: userData.fullName || "Không rõ", // ✅ Thay vì userName, dùng fullName
                 };
             });
-    
+
             setAppointments(updatedAppointments);
-    
+
             // ✅ Lưu thay đổi vào localStorage nếu cần
             Object.keys(localStorage)
                 .filter((key) => key.startsWith("bookings_"))
@@ -43,14 +43,14 @@ export const ExpertAppointments = () => {
                     let updatedUserBookings = userBookings.map((b) =>
                         b.status === "Đã thanh toán" ? { ...b, status: "Chưa bắt đầu tư vấn" } : b
                     );
-    
+
                     if (JSON.stringify(userBookings) !== JSON.stringify(updatedUserBookings)) {
                         localStorage.setItem(key, JSON.stringify(updatedUserBookings));
                     }
                 });
         }
     }, []);
-    
+
 
     const handleUpdateStatus = (id, newStatus) => {
         const updatedAppointments = appointments.map((appt) =>
@@ -99,7 +99,7 @@ export const ExpertAppointments = () => {
                     <tbody>
                         {appointments.map((appt) => (
                             <tr key={appt.id}>
-                                 <td>{appt.userName || "Không rõ"}</td> {/* ✅ Hiển thị fullName thay vì userName */}
+                                <td>{appt.userName || "Không rõ"}</td> {/* ✅ Hiển thị fullName thay vì userName */}
                                 <td>{appt.dayOfWeek || "N/A"}</td>
                                 <td>{appt.date}</td>
                                 <td>{appt.time}</td>
@@ -123,6 +123,13 @@ export const ExpertAppointments = () => {
                                             <span>⏳ Chưa bắt đầu</span>
                                             <button className={styles.startButton} onClick={() => handleUpdateStatus(appt.id, "Đang tư vấn")}>
                                                 🚀 Bắt đầu tư vấn
+                                            </button>
+                                        </>
+                                    ) : appt.status === "Đang tư vấn" ? (
+                                        <>
+                                            <span>🟢 Đang tư vấn</span>
+                                            <button className={styles.completeButton} onClick={() => handleUpdateStatus(appt.id, "Đã hoàn thành")}>
+                                                ✅ Hoàn thành tư vấn
                                             </button>
                                         </>
                                     ) : (
