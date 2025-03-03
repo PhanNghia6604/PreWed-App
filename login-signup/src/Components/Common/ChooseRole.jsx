@@ -21,6 +21,12 @@ export const ChooseRole = () => {
                 >
                     Đăng nhập dưới tư cách là chuyên gia
                 </button>
+                <button
+                    className={`${styles.button} ${styles.customer}`}
+                    onClick={() => navigate("/admin-login")}
+                >
+                    Đăng nhập dưới tư cách là quản trị viên
+                </button>
             </div>
         </div>
     );

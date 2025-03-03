@@ -27,6 +27,8 @@ import ExpertDashboard from './Menu Expert/ExpertDashboard';
 import ExpertRegister from './Menu Expert/ExpertRegister';
 import ExpertProfile from './Menu Expert/ExpertProfile';
 import { ExpertAppointments } from './Menu Expert/ExpertAppointments';
+import { AdminLogin } from './Menu Admin/AdminLogin';
+
 
 export const Page = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -78,6 +80,10 @@ export const Page = () => {
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/test" element={<Test />} />
           <Route exact path="/result" element={<Result />} />
+          <Route exact path="/admin-login" element={<AdminLogin />} />
+          
+
+
         </Routes>
         <Footer />
       </Router>
