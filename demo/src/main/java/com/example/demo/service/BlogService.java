@@ -28,7 +28,7 @@ public class BlogService {
     private UserRepository userRepository;
 
     // Đường dẫn thư mục lưu trữ ảnh
-    private static final String UPLOAD_DIR = "C:/Users/phamg/Downloads/PreWed-App-main (1)/PreWed-App-main/uploads/";
+    private static final String UPLOAD_DIR = "C:/uploads/";
     // Lưu trữ ảnh trong thư mục uploads tại thư mục gốc của dự án
 
 

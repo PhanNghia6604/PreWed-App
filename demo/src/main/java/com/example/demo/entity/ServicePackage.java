@@ -1,14 +1,14 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -18,15 +18,20 @@ public class ServicePackage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
     @NotBlank(message = "Name cannot be blank")
-    public String Name;
+    public String name;
     @NotBlank(message = "Description cannot be blank")
-    public String Description;
-    @Min(value = 0, message = "Minimum fee is 0")
-    public int Fee;
+    public String description;
+    @Min(value = 0, message = "Minimum price is 0")
+    public float price;
     @NotBlank(message = "Expert Commission cannot be blank")
-    public String ExpertCommission;
-    public String PaymentMethod;
-    public LocalDate TransactionDate;
-
+    public String expertCommission;
+    public String paymentMethod;
+    public LocalDate transactionDate;
+    public int duration;
+    public boolean isAvailable = true;
     public boolean isDeleted = false;
+
+    @ManyToMany(mappedBy = "services")
+    @JsonIgnore
+    List<Booking> bookings = new ArrayList<>();
 }
