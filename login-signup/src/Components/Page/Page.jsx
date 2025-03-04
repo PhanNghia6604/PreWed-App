@@ -28,6 +28,7 @@ import ExpertRegister from './Menu Expert/ExpertRegister';
 import ExpertProfile from './Menu Expert/ExpertProfile';
 import { ExpertAppointments } from './Menu Expert/ExpertAppointments';
 import { AdminLogin } from './Menu Admin/AdminLogin';
+import { Earnings } from './Menu Expert/Earning';
 
 
 export const Page = () => {
@@ -72,7 +73,7 @@ export const Page = () => {
 
           <Route exact path='/expert-dashboard' element={<ExpertDashboard/>}/>
           <Route path="expert-profile" element={<ExpertProfile/>}/>
-
+          <Route path='expert-earning' element={<Earnings/>}/>
           <Route exact path="/expert-appointments" element={<ExpertAppointments/>}/>
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path="/my-booking" element={<MyBookings />} />

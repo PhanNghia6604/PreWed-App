@@ -27,6 +27,7 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
 
     if (expert) {
       localStorage.setItem("currentExpert", expert.username); // Lưu username đang đăng nhập
+      localStorage.setItem("loggedInExpertId", expert.id);     // ✅ Lưu expertId
       localStorage.setItem("token", "expert-token");
       localStorage.setItem("userRole", "expert");
 

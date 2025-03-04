@@ -33,6 +33,7 @@ export const ExpertHeader = ({ isLoggedIn, setIsLoggedIn }) => {
                     <Link to="/expert-dashboard">Dashboard</Link>
                     <Link to="/expert-appointments">Lịch hẹn</Link>
                     <Link to="/expert-profile">Hồ sơ</Link>
+                    <Link to="/expert-earning">Xem thu nhập</Link>
 
                     {/* Dropdown Menu khi đăng nhập */}
                     {isLoggedIn && (

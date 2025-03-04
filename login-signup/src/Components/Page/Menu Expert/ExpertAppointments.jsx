@@ -6,49 +6,42 @@ export const ExpertAppointments = () => {
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
-        const storedExperts = JSON.parse(localStorage.getItem("experts")) || null;
-        const expertData = Array.isArray(storedExperts) ? storedExperts[0] : storedExperts;
-        setExpert(expertData);
-
-        if (expertData) {
-            // Lấy danh sách lịch hẹn của tất cả user
-            const allBooking = Object.keys(localStorage)
-                .filter((key) => key.startsWith("bookings_"))
-                .flatMap((key) => JSON.parse(localStorage.getItem(key)));
-
-            // Lọc lịch hẹn theo chuyên gia (expertId)
-            let expertAppointments = allBooking.filter(
-                (booking) => String(booking.expertId) === String(expertData.id)
-            );
-
-            // ✅ Cập nhật trạng thái "Đã thanh toán" thành "Chưa bắt đầu tư vấn" và lấy `fullName`
-            let updatedAppointments = expertAppointments.map((appt) => {
-                // 🔹 Lấy thông tin user từ localStorage
-                const userData = JSON.parse(localStorage.getItem("user_" + appt.userId)) || {};
-
-                return {
-                    ...appt,
-                    status: appt.status === "Đã thanh toán" ? "Chưa bắt đầu tư vấn" : appt.status,
-                    fullName: userData.fullName || "Không rõ", // ✅ Thay vì userName, dùng fullName
-                };
-            });
-
-            setAppointments(updatedAppointments);
-
-            // ✅ Lưu thay đổi vào localStorage nếu cần
-            Object.keys(localStorage)
-                .filter((key) => key.startsWith("bookings_"))
-                .forEach((key) => {
-                    let userBookings = JSON.parse(localStorage.getItem(key)) || [];
-                    let updatedUserBookings = userBookings.map((b) =>
-                        b.status === "Đã thanh toán" ? { ...b, status: "Chưa bắt đầu tư vấn" } : b
-                    );
-
-                    if (JSON.stringify(userBookings) !== JSON.stringify(updatedUserBookings)) {
-                        localStorage.setItem(key, JSON.stringify(updatedUserBookings));
-                    }
-                });
+        let loggedInExpertId = localStorage.getItem("loggedInExpertId");
+    
+        if (!loggedInExpertId) {
+            console.warn("Không tìm thấy loggedInExpertId, đang kiểm tra lại...");
+            return;
         }
+    
+        const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
+        const expertData = storedExperts.find(exp => String(exp.id) === String(loggedInExpertId));
+    
+        if (!expertData) {
+            console.warn("Không tìm thấy chuyên gia trong danh sách, có thể ID sai.");
+            return;
+        }
+    
+        setExpert(expertData);
+    
+        const allBookings = Object.keys(localStorage)
+            .filter((key) => key.startsWith("bookings_"))
+            .flatMap((key) => JSON.parse(localStorage.getItem(key)) || []);
+    
+        const expertAppointments = allBookings.filter(
+            (booking) => String(booking.expertId) === String(loggedInExpertId)
+        );
+    
+        const updatedAppointments = expertAppointments.map((appt) => {
+            const userData = JSON.parse(localStorage.getItem("user_" + appt.userId)) || {};
+            return {
+                ...appt,
+                status: appt.status === "Đã thanh toán" ? "Chưa bắt đầu tư vấn" : appt.status,
+                fullName: userData.fullName || "Không rõ",
+            };
+        });
+    
+        setAppointments(updatedAppointments);
+    
     }, []);
 
 
