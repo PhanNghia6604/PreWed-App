@@ -29,6 +29,7 @@ import ExpertProfile from './Menu Expert/ExpertProfile';
 import { ExpertAppointments } from './Menu Expert/ExpertAppointments';
 import { AdminLogin } from './Menu Admin/AdminLogin';
 import { Earnings } from './Menu Expert/Earning';
+import FeedbackPage from './Menu Customer/FeedBackPage';
 
 
 export const Page = () => {
@@ -70,7 +71,7 @@ export const Page = () => {
           <Route exact path="/customer-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole}/>} />
           <Route exact path="/expert-register" element={<ExpertRegister/>}/>
-
+          <Route exact path="/feedback/:bookingId/:expertId" element={<FeedbackPage/>}/>
           <Route exact path='/expert-dashboard' element={<ExpertDashboard/>}/>
           <Route path="expert-profile" element={<ExpertProfile/>}/>
           <Route path='expert-earning' element={<Earnings/>}/>
