@@ -25,7 +25,6 @@ public class ServicePackage {
     public float price;
     @NotBlank(message = "Expert Commission cannot be blank")
     public String expertCommission;
-    public String paymentMethod;
     public LocalDate transactionDate;
     public int duration;
     public boolean isAvailable = true;

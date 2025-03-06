@@ -1,10 +1,14 @@
 package com.example.demo.entity.request;
 
-public class UserRequest {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
+public class UserRequest {
+    @NotBlank(message = "Name cannot be blank")
     public String name;
     public String username;
     public String password;
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email do not match email pattern!")
     public String email;
     public String phone;
     public String address;
