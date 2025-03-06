@@ -8,8 +8,6 @@ import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +30,7 @@ public class UserAPI {
     User newUser = userService.create(user);
     return ResponseEntity.ok(newUser);
     }
-    @GetMapping("get")
+        @GetMapping("get")
     public ResponseEntity getAllUser(){
         List<User> users =userService.getAllUser();
     return ResponseEntity.ok(users);
@@ -47,4 +45,5 @@ public class UserAPI {
         User user=userService.update(id, userRequest);
         return ResponseEntity.ok(user);
     }
+
 }

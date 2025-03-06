@@ -17,7 +17,9 @@ import java.util.List;
 
 
 @Entity
-
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("USER")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,7 @@ public class User implements UserDetails {
     public String name;
     @NotBlank(message = "Password cannot be blank")
     public String password;
-    @NotBlank
+
     public String phone;
     @NotBlank(message = "Address cannot be blank")
     public String address;
@@ -43,6 +45,7 @@ public class User implements UserDetails {
     public User() {
 
     }
+
 
     public void setUsername(String username) {
         this.username = username;
