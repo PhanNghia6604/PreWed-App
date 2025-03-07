@@ -30,6 +30,9 @@ import { ExpertAppointments } from './Menu Expert/ExpertAppointments';
 import { AdminLogin } from './Menu Admin/AdminLogin';
 import { Earnings } from './Menu Expert/Earning';
 import FeedbackPage from './Menu Customer/FeedBackPage';
+import { AdminDashboard } from './Menu Admin/AdminDashbaord';
+import { AdminRegister } from './Menu Admin/AdminRegister';
+
 
 
 export const Page = () => {
@@ -83,6 +86,8 @@ export const Page = () => {
           <Route exact path="/test" element={<Test />} />
           <Route exact path="/result" element={<Result />} />
           <Route exact path="/admin-login" element={<AdminLogin />} />
+          <Route exact path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route exact path="/admin-register" element={<AdminRegister />} />
           
 
 

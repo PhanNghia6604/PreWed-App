@@ -8,31 +8,26 @@ export const AdminLogin = ({ setIsLoggedIn }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (event) => {
+  const handleLogin = (event) => {
     event.preventDefault();
     setError("");
 
-    try {
-      const response = await fetch("/api/admin-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+    const existingUsers = JSON.parse(localStorage.getItem("adminUsers")) || [];
 
-      const data = await response.json();
+    const user = existingUsers.find(user => user.username === username && user.password === password);
 
-      if (!response.ok) {
-        setError(data.message || "Login failed, please check your credentials.");
+    if (!user) {
+        setError("Invalid username or password!");
         return;
-      }
-
-      localStorage.setItem("adminToken", data.token);
-      setIsLoggedIn(true);
-      navigate("/admin-dashboard");
-    } catch (error) {
-      setError("Login failed, please try again.");
     }
-  };
+
+    // Lưu session vào localStorage
+    localStorage.setItem("adminSession", JSON.stringify(user));
+
+    setIsLoggedIn(true);
+    navigate("/admin-dashboard");
+};
+
 
   return (
     <section className={styles["admin-login"]}>
