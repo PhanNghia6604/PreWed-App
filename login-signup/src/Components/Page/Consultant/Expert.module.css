@@ -165,17 +165,34 @@
     background: #007bff;
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 3px 6px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 14px;
     font-weight: bold;
-    margin: 10px 0;
+    margin-bottom: 5px;
     transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    width: auto; /* Chiều rộng chỉ theo nội dung */
+    max-width: 120px; /* Giới hạn tối đa */
+    white-space: nowrap; /* Giữ nội dung trên một dòng */
   }
   
   .toggleBtn:hover {
     background: #0056b3;
   }
+  
+  .toggleBtn span {
+    font-size: 12px; /* Giảm kích thước icon */
+  }
+  .rating {
+    font-size: 14px;
+    color: #f39c12;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+  
   
   
