@@ -13,15 +13,15 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("user"); 
+        localStorage.removeItem("user");
         localStorage.removeItem("userRole");
-        localStorage.removeItem("expertData"); 
+        localStorage.removeItem("expertData");
         // Xóa bookings_id sau khi logout
         localStorage.removeItem("bookings_id");
-        
+
         setIsLoggedIn(false);
-        setAnchorEl(null); 
-    
+        setAnchorEl(null);
+
         navigate("/");
         window.location.reload(); // Refresh lại trang
     };
@@ -45,12 +45,14 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
                     ) : (
                         <>
                             {/* Nút mở menu tài khoản */}
-                            <IconButton
-                                onClick={(e) => setAnchorEl(e.currentTarget)}
-                                color="inherit"
-                            >
-                                <AccountCircle fontSize="large" />
-                            </IconButton>
+                            <div className="menu-button-container">
+                                <IconButton
+                                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                                    color="inherit"
+                                >
+                                    <AccountCircle fontSize="large" />
+                                </IconButton>
+                            </div>
 
                             {/* Menu Dropdown */}
                             <Menu

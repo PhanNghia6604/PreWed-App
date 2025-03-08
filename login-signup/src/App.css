@@ -436,3 +436,9 @@ footer i {
   background-color:#676767 ;
 }
 
+.menu-button-container {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}

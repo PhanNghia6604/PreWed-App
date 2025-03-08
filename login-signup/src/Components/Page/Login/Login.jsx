@@ -9,43 +9,46 @@ export const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');  // Ensure setMessage is defined
   const [error, setError] = useState("");
-
   const handleLogin = async (event) => {
     event.preventDefault();
-    setError(""); // Xóa lỗi cũ trước khi gửi request
+    setError("");
     setMessage("");
-
+  
     try {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
-      const data = await response.json();
-      console.log("🔹 API Response:", data);
-
+  
+      // Kiểm tra nếu server trả về lỗi
       if (!response.ok) {
-        console.log("🚨 Lỗi từ server:", response.status, data);
-        setError(data.message || "Login failed, please check your credentials.");
+        const text = await response.text(); // Đọc response dưới dạng text
+        console.error("🚨 Lỗi từ server:", response.status, text);
+  
+        try {
+          const errorData = JSON.parse(text); // Cố gắng parse JSON
+          setError(errorData.message || "Login failed.");
+        } catch {
+          setError(text || "Login failed, server error.");
+        }
         return;
       }
-
+  
+      // Nếu phản hồi hợp lệ, parse JSON
+      const data = await response.json();
+      console.log("🔹 API Response:", data);
+  
       if (data.token) {
-        console.log("✔ Đăng nhập thành công, lưu token:", data.token);
+        console.log("✔ Đăng nhập thành công:", data.token);
         localStorage.setItem("token", data.token);
-
-        // Kiểm tra dữ liệu trước khi lưu
         if (data.username) {
           localStorage.setItem("user", JSON.stringify(data));
-        } else {
-          console.warn("⚠ Dữ liệu user không hợp lệ:", data);
         }
-
+  
         setIsLoggedIn(true);
         navigate("/");
       } else {
-        console.log("❌ Không có token trong response:", data);
         setMessage("Login failed: No token received");
       }
     } catch (error) {
@@ -53,6 +56,7 @@ export const Login = ({ setIsLoggedIn }) => {
       setError("Login failed, please try again.");
     }
   };
+  
 
 
   return (
