@@ -104,4 +104,78 @@
     background-color: #000000;
     color:white;
   }
+  .searchInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .catWrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f0f0f0;
+  }
+  
+  /* Ẩn thanh cuộn trên Chrome, Safari */
+  .catWrapper::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .catWrapper::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+  }
+  
+  .catWrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  .catWrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  .catButton {
+    display: inline-flex;
+    gap: 10px;
+  }
+  
+  .catButton button {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .catButton button:hover {
+    background-color: #0056b3;
+  }
+  .toggleBtn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px 0;
+    transition: background 0.3s;
+  }
+  
+  .toggleBtn:hover {
+    background: #0056b3;
+  }
+  
   
