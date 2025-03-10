@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminLogin.module.css";
 
-export const AdminLogin = ({ setIsLoggedIn }) => {
+export const AdminLogin = ({ setIsLoggedIn,setUserRole }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -11,22 +11,31 @@ export const AdminLogin = ({ setIsLoggedIn }) => {
   const handleLogin = (event) => {
     event.preventDefault();
     setError("");
-
+  
     const existingUsers = JSON.parse(localStorage.getItem("adminUsers")) || [];
-
+  
     const user = existingUsers.find(user => user.username === username && user.password === password);
-
+  
     if (!user) {
-        setError("Invalid username or password!");
-        return;
+      setError("Invalid username or password!");
+      return;
     }
-
-    // Lưu session vào localStorage
+  
+    // Lưu thông tin đăng nhập
     localStorage.setItem("adminSession", JSON.stringify(user));
-
+    localStorage.setItem("token", "admin-Token"); 
+    localStorage.setItem("userRole", "admin");
+  
     setIsLoggedIn(true);
+    setUserRole("admin");
+    console.log("Login successful! Redirecting...");
+    
+    
+    
+    // Chuyển hướng sau khi đăng nhập
     navigate("/admin-dashboard");
-};
+  };
+  
 
 
   return (
@@ -39,7 +48,7 @@ export const AdminLogin = ({ setIsLoggedIn }) => {
             <label>Username</label>
             <input
               type="text"
-              placeholder="Admin Username"
+              placeholder="Username"
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}

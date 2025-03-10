@@ -12,6 +12,8 @@ export const AdminRegister = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
+    const [message, setMessage] = useState("");
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,6 +48,7 @@ export const AdminRegister = () => {
         localStorage.setItem("adminUsers", JSON.stringify(existingUsers));
     
         setSuccess("Registration successful! Redirecting to login...");
+        setMessage("Đăng ký thành công ");
         setTimeout(() => navigate("/admin-login"), 2000);
     };
 
