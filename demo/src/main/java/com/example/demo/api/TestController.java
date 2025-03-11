@@ -1,14 +1,13 @@
 package com.example.demo.api;
 
 import com.example.demo.entity.request.PremaritalTestRequest;
+import com.example.demo.entity.response.DiagnosResponse;
 import com.example.demo.service.PremaritalTestService;
+import com.example.demo.service.DiagnosService;
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,13 +19,15 @@ public class TestController {
     @Autowired
     private PremaritalTestService premaritalTestService;
 
-    @PostMapping("/submit")
-    public ResponseEntity<List<String>> submitTest(@RequestBody PremaritalTestRequest testRequest) {
-        // Gọi service để đánh giá kết quả bài kiểm tra
-        List<String> result = premaritalTestService.evaluateTest(testRequest);
+    @Autowired
+    private DiagnosService diagnosService;
 
-        // Trả về kết quả là danh sách các chuyên môn cần tham khảo
-        return ResponseEntity.ok(result);
+    @PostMapping("/submit")
+    public DiagnosResponse submitTest(@RequestBody PremaritalTestRequest testRequest) {
+        // Đánh giá bài kiểm tra và lấy danh sách các chuyên môn cần cải thiện
+        List<String> categoriesToImprove = premaritalTestService.evaluateTest(testRequest);
+
+        // Tạo DiagnosResponseDTO và trả về kết quả
+        return diagnosService.createDiagnosResponse(categoriesToImprove);
     }
 }
-
