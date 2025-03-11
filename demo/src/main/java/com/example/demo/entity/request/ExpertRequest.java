@@ -18,6 +18,9 @@ public class ExpertRequest {
     @NotBlank(message = "Name cannot be blank")
     private String name;      // Tên đầy đủ của Expert (plan to inherit from User)
 
+    @NotBlank(message = "Email cannot be blank")
+    private String email;      // Tên đầy đủ của Expert (plan to inherit from User)
+
     @NotBlank(message = "Phone cannot be blank")
     private String phone;     // Số điện thoại (plan to inherit from User)
 
@@ -31,7 +34,5 @@ public class ExpertRequest {
     @NotEmpty(message = "Certificates cannot be empty")
     private List<String> certificates;  // Danh sách chứng chỉ
 
-    private List<Double> consultingPrices; // Danh sách giá tư vấn
 
-    private List<String> workingSchedule; // Lịch làm việc
 }

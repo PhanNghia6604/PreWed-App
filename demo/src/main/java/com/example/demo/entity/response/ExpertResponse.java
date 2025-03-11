@@ -18,6 +18,5 @@ public class ExpertResponse {
     private String specialty; // Chuyên ngành
     private String avatar;    // Avatar
     private List<String> certificates; // Chứng chỉ
-    private List<Double> consultingPrices; // Giá tư vấn
-    private List<String> workingSchedule; // Lịch làm việc
+
 }

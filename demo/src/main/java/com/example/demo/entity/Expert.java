@@ -25,14 +25,6 @@ public class Expert extends User {
     @NotEmpty(message = "Certificates cannot be empty")
     private List<String> certificates; // Danh sách chứng chỉ
 
-    @ElementCollection
-    @NotEmpty(message = "Consulting prices cannot be empty")
-    private List<Double> consultingPrices; // Danh sách giá tư vấn
-
-    @ElementCollection
-    @NotEmpty(message = "Working schedule cannot be empty")
-    private List<String> workingSchedule; // Lịch làm việc
-
     public Expert() {
         this.setRoleEnum(RoleEnum.EXPERT); // Mặc định role là EXPERT
     }

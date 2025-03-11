@@ -48,13 +48,12 @@ public class ExpertService {
         expert.setUsername(request.getUsername());
         expert.setPassword(passwordEncoder.encode(request.getPassword()));
         expert.setName(request.getName());
+        expert.setEmail(request.getEmail());
         expert.setPhone(request.getPhone());
         expert.setAddress(request.getAddress());
         expert.setSpecialty(request.getSpecialty());
         expert.setAvatar(request.getAvatar());
         expert.setCertificates(request.getCertificates());
-        expert.setConsultingPrices(request.getConsultingPrices());
-        expert.setWorkingSchedule(request.getWorkingSchedule());
         expert.setRoleEnum(RoleEnum.EXPERT);
 
         return userRepository.save(expert);
@@ -74,8 +73,6 @@ public class ExpertService {
             response.setSpecialty(expertEntity.getSpecialty());
             response.setAvatar(expertEntity.getAvatar());
             response.setCertificates(expertEntity.getCertificates());
-            response.setConsultingPrices(expertEntity.getConsultingPrices());
-            response.setWorkingSchedule(expertEntity.getWorkingSchedule());
 
             return response;
         } else {
@@ -97,14 +94,6 @@ public class ExpertService {
             response.setAvatar(expert.getAvatar());
             response.setCertificates(expert.getCertificates());
 
-            // Kiểm tra và set consultingPrices và workingSchedule nếu có
-            if (expert.getConsultingPrices() != null) {
-                response.setConsultingPrices(expert.getConsultingPrices());
-            }
-
-            if (expert.getWorkingSchedule() != null) {
-                response.setWorkingSchedule(expert.getWorkingSchedule());
-            }
 
             responseList.add(response);
         }
