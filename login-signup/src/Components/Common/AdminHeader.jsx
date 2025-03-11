@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
-import styles from "./AdminHeader.module.css"; // Import CSS Module
+import styles from "./AdminHeader.module.css"; // Import CSS
 
 export const AdminHeader = ({ isLoggedIn, setIsLoggedIn }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -13,9 +13,8 @@ export const AdminHeader = ({ isLoggedIn, setIsLoggedIn }) => {
         localStorage.removeItem("adminData");
         localStorage.removeItem("userRole");
         setIsLoggedIn(false);
-        setAnchorEl(null); // Đóng menu trước khi điều hướng
+        setAnchorEl(null);
 
-        // Chuyển hướng về trang chủ và reload toàn bộ ứng dụng
         setTimeout(() => {
             window.location.href = "/";
         }, 100);
@@ -29,41 +28,37 @@ export const AdminHeader = ({ isLoggedIn, setIsLoggedIn }) => {
 
                 {/* Navigation */}
                 <nav className={styles.nav}>
-                    
-                    <Link to="/admin-users">Quản lý người dùng</Link>
-                    <Link to="/admin-reports">Báo cáo</Link>
-                    <Link to="/admin-settings">Cài đặt</Link>
+                    <Link to="/admin-users" className={styles.navLink}>Quản lý người dùng</Link>
+                    <Link to="/admin-reports" className={styles.navLink}>Báo cáo</Link>
+                    <Link to="/admin-settings" className={styles.navLink}>Cài đặt</Link>
 
-                    {/* Dropdown Menu khi đăng nhập */}
+                    {/* User Menu */}
                     {isLoggedIn && (
                         <>
                             <IconButton
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Ngăn chặn sự kiện click gây lỗi
-                                    setAnchorEl(e.currentTarget);
-                                }}
-                                className={styles["menu-icon"]}
+                                onClick={(e) => setAnchorEl(e.currentTarget)}
+                                className={styles.menuIcon}
                             >
                                 <AccountCircle fontSize="large" />
                             </IconButton>
                             <Menu
-                              anchorEl={anchorEl}
-                              open={Boolean(anchorEl)}
-                              onClose={() => setAnchorEl(null)}
-                              keepMounted // Giữ lại menu trong DOM để tránh lỗi render
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={() => setAnchorEl(null)}
+                                keepMounted
                             >
                                 <MenuItem
                                     onClick={() => {
                                         navigate("/admin-profile");
                                         setAnchorEl(null);
                                     }}
-                                    className={styles["menu-item"]}
+                                    className={styles.menuItem}
                                 >
                                     Hồ sơ
                                 </MenuItem>
                                 <MenuItem
                                     onClick={handleLogout}
-                                    className={styles["menu-item"]}
+                                    className={styles.menuItem}
                                 >
                                     Đăng xuất
                                 </MenuItem>
