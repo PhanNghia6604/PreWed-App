@@ -1,16 +1,15 @@
 .header {
-    background-color: #222; /* Màu nền tối */
+    background-color: #222;
     color: white;
     padding: 15px 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
 .container {
     width: 90%;
     max-width: 1200px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -34,25 +33,43 @@
 }
 
 .nav a:hover {
-    color: #f8c291; /* Màu khi hover */
+    color: #f8c291;
 }
 
-.menu-icon {
-    color: white;
+/* Menu Icon */
+.profileMenu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.menuIcon {
+    color: white !important;
     cursor: pointer;
 }
 
+/* Đảm bảo menu không làm trắng toàn bộ trang */
 .menu {
-    background-color: white;
-    color: black;
-    border-radius: 5px;
+    background-color: white !important;
+    color: black !important;
+    border-radius: 8px;
+    min-width: 150px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
 }
 
-.menu-item {
-    padding: 10px 20px;
+/* Định nghĩa menu item */
+.menuItem {
+    padding: 10px 15px !important;
+    font-size: 16px;
     cursor: pointer;
+    color: black !important;
 }
 
-.menu-item:hover {
-    background-color: #ddd;
+.menuItem:hover {
+    background-color: #f8c291 !important;
+}
+
+/* Đảm bảo không có phần tử nào tràn ra ngoài */
+html, body {
+    overflow-x: hidden;
 }
