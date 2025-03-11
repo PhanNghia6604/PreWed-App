@@ -36,7 +36,6 @@ public class PreMarriageService {
         servicePackage.setDescription(servicePackageRequest.getDescription());
         servicePackage.setPrice(servicePackageRequest.getPrice());
         servicePackage.setDuration(servicePackageRequest.getDuration());
-        servicePackage.setExpertCommission(servicePackageRequest.getExpertCommission());
         return serviceRepository.save(servicePackage);
     }
 

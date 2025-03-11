@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Feedback;
+import com.example.demo.entity.request.FeedbackRequest;
 import com.example.demo.repository.FeedbackRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,11 @@ import java.util.List;
 public class FeedbackService {
     @Autowired
     FeedbackRepository feedbackRepository;
-    public Feedback newFeedback(Feedback feedback){
-        Feedback newFeedback = feedbackRepository.save(feedback);
-        return newFeedback;
+    @Autowired
+    ModelMapper modelMapper;
+    public Feedback newFeedback(FeedbackRequest feedbackRequest){
+        Feedback newFeedback = modelMapper.map(feedbackRequest, Feedback.class);
+        return feedbackRepository.save(newFeedback);
     }
     public List<Feedback> getAllFeedback(){
         return feedbackRepository.findFeedbacksByIsDeletedFalse();
@@ -27,4 +31,10 @@ public class FeedbackService {
         return feedbackRepository.save(feedback);
     }
 
+    public Feedback updateFeedback(long id, FeedbackRequest feedbackRequest) {
+        Feedback feedback = getFeedbackById(id);
+        feedback.setRating(feedbackRequest.getRating());
+        feedback.setComments(feedbackRequest.getComments());
+        return feedbackRepository.save(feedback);
+    }
 }

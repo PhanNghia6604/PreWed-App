@@ -1,12 +1,11 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
+@Data
 @Entity
 public class Feedback {
     @Id
@@ -14,6 +13,10 @@ public class Feedback {
     public long id;
     public double rating;
     public String comments;
-    public Date date;
+    public LocalDateTime date;
     public boolean isDeleted = false;
+    @PrePersist
+    protected void onCreate() {
+        this.date = LocalDateTime.now();
+    }
 }

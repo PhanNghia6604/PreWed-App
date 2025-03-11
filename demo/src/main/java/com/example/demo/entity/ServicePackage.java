@@ -23,9 +23,6 @@ public class ServicePackage {
     public String description;
     @Min(value = 0, message = "Minimum price is 0")
     public float price;
-    @NotBlank(message = "Expert Commission cannot be blank")
-    public String expertCommission;
-    public LocalDate transactionDate;
     public int duration;
     public boolean isAvailable = true;
     public boolean isDeleted = false;
