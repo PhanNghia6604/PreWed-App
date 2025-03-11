@@ -6,28 +6,39 @@ const ExpertProfile = () => {
     const navigate = useNavigate();
     const [expertData, setExpertData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        const username = localStorage.getItem("currentExpert");
-        const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
-        const currentExpert = storedExperts.find((exp) => exp.username === username);
-
-        if (currentExpert) {
-            setExpertData({
-                ...currentExpert,
-                certificates: currentExpert.certificates || [],
-                consultingPrices: currentExpert.consultingPrices || [],
-                workingSchedule: currentExpert.workingSchedule || [],
-                avatar: currentExpert.avatar || "",
-            });
-        } else {
-            alert("Không tìm thấy thông tin chuyên gia!");
-            navigate("/expert-login");
-        }
+        const fetchExpertData = async () => {
+            const token = localStorage.getItem("token");
+            let expertId = localStorage.getItem("expertId");
+    
+            if (!token || !expertId) {
+                navigate("/expert-login");
+                return;
+            }
+    
+            try {
+                const response = await fetch(`/api/expert/profile/${expertId}`, {
+                    headers: { "Authorization": `Bearer ${token}` },
+                });
+    
+                if (!response.ok) throw new Error("Không thể tải thông tin chuyên gia.");
+    
+                const data = await response.json();
+                setExpertData(data);
+            } catch (err) {
+                setError(err.message);
+            }
+        };
+    
+        setTimeout(fetchExpertData, 500); // Chờ 0.5s để đảm bảo dữ liệu đã được lưu
     }, [navigate]);
+    
 
     // Xử lý thay đổi input
     const handleChange = (e, index, field) => {
+        e.preventDefault();
         const { name, value } = e.target;
         if (field) {
             const updatedArray = [...expertData[field]];
@@ -50,7 +61,7 @@ const ExpertProfile = () => {
         }
     };
 
-    // Xử lý thêm & xóa phần tử của mảng (chứng chỉ, giá tư vấn, lịch làm việc)
+    // Xử lý thêm & xóa phần tử của mảng (chứng chỉ)
     const handleAddItem = (field) => {
         setExpertData({ ...expertData, [field]: [...expertData[field], ""] });
     };
@@ -60,26 +71,42 @@ const ExpertProfile = () => {
     };
 
     // Xử lý lưu thông tin
-    const handleSave = () => {
-        if (!expertData.name || !expertData.phone || !expertData.email || !expertData.specialty) {
-            alert("Vui lòng điền đầy đủ thông tin!");
-            return;
-        }
-        const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
-        const updatedExperts = storedExperts.map((exp) =>
-            exp.username === expertData.username ? expertData : exp
-        );
+    const handleSave = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const expertId = localStorage.getItem("expertId");
 
-        localStorage.setItem("experts", JSON.stringify(updatedExperts));
-        alert("Cập nhật thông tin thành công!");
-        setIsEditing(false);
+            if (!expertData.name || !expertData.phone || !expertData.email || !expertData.specialty) {
+                alert("Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            const response = await fetch(`/api/expert/profile/${expertId}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(expertData),
+            });
+
+            if (!response.ok) throw new Error("Không thể cập nhật thông tin.");
+
+            alert("Cập nhật thông tin thành công!");
+            setIsEditing(false);
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("currentExpert");
-        navigate("/expert-login");
+        localStorage.removeItem("expertId");
+        localStorage.removeItem("token");
+        localStorage.removeItem("userRole"); // Xóa luôn vai trò người dùng nếu có
+        navigate("/"); // Chuyển về trang đăng nhập
     };
 
+    if (error) return <p className={styles.error}>{error}</p>;
     if (!expertData) return <p>Đang tải...</p>;
 
     return (
@@ -126,42 +153,6 @@ const ExpertProfile = () => {
                     ))}
                 </ul>
                 {isEditing && <button type="button" onClick={() => handleAddItem("certificates")}>+ Thêm chứng chỉ</button>}
-
-                {/* Giá tư vấn */}
-                <label>Giá tư vấn:</label>
-                <ul>
-                    {expertData.consultingPrices.map((price, index) => (
-                        <li key={index}>
-                            {isEditing ? (
-                                <>
-                                    <input type="text" value={price} onChange={(e) => handleChange(e, index, "consultingPrices")} />
-                                    <button type="button" onClick={() => handleRemoveItem(index, "consultingPrices")}>Xóa</button>
-                                </>
-                            ) : (
-                                price
-                            )}
-                        </li>
-                    ))}
-                </ul>
-                {isEditing && <button type="button" onClick={() => handleAddItem("consultingPrices")}>+ Thêm gói tư vấn</button>}
-
-                {/* Lịch làm việc */}
-                <label>Lịch làm việc:</label>
-                <ul>
-                    {expertData.workingSchedule.map((schedule, index) => (
-                        <li key={index}>
-                            {isEditing ? (
-                                <>
-                                    <input type="text" value={schedule} onChange={(e) => handleChange(e, index, "workingSchedule")} />
-                                    <button type="button" onClick={() => handleRemoveItem(index, "workingSchedule")}>Xóa</button>
-                                </>
-                            ) : (
-                                schedule
-                            )}
-                        </li>
-                    ))}
-                </ul>
-                {isEditing && <button type="button" onClick={() => handleAddItem("workingSchedule")}>+ Thêm lịch làm việc</button>}
 
                 {/* Nút hành động */}
                 {isEditing ? (

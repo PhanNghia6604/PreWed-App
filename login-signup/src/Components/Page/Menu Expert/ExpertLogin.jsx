@@ -9,35 +9,40 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
-    const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
+    try {
+      const response = await fetch("api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (!Array.isArray(storedExperts)) {
-      console.error("Dữ liệu trong localStorage không hợp lệ!");
-      setError("Lỗi hệ thống, vui lòng thử lại!");
-      return;
-    }
+      const data = await response.json();
+      console.log("Dữ liệu nhận từ API:", data);
 
-    const expert = storedExperts.find(
-      (exp) => exp.username === username && exp.password === password
-    );
+      if (response.ok) {
+        // Lưu token vào localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userRole", "expert");
+        localStorage.setItem("expertId", data.id); // Lưu ID chuyên gia vào localStorage
 
-    if (expert) {
-      localStorage.setItem("currentExpert", expert.username); // Lưu username đang đăng nhập
-      localStorage.setItem("loggedInExpertId", expert.id);     // ✅ Lưu expertId
-      localStorage.setItem("token", "expert-token");
-      localStorage.setItem("userRole", "expert");
 
-      // Cập nhật state ngay lập tức
-      setIsLoggedIn(true);
-      setUserRole("expert");
+        // Cập nhật state
+        setIsLoggedIn(true);
+        setUserRole("expert");
 
-      navigate("/expert-dashboard");
-    } else {
-      setError("Tên đăng nhập hoặc mật khẩu không đúng!");
+        navigate("/expert-dashboard");
+      } else {
+        setError(data.message || "Đăng nhập thất bại!");
+      }
+    } catch (error) {
+      setError("Lỗi kết nối! Vui lòng thử lại.");
+      console.error("Login error:", error);
     }
   };
 
