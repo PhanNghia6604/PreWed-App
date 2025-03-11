@@ -48,11 +48,75 @@ const Test = () => {
       setCurrentPage(currentPage - 1);
     }
   };
-
-  const handleCompletion = () => {
-    console.log("User Responses:", responses);
-    navigate("/result");
+  const categoryMap = {
+    "Tâm lý": "TAMLY",
+    "Tài chính": "TAICHINH",
+    "Gia đình": "GIADINH",
+    "Sức khỏe": "SUCKHOE",
+    "Giao tiếp": "GIAOTIEP",
+    "Tôn giáo": "TONGIAO"
   };
+  
+
+  const handleCompletion = async () => {
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    const token = user?.token;
+  
+    if (!token) {
+      alert("Bạn chưa đăng nhập, vui lòng đăng nhập lại!");
+      navigate("/login");
+      return;
+    }
+  
+    const answers = Object.entries(responses).map(([questionId, answerText]) => {
+      const category = getCategory(Number(questionId));
+      return {
+        userId: user.id,
+        questionId: Number(questionId),
+        answerText,
+        category: categoryMap[category] || "UNKNOWN"
+      };
+    });
+  
+    try {
+      const response = await fetch("/api/test/submit", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ userId: user.id, answers }),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Lỗi API ${response.status}: ${errorText}`);
+      }
+  
+      const result = await response.json();
+      console.log("✔ Bài kiểm tra đã gửi thành công:", result);
+      alert("Bài kiểm tra đã gửi thành công!");
+      navigate("/result", { state: { testResult: result } });
+
+    } catch (error) {
+      console.error("🚨 Lỗi gửi bài kiểm tra:", error);
+      alert("Gửi bài kiểm tra thất bại, vui lòng thử lại!");
+    }
+  };
+  
+  
+  
+  // Hàm xác định danh mục (category) từ questionId
+  const getCategory = (questionId) => {
+    if (questionId <= 2) return "Tâm lý";
+    if (questionId <= 4) return "Tài chính";
+    if (questionId <= 6) return "Gia đình";
+    if (questionId <= 8) return "Sức khỏe";
+    if (questionId <= 10) return "Giao tiếp";
+    return "Tôn giáo";
+  };
+  
 
   const startIndex = currentPage * questionsPerPage;
   const displayedQuestions = testQuestions.slice(startIndex, startIndex + questionsPerPage);

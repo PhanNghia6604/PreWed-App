@@ -42,10 +42,19 @@ export const Login = ({ setIsLoggedIn }) => {
       if (data.token) {
         console.log("✔ Đăng nhập thành công:", data.token);
         localStorage.setItem("token", data.token);
-        if (data.username) {
-          localStorage.setItem("user", JSON.stringify(data));
+        if (data.token && data.id) {  // Đảm bảo có userId (id)
+          localStorage.setItem("user", JSON.stringify({ 
+            userId: data.id,  // Lưu id thành userId
+            fullName: data.fullName,
+            email: data.email,
+            role: data.roleEnum,
+            phone: data.phone,
+            address: data.address,
+            token: data.token,
+            username: data.username
+          }));
         }
-  
+        
         setIsLoggedIn(true);
         navigate("/");
       } else {

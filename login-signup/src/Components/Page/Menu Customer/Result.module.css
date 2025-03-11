@@ -19,33 +19,50 @@
 .message {
   font-size: 1.8rem;
   font-weight: 500;
-  color: #455a64;
-  background: rgba(255, 255, 255, 0.4);
   padding: 15px 30px;
   border-radius: 12px;
   backdrop-filter: blur(8px);
   animation: fadeIn 0.8s ease-in-out;
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 80%;
+  text-align: center;
+}
+
+/* 🎨 Màu nền phản hồi */
+.success {
+  background: rgba(165, 214, 167, 0.6); /* Xanh lá nhẹ */
+  color: #2e7d32;
+}
+
+.warning {
+  background: rgba(255, 204, 128, 0.6); /* Cam nhẹ */
+  color: #e65100;
+}
+
+.error {
+  background: rgba(239, 154, 154, 0.6); /* Đỏ nhẹ */
+  color: #b71c1c;
 }
 
 .expertBtn {
   margin-top: 30px;
   padding: 14px 28px;
+  
   font-size: 1.2rem;
   font-weight: bold;
-  color: #37474f;
-  background: #b0bec5;
+  color: black; /* Chữ trắng để tương phản */
+  background: #64B5F6; /* Xanh dương nhạt */
   border: none;
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0px 6px 12px rgba(176, 190, 197, 0.3);
+  box-shadow: 0px 6px 12px rgba(100, 181, 246, 0.3);
 }
 
 .expertBtn:hover {
-  background: #90a4ae;
-  box-shadow: 0px 8px 16px rgba(144, 164, 174, 0.4);
-  transform: translateY(-2px);
+  background: #42A5F5; /* Xanh dương đậm hơn khi hover */
+  box-shadow: 0px 8px 16px rgba(66, 165, 245, 0.4);
+  transform: translateY(-2px) scale(1.05);
 }
 
 @keyframes fadeIn {
