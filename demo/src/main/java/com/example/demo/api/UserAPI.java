@@ -35,6 +35,11 @@ public class UserAPI {
         List<User> users =userService.getAllUser();
     return ResponseEntity.ok(users);
     }
+    @GetMapping("{id}")
+    public ResponseEntity getUserById(@PathVariable long id){
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
     @DeleteMapping("{id}")
     public ResponseEntity delete(@PathVariable long id){
         User user =userService.delete(id);

@@ -62,6 +62,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+
     public User delete(long id) {
         User user = userRepository.findUserById(id);
         user.isDeleted = true;
@@ -109,5 +110,9 @@ public class UserService implements UserDetailsService {
         user.setUsername(userRequest.getUsername());
         user.setPassword(userRequest.getPassword());
         return userRepository.save(user);
+    }
+
+    public User getUserById(long id) {
+        return userRepository.findUserById(id);
     }
 }
