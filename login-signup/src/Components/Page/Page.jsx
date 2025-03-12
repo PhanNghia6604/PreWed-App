@@ -15,7 +15,7 @@ import Footer from '../Common/footer';
 import { Register } from "./Login/Register";
 import { BlogDetail } from './Blog/BlogDetai';
 import { ExpertsList } from './Consultant/Expert';
-import { ExpertDetail } from './Consultant/ExpertDetail';
+
 import Profile from './Menu Customer/Profile';
 import Test from './Menu Customer/Test';
 import Result from './Menu Customer/Result';
@@ -33,6 +33,9 @@ import { Earnings } from './Menu Expert/Earning';
 import FeedbackPage from './Menu Customer/FeedBackPage';
 import { AdminDashboard } from './Menu Admin/AdminDashbaord';
 import { AdminRegister } from './Menu Admin/AdminRegister';
+import ExpertDetail from './Consultant/ExpertDetail';
+import { ExpertProvider } from "./Consultant/ExpertContext"; // Import ExpertProvider
+
 
 
 
@@ -48,14 +51,13 @@ export const Page = () => {
     };
 
     window.addEventListener("storage", checkAuth);
-
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
   }, []);
 
   return (
-    <>
+    <ExpertProvider> {/* Bọc toàn bộ Router trong ExpertProvider */}
       <Router>
         {/* Kiểm tra userRole để hiển thị Header phù hợp */}
         {userRole === "expert" ? (
@@ -73,7 +75,7 @@ export const Page = () => {
           <Route exact path="/blog/:id" element={<BlogDetail />} />
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/expert" element={<ExpertsList />} />
-          <Route exact path="/expert/:id" element={<ExpertDetail />} />
+          <Route path="/expert/:name" element={<ExpertDetail />} />
           <Route exact path="/login" element={<ChooseRole />} />
           <Route exact path="/customer-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
@@ -89,16 +91,13 @@ export const Page = () => {
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/test" element={<Test />} />
           <Route exact path="/result" element={<Result />} />
-          <Route exact path="/admin-login" element={<AdminLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole}/>} />
-
+          <Route exact path="/admin-login" element={<AdminLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
           <Route exact path="/admin-dashboard" element={<AdminDashboard />} />
           <Route exact path="/admin-register" element={<AdminRegister />} />
-
-
-
         </Routes>
+
         <Footer />
       </Router>
-    </>
+    </ExpertProvider>
   );
 };
