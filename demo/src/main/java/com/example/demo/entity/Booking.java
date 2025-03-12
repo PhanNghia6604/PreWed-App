@@ -29,8 +29,11 @@ public class Booking {
     inverseJoinColumns = @JoinColumn(name = "service_id")
     )
     List<ServicePackage> services = new ArrayList<>();
-    LocalDateTime startTime;
-    LocalDateTime endTime;
+
+    @ManyToOne
+    @JoinColumn(name = "slot_expert_id")
+    SlotExpert slotExpert;
+
 
     @Enumerated(EnumType.STRING)
     BookingEnum status;

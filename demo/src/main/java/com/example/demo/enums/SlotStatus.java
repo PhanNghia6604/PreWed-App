@@ -1,5 +1,5 @@
 package com.example.demo.enums;
 
-public enum SlotEnum {
+public enum SlotStatus {
     AVAILABLE, UNAVAILABLE
 }
