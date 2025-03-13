@@ -5,6 +5,7 @@ import com.example.demo.entity.request.BookingRequest;
 import com.example.demo.enums.BookingEnum;
 import com.example.demo.enums.RoleEnum;
 import com.example.demo.enums.SlotStatus;
+import com.example.demo.exception.exceptions.BookingException;
 import com.example.demo.exception.exceptions.NotFoundException;
 import com.example.demo.repository.*;
 import com.example.demo.utils.UserUtils;
@@ -34,9 +35,13 @@ public class BookingService {
     @Autowired
     UserUtils userUtils;
 
-    public Booking createBooking(BookingRequest bookingRequest) throws Exception {
+    public Booking createBooking(BookingRequest bookingRequest)  {
         User expert = null;
         Slot slot = slotRepository.findById(bookingRequest.getSlotId()).orElseThrow(() -> new NotFoundException("Slot not found"));
+        //code here
+
+
+
 
         //ng quen booking nen chon luon staff
         if (bookingRequest.getExpertId() != null){
@@ -45,7 +50,7 @@ public class BookingService {
             //check xem slot nay, staff nay, ngay nay da duoc booking hay chua
             SlotExpert checkExpert = slotExpertRepository.findBySlotIdAndExpertIdAndDate(bookingRequest.getSlotId(), bookingRequest.getExpertId(), bookingRequest.getBookingDate());
             if(checkExpert != null && SlotStatus.BOOKED.equals(checkExpert.getStatus())){
-                throw new Exception("Selected staff is not available for the chosen slot on the given data");
+                throw new BookingException("Selected staff is not available for the chosen slot on the given data");
             }
         }else{
             //ng la book
@@ -60,7 +65,7 @@ public class BookingService {
             }
             //neu khong co staff nao ranh thi bao loi
             if(expert == null){
-                throw new Exception("No available staff for the selected slot");
+                throw new BookingException("No available staff for the selected slot");
             }
         }
             List<ServicePackage> servicePackages = serviceRepository.findByIdIn(bookingRequest.getServiceIds());

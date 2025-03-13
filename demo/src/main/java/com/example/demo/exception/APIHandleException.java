@@ -1,6 +1,7 @@
 package com.example.demo.exception;
 
 import com.example.demo.exception.exceptions.AuthorizeException;
+import com.example.demo.exception.exceptions.BookingException;
 import com.example.demo.exception.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,9 @@ public class APIHandleException {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity handleNotFoundException(NotFoundException exception){
         return new ResponseEntity(exception.getMessage(),HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(BookingException.class)
+    public ResponseEntity handleBookingException(BookingException exception){
+        return new ResponseEntity(exception.getMessage(),HttpStatus.BAD_REQUEST);
     }
 }

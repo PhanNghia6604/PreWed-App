@@ -16,7 +16,7 @@ public class BookingAPI {
     BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity createBooking(@RequestBody BookingRequest bookingRequest) throws Exception {
+    public ResponseEntity createBooking(@RequestBody BookingRequest bookingRequest)  {
         Booking booking = bookingService.createBooking(bookingRequest);
         return ResponseEntity.ok(booking);
     }
