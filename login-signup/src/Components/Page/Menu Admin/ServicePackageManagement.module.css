@@ -1,0 +1,76 @@
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Căn giữa nội dung */
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Căn giữa form */
+  .formContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    color: #000; /* Chữ màu đen */
+  }
+  
+  .table th {
+    background: #007bff;
+    color: white;
+  }
+  
+  .table tbody tr:nth-child(even) {
+    background: #f9f9f9;
+  }
+  
+  .editButton {
+    background: #ffc107;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+  }
+  
+  .editButton:hover {
+    background: #e0a800;
+  }
+  
+  .deleteButton {
+    background: #dc3545;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+  }
+  
+  .deleteButton:hover {
+    background: #c82333;
+  }
+  
