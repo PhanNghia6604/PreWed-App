@@ -1,76 +1,178 @@
+/* ======================== */
+/* 🌍 Global Styles */
+/* ======================== */
+
+body {
+  background: #222;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* ======================== */
+/* 📦 Container */
+/* ======================== */
+
 .container {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center; /* Căn giữa nội dung */
-  }
-  
-  .title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Căn giữa form */
-  .formContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .table th,
-  .table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    color: #000; /* Chữ màu đen */
-  }
-  
-  .table th {
-    background: #007bff;
-    color: white;
-  }
-  
-  .table tbody tr:nth-child(even) {
-    background: #f9f9f9;
-  }
-  
-  .editButton {
-    background: #ffc107;
-    border: none;
-    padding: 8px 12px;
-    margin-right: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    color: white;
-  }
-  
-  .editButton:hover {
-    background: #e0a800;
-  }
-  
-  .deleteButton {
-    background: #dc3545;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    color: white;
-  }
-  
-  .deleteButton:hover {
-    background: #c82333;
-  }
-  
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: #000;
+}
+
+/* ======================== */
+/* 🔠 Typography */
+/* ======================== */
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* ======================== */
+/* 🔲 Form Styling */
+/* ======================== */
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.input, .textarea {
+  width: 100%;
+  max-width: 500px;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f5f5f5;
+  color: #000;
+  transition: border 0.3s ease;
+}
+
+.input:focus, .textarea:focus {
+  border-color: #000;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ======================== */
+/* 📊 Table Styling */
+/* ======================== */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.table th {
+  background: #444;
+  color: #fff;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #f5f5f5;
+}
+
+/* ======================== */
+/* 🎯 Action Buttons (Edit & Delete) */
+/* ======================== */
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.iconButton {
+  border: 1px solid black;  /* Chỉ viền đen */
+  background: none; /* Không có màu nền */
+  color: black; /* Màu chữ đen */
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* 🖊️ Edit Button */
+.editButton:hover {
+  background: #f5f5f5; /* Nhẹ nhàng khi hover */
+}
+
+/* ❌ Delete Button */
+.deleteButton:hover {
+  background: #f8d7da; /* Nhẹ nhàng khi hover */
+}
+
+/* ======================== */
+/* ➕ Create Button */
+/* ======================== */
+
+.createButton {
+  border: 1px solid black;
+  background: none;
+  color: black;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.createButton:hover {
+  background: #f5f5f5;
+}
+
+/* 🖊️ Nút Sửa */
+.editButton {
+  border: 1px solid black !important;
+  background: none !important;
+  color: black !important;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.editButton:hover {
+  background: #818181 !important;
+}
+
+/* ❌ Nút Xóa */
+.deleteButton {
+  border: 1px solid black !important;
+  background: none !important;
+  color: black !important;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deleteButton:hover {
+  background: #818181 !important; /* Nếu muốn màu khác */
+}
