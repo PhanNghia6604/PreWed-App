@@ -8,7 +8,8 @@ export const ExpertsList = () => {
   const [filteredList, setFilteredList] = useState([]);
   const [specialties, setSpecialties] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showCategories, setShowCategories] = useState(false);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showRatingDropdown, setShowRatingDropdown] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const expertsPerPage = 6;
   const [loading, setLoading] = useState(true);
@@ -44,18 +45,22 @@ export const ExpertsList = () => {
     setCurrentPage(1);
   };
 
-  const filterExperts = (specialty) => {
-    if (specialty === "Tất cả") {
-      setFilteredList(list);
-    } else {
-      setFilteredList(list.filter((expert) => expert.specialty === specialty));
+  const filterExperts = (specialty, rating = 0) => {
+    let filtered = list;
+
+    if (specialty !== "Tất cả") {
+      filtered = filtered.filter((expert) => expert.specialty === specialty);
     }
+
+    if (rating > 0) {
+      filtered = filtered.filter((expert) => expert.rating >= rating);
+    }
+
+    setFilteredList(filtered);
     setSearchTerm("");
     setCurrentPage(1);
-  };
-
-  const toggleCategories = () => {
-    setShowCategories(!showCategories);
+    setShowCategoryDropdown(false);
+    setShowRatingDropdown(false);
   };
 
   const indexOfLastExpert = currentPage * expertsPerPage;
@@ -69,28 +74,70 @@ export const ExpertsList = () => {
       <div className={style.container}>
         <Heading title="Danh sách chuyên gia" />
 
-        <input
-          type="text"
-          placeholder="Tìm chuyên gia..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className={style.searchInput}
-        />
+        {/* Thanh tìm kiếm và bộ lọc */}
+        <div className={style.filterContainer}>
+          <input
+            type="text"
+            placeholder="Tìm chuyên gia..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className={style.searchInput}
+          />
 
-        <button className={style.toggleBtn} onClick={toggleCategories}>
-          {showCategories ? "Ẩn danh mục ▲" : "Hiện danh mục ▼"}
-        </button>
-
-        {showCategories && (
-          <div className={style.catWrapper}>
-            {specialties.map((specialty) => (
-              <button key={specialty} className={style.catButton} onClick={() => filterExperts(specialty)}>
-                {specialty}
-              </button>
-            ))}
+          {/* Dropdown danh mục */}
+          <div className={style.dropdownWrapper}>
+            <button
+              className={style.toggleBtn}
+              onClick={() => {
+                setShowCategoryDropdown(!showCategoryDropdown);
+                setShowRatingDropdown(false);
+              }}
+            >
+              Danh mục {showCategoryDropdown ? "▲" : "▼"}
+            </button>
+            {showCategoryDropdown && (
+              <div className={style.dropdown}>
+                {specialties.map((specialty) => (
+                  <button
+                    key={specialty}
+                    className={style.dropdownItem}
+                    onClick={() => filterExperts(specialty, 0)}
+                  >
+                    {specialty}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
 
+          {/* Dropdown đánh giá */}
+          <div className={style.dropdownWrapper}>
+            <button
+              className={style.toggleBtn}
+              onClick={() => {
+                setShowRatingDropdown(!showRatingDropdown);
+                setShowCategoryDropdown(false);
+              }}
+            >
+              Đánh giá {showRatingDropdown ? "▲" : "▼"}
+            </button>
+            {showRatingDropdown && (
+              <div className={style.dropdown}>
+                {[5, 4, 3, 2, 1, 0].map((rating) => (
+                  <button
+                    key={rating}
+                    className={style.dropdownItem}
+                    onClick={() => filterExperts("Tất cả", rating)}
+                  >
+                    {rating === 0 ? "Tất cả" : `${rating}★ trở lên`}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Danh sách chuyên gia */}
         {loading ? (
           <div className={style.skeletonWrapper}>
             {[...Array(6)].map((_, index) => (
@@ -111,7 +158,6 @@ export const ExpertsList = () => {
                         alt={expert.name}
                         onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
                       />
-
                     </div>
                     <h3>{expert.name}</h3>
 
@@ -141,6 +187,7 @@ export const ExpertsList = () => {
               )}
             </div>
 
+            {/* Phân trang */}
             <div className={style.pagination}>
               {Array.from({ length: Math.ceil(filteredList.length / expertsPerPage) }, (_, i) => (
                 <button key={i} className={style.pageButton} onClick={() => paginate(i + 1)}>

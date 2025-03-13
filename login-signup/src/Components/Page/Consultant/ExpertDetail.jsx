@@ -1,12 +1,33 @@
 import { useParams } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ExpertContext } from "./ExpertContext";
 import expertDescriptions from "../Consultant/ExpertDescription"; // Import dữ liệu mô tả chuyên môn
 import styles from "./ExpertDetail.module.css";
 
+const getRandomExperience = () => Math.floor(Math.random() * 10) + 1;
+
 const ExpertDetail = () => {
   const { name } = useParams();
   const { experts } = useContext(ExpertContext);
+  const [experience, setExperience] = useState(null);
+
+  // ✅ Luôn gọi useEffect trước return, không đặt sau if()
+  useEffect(() => {
+    if (!experts || experts.length === 0) return; // Tránh lỗi nếu dữ liệu chưa có
+
+    const expert = experts.find((e) => e.name === decodeURIComponent(name));
+    if (!expert) return;
+
+    // Kiểm tra localStorage trước khi random
+    const storedExperience = localStorage.getItem(`experience_${expert.name}`);
+    if (storedExperience) {
+      setExperience(parseInt(storedExperience, 10));
+    } else {
+      const newExperience = expert.experience || getRandomExperience();
+      setExperience(newExperience);
+      localStorage.setItem(`experience_${expert.name}`, newExperience);
+    }
+  }, [experts, name]); // Phụ thuộc vào danh sách chuyên gia và tên chuyên gia
 
   if (!experts || experts.length === 0) {
     return <p>Đang tải dữ liệu chuyên gia...</p>;
@@ -23,19 +44,18 @@ const ExpertDetail = () => {
       <div className={styles.card}>
         {/* Avatar chuyên gia */}
         <div className={styles.avatarContainer}>
-  <img
-    src={expert.avatar || "/images/experts/default-avatar.png"}
-    alt={expert.name}
-    className={styles.avatar}
-    onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
-  />
-</div>
-
+          <img
+            src={expert.avatar || "/images/experts/default-avatar.png"}
+            alt={expert.name}
+            className={styles.avatar}
+            onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
+          />
+        </div>
 
         {/* Thông tin chính */}
         <h2>{expert.name}</h2>
         <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
-        <p><strong>Kinh nghiệm:</strong> {expert.experience} năm</p>
+        <p><strong>Kinh nghiệm:</strong> {experience !== null ? experience : "Đang tải..."} năm</p>
         <p><strong>Đánh giá:</strong> ⭐ {expert.rating} / 5</p>
 
         {/* Mô tả theo chuyên môn */}
