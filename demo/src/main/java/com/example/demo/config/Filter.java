@@ -41,9 +41,7 @@ public class Filter extends OncePerRequestFilter {
             "/api/get",
             "/api/register",
             "/api/{id}",
-            "/api/expert/register",
-            "/api/expert/profile/{id}",
-            "/api/expert/all"
+            "/api/expert/**"
     );
 
     boolean isPermitted(HttpServletRequest request){

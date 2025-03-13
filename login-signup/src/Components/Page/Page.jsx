@@ -36,6 +36,8 @@ import { AdminRegister } from './Menu Admin/AdminRegister';
 import ExpertDetail from './Consultant/ExpertDetail';
 import { ExpertProvider } from "./Consultant/ExpertContext"; // Import ExpertProvider
 
+import ServicePackageManagement from './Menu Admin/ServicePackageManagement';
+
 
 
 
@@ -93,6 +95,7 @@ export const Page = () => {
           <Route exact path="/result" element={<Result />} />
           <Route exact path="/admin-login" element={<AdminLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
           <Route exact path="/admin-dashboard" element={<AdminDashboard />} />
+         <Route path="/admin-servicepackage" element={<ServicePackageManagement/>}/>
           <Route exact path="/admin-register" element={<AdminRegister />} />
         </Routes>
 

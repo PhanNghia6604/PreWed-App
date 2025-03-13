@@ -4,6 +4,7 @@ import com.example.demo.entity.Expert;
 import com.example.demo.entity.request.ExpertRequest;
 import com.example.demo.entity.response.ExpertResponse;
 import com.example.demo.service.ExpertService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/expert")
+
 public class ExpertAPI {
     private final ExpertService expertService;
 
@@ -44,4 +46,41 @@ public class ExpertAPI {
     public List<ExpertResponse> getAllExperts() {
         return expertService.getAllExperts(); // Gọi phương thức từ service
     }
+    @PutMapping("/expert/{id}")
+    public ExpertResponse updateExpert(@PathVariable Long id, @RequestBody ExpertRequest request) {
+        Expert updatedExpert = expertService.updateExpertbyID(id, request);
+
+        // Chuyển đổi Expert thành ExpertResponse và trả về
+        ExpertResponse response = new ExpertResponse();
+        response.setUsername(updatedExpert.getUsername());
+        response.setEmail(updatedExpert.getEmail());
+        response.setName(updatedExpert.getName());
+        response.setPhone(updatedExpert.getPhone());
+        response.setAddress(updatedExpert.getAddress());
+        response.setSpecialty(updatedExpert.getSpecialty());
+        response.setAvatar(updatedExpert.getAvatar());
+        response.setCertificates(updatedExpert.getCertificates());
+
+        return response;
+    }
+    @PutMapping("/expert/update")
+    public ExpertResponse updateLoggedInExpert(@RequestBody ExpertRequest request) {
+        Expert updatedExpert = expertService.updateExpert(request);
+
+        // Chuyển đổi Expert thành ExpertResponse và trả về
+        ExpertResponse response = new ExpertResponse();
+        response.setUsername(updatedExpert.getUsername());
+        response.setEmail(updatedExpert.getEmail());
+        response.setName(updatedExpert.getName());
+        response.setPhone(updatedExpert.getPhone());
+        response.setAddress(updatedExpert.getAddress());
+        response.setSpecialty(updatedExpert.getSpecialty());
+        response.setAvatar(updatedExpert.getAvatar());
+        response.setCertificates(updatedExpert.getCertificates());
+
+        return response;
+    }
+
+
 }
+
