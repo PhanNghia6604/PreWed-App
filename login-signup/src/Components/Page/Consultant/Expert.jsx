@@ -8,12 +8,13 @@ export const ExpertsList = () => {
   const [filteredList, setFilteredList] = useState([]);
   const [specialties, setSpecialties] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [showRatingDropdown, setShowRatingDropdown] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const expertsPerPage = 6;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ratingFilter, setRatingFilter] = useState(0);
+  const [showFilters, setShowFilters] = useState(true);
+  const [selectedSpecialty, setSelectedSpecialty] = useState("Tất cả");
+  const expertsPerPage = 6;
 
   useEffect(() => {
     setLoading(true);
@@ -39,42 +40,35 @@ export const ExpertsList = () => {
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
-    setFilteredList(
-      list.filter((expert) => expert.name.toLowerCase().includes(value))
-    );
-    setCurrentPage(1);
+    filterExperts(selectedSpecialty, value, ratingFilter);
   };
 
-  const filterExperts = (specialty, rating = 0) => {
+  const filterExperts = (specialty = "Tất cả", search = searchTerm, rating = ratingFilter) => {
     let filtered = list;
-
     if (specialty !== "Tất cả") {
       filtered = filtered.filter((expert) => expert.specialty === specialty);
     }
-
+    if (search) {
+      filtered = filtered.filter((expert) => expert.name.toLowerCase().includes(search));
+    }
     if (rating > 0) {
       filtered = filtered.filter((expert) => expert.rating >= rating);
     }
-
     setFilteredList(filtered);
-    setSearchTerm("");
     setCurrentPage(1);
-    setShowCategoryDropdown(false);
-    setShowRatingDropdown(false);
   };
 
   const indexOfLastExpert = currentPage * expertsPerPage;
   const indexOfFirstExpert = indexOfLastExpert - expertsPerPage;
   const currentExperts = filteredList.slice(indexOfFirstExpert, indexOfLastExpert);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
-    <article>
-      <div className={style.container}>
-        <Heading title="Danh sách chuyên gia" />
-
-        {/* Thanh tìm kiếm và bộ lọc */}
+    <article className={style.container}>
+      <Heading title="Danh sách chuyên gia" />
+      <button className={style.toggleFiltersButton} onClick={() => setShowFilters(!showFilters)}>
+        {showFilters ? "Ẩn bộ lọc" : "Hiện bộ lọc"}
+      </button>
+      {showFilters && (
         <div className={style.filterContainer}>
           <input
             type="text"
@@ -84,120 +78,90 @@ export const ExpertsList = () => {
             className={style.searchInput}
           />
 
-          {/* Dropdown danh mục */}
-          <div className={style.dropdownWrapper}>
-            <button
-              className={style.toggleBtn}
-              onClick={() => {
-                setShowCategoryDropdown(!showCategoryDropdown);
-                setShowRatingDropdown(false);
-              }}
-            >
-              Danh mục {showCategoryDropdown ? "▲" : "▼"}
-            </button>
-            {showCategoryDropdown && (
-              <div className={style.dropdown}>
-                {specialties.map((specialty) => (
-                  <button
-                    key={specialty}
-                    className={style.dropdownItem}
-                    onClick={() => filterExperts(specialty, 0)}
-                  >
-                    {specialty}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <select
+            className={style.dropdownFilter}
+            value={selectedSpecialty}
+            onChange={(e) => {
+              setSelectedSpecialty(e.target.value);
+              filterExperts(e.target.value);
+            }}
+          >
+            {specialties.map((specialty) => (
+              <option key={specialty} value={specialty}>{specialty}</option>
+            ))}
+          </select>
 
-          {/* Dropdown đánh giá */}
-          <div className={style.dropdownWrapper}>
-            <button
-              className={style.toggleBtn}
-              onClick={() => {
-                setShowRatingDropdown(!showRatingDropdown);
-                setShowCategoryDropdown(false);
-              }}
-            >
-              Đánh giá {showRatingDropdown ? "▲" : "▼"}
-            </button>
-            {showRatingDropdown && (
-              <div className={style.dropdown}>
-                {[5, 4, 3, 2, 1, 0].map((rating) => (
-                  <button
-                    key={rating}
-                    className={style.dropdownItem}
-                    onClick={() => filterExperts("Tất cả", rating)}
-                  >
-                    {rating === 0 ? "Tất cả" : `${rating}★ trở lên`}
-                  </button>
-                ))}
-              </div>
-            )}
+          <div className={style.ratingFilter}>
+            <label>Lọc theo đánh giá:</label>
+            <select onChange={(e) => { setRatingFilter(e.target.value); filterExperts(selectedSpecialty, searchTerm, e.target.value); }}>
+              <option value={0}>Tất cả</option>
+              <option value={1}>1 sao trở lên</option>
+              <option value={2}>2 sao trở lên</option>
+              <option value={3}>3 sao trở lên</option>
+              <option value={4}>4 sao trở lên</option>
+              <option value={5}>5 sao</option>
+            </select>
           </div>
         </div>
+      )}
 
-        {/* Danh sách chuyên gia */}
-        {loading ? (
-          <div className={style.skeletonWrapper}>
-            {[...Array(6)].map((_, index) => (
-              <div key={index} className={style.skeletonBox}></div>
-            ))}
-          </div>
-        ) : error ? (
-          <p className={style.errorMsg}>{error}</p>
-        ) : (
-          <>
-            <div className={style.content}>
-              {currentExperts.length > 0 ? (
-                currentExperts.map((expert) => (
-                  <div className={style.box} key={expert.id}>
-                    <div className={style.img}>
-                      <img
-                        src={`/images/experts/${expert.avatar}`}
-                        alt={expert.name}
-                        onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
-                      />
-                    </div>
-                    <h3>{expert.name}</h3>
-
-                    <div className={style.rating}>
-                      {expert.rating ? (
-                        <>
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <span key={i} className={i < expert.rating ? style.starFilled : style.starEmpty}>
-                              ★
-                            </span>
-                          ))}
-                          <span className={style.ratingNumber}>({expert.rating.toFixed(1)})</span>
-                        </>
-                      ) : (
-                        <span className={style.noRating}>Chưa có đánh giá</span>
-                      )}
-                    </div>
-
-                    <p className={style.specialty}>{expert.specialty}</p>
-                    <Link to={`/expert/${expert.name}`} className={style.detailButton}>
-                      Xem chi tiết
-                    </Link>
+      {loading ? (
+        <div className={style.skeletonWrapper}>
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className={style.skeletonBox}></div>
+          ))}
+        </div>
+      ) : error ? (
+        <p className={style.errorMsg}>{error}</p>
+      ) : (
+        <>
+          <div className={style.content}>
+            {currentExperts.length > 0 ? (
+              currentExperts.map((expert) => (
+                <div className={style.box} key={expert.id}>
+                  <div className={style.imgWrapper}>
+                    <img
+                      src={`/images/experts/${expert.avatar}`}
+                      alt={expert.name}
+                      onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
+                    />
                   </div>
-                ))
-              ) : (
-                <p className={style.noResult}>Không tìm thấy chuyên gia nào.</p>
-              )}
-            </div>
+                  <h3>{expert.name}</h3>
+                  <p className={style.specialty}>{expert.specialty}</p>
+                  <p className={style.rating}>⭐ {expert.rating || "Chưa có đánh giá"}</p>
+                  <Link to={`/expert/${expert.name}`} className={style.detailButton}>
+                    Xem chi tiết
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <p className={style.noResult}>Không tìm thấy chuyên gia nào.</p>
+            )}
+          </div>
 
-            {/* Phân trang */}
-            <div className={style.pagination}>
-              {Array.from({ length: Math.ceil(filteredList.length / expertsPerPage) }, (_, i) => (
-                <button key={i} className={style.pageButton} onClick={() => paginate(i + 1)}>
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+          <div className={style.pagination}>
+            {currentPage > 1 && (
+              <button className={style.pageButton} onClick={() => setCurrentPage(currentPage - 1)}>
+                &laquo; Trước
+              </button>
+            )}
+            {Array.from({ length: Math.ceil(filteredList.length / expertsPerPage) }, (_, i) => (
+              <button
+                key={i}
+                className={`${style.pageButton} ${currentPage === i + 1 ? style.activePage : ""}`}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            {currentPage < Math.ceil(filteredList.length / expertsPerPage) && (
+              <button className={style.pageButton} onClick={() => setCurrentPage(currentPage + 1)}>
+                Sau &raquo;
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </article>
   );
 };
