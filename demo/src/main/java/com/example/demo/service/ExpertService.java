@@ -8,6 +8,8 @@ import com.example.demo.enums.RoleEnum;
 import com.example.demo.repository.ExpertRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +102,94 @@ public class ExpertService {
 
         return responseList;
     }
+    @Transactional
+    public Expert updateExpertbyID(Long id, ExpertRequest request) {
+        Optional<Expert> existingExpert = expertRepository.findById(id);
+
+        if (existingExpert.isPresent()) {
+            Expert expert = existingExpert.get();
+
+            // Kiểm tra và cập nhật các trường thông tin
+            if (request.getName() != null && !request.getName().isEmpty()) {
+                expert.setName(request.getName());
+            }
+            if (request.getPhone() != null && !request.getPhone().isEmpty()) {
+                expert.setPhone(request.getPhone());
+            }
+            if (request.getAddress() != null && !request.getAddress().isEmpty()) {
+                expert.setAddress(request.getAddress());
+            }
+            if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+                expert.setEmail(request.getEmail());
+            }
+            if (request.getSpecialty() != null && !request.getSpecialty().isEmpty()) {
+                expert.setSpecialty(request.getSpecialty());
+            }
+            if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
+                expert.setAvatar(request.getAvatar());
+            }
+            if (request.getCertificates() != null && !request.getCertificates().isEmpty()) {
+                expert.setCertificates(request.getCertificates());
+            }
+
+            // Cập nhật mật khẩu nếu có thay đổi
+            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                expert.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
+
+            return expertRepository.save(expert);
+        } else {
+            throw new RuntimeException("Expert not found with id: " + id);
+        }
+    }
+
+
+    @Transactional
+    public Expert updateExpert(ExpertRequest request) {
+        // Lấy thông tin người dùng hiện tại
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Lấy tên người dùng (hoặc có thể là ID người dùng tùy vào cách bạn lưu thông tin người dùng)
+
+        Optional<Expert> existingExpert = expertRepository.findByUsername(username);
+
+        if (existingExpert.isPresent()) {
+            Expert expert = existingExpert.get();
+
+            // Kiểm tra và cập nhật các trường thông tin
+            if (request.getName() != null && !request.getName().isEmpty()) {
+                expert.setName(request.getName());
+            }
+            if (request.getPhone() != null && !request.getPhone().isEmpty()) {
+                expert.setPhone(request.getPhone());
+            }
+            if (request.getAddress() != null && !request.getAddress().isEmpty()) {
+                expert.setAddress(request.getAddress());
+            }
+            if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+                expert.setEmail(request.getEmail());
+            }
+            if (request.getSpecialty() != null && !request.getSpecialty().isEmpty()) {
+                expert.setSpecialty(request.getSpecialty());
+            }
+            if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
+                expert.setAvatar(request.getAvatar());
+            }
+            if (request.getCertificates() != null && !request.getCertificates().isEmpty()) {
+                expert.setCertificates(request.getCertificates());
+            }
+
+            // Cập nhật mật khẩu nếu có thay đổi
+            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                expert.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
+
+            return expertRepository.save(expert);
+        } else {
+            throw new RuntimeException("Expert not found");
+        }
+    }
+
+
 }
 
 
