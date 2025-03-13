@@ -17,7 +17,7 @@ public class ServicePackageRequest {
     String description;
     Float price;
     int duration;
-    String expertCommission;
-    String paymentMethod;
-    LocalDate transactionDate;
+
+
+
 }
