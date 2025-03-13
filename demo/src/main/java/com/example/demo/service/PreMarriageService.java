@@ -41,7 +41,7 @@ public class PreMarriageService {
 
     public ServicePackage deleteServiceById(long id) {
     ServicePackage servicePackage = getServiceById(id);
-servicePackage.setAvailable(false);
-return serviceRepository.save(servicePackage);
+    servicePackage.setAvailable(false);
+    return serviceRepository.save(servicePackage);
     }
 }

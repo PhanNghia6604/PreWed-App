@@ -27,9 +27,7 @@ public class Expert extends User {
     @ElementCollection
     @NotEmpty(message = "Certificates cannot be empty")
     private List<String> certificates; // Danh sách chứng chỉ
-    @OneToMany(mappedBy = "expert")
-            @JsonIgnore
-    List<SlotExpert> slotExperts = new ArrayList<>();
+
 
     public Expert() {
         this.setRoleEnum(RoleEnum.EXPERT); // Mặc định role là EXPERT

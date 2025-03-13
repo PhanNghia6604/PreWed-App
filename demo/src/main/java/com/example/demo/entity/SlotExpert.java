@@ -31,7 +31,7 @@ public class SlotExpert {
 
     @ManyToOne
     @JoinColumn(name = "expert_id")
-    Expert expert;
+    User expert;
 
     @OneToMany(mappedBy = "slotExpert")
             @JsonIgnore

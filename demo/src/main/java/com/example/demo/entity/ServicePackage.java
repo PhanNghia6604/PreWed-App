@@ -25,7 +25,6 @@ public class ServicePackage {
     public float price;
     public int duration;
     public boolean isAvailable = true;
-    public boolean isDeleted = false;
 
     @ManyToMany(mappedBy = "services")
     @JsonIgnore
