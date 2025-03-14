@@ -1,0 +1,10 @@
+.button {
+    background-color: #818181; /* Màu mặc định */
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: black; /* Đổi màu thành đen khi hover */
+  }
+  
