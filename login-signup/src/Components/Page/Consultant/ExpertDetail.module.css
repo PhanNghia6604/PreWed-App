@@ -251,3 +251,67 @@ ul {
         padding: 10px;
     }
 }
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+  }
+  
+  .packageItem {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .selectButton {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .selectButton:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+  
+  .closeButton {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .confirmButton {
+    background: green;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .confirmButton:disabled {
+    background: gray;
+    cursor: not-allowed;
+  }
+  
