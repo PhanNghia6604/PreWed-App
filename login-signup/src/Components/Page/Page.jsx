@@ -37,6 +37,7 @@ import ExpertDetail from './Consultant/ExpertDetail';
 import { ExpertProvider } from "./Consultant/ExpertContext"; // Import ExpertProvider
 
 import ServicePackageManagement from './Menu Admin/ServicePackageManagement';
+import HistoryTest from './Menu Customer/HistoryTest';
 
 
 
@@ -88,6 +89,7 @@ export const Page = () => {
           <Route path='expert-earning' element={<Earnings />} />
           <Route exact path="/expert-appointments" element={<ExpertAppointments />} />
           <Route exact path="/profile" element={<Profile />} />
+          <Route path="/history-test" element={<HistoryTest/>}/>
           <Route exact path="/my-booking" element={<MyBookings />} />
           <Route exact path="/booking-payment/:expertId/:bookingId" element={<BookingPayment />} />
           <Route exact path="/register" element={<Register />} />

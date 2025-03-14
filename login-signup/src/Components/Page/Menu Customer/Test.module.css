@@ -37,7 +37,9 @@
 .options {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 60px; /* Tăng khoảng cách giữa hai lựa chọn */
+  padding: 8px 20px; /* Tăng khoảng cách giữa các lựa chọn */
+  
 }
 
 .option {
@@ -68,4 +70,13 @@ input[type="radio"] {
 .submitBtn:hover {
   background: #007bff;
   color: white;
+}
+.categoryHeader {
+  text-align: center;
+  background-color: #f5f5f5;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 20px 0;
+  border-radius: 5px;
 }
