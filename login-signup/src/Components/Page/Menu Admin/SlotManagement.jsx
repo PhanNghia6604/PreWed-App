@@ -13,7 +13,7 @@ const SlotManagement = () => {
 
   const fetchSlots = async () => {
     try {
-      const response = await fetch("/api/slot");
+      const response = await fetch("/api/slots");
       const data = await response.json();
       setSlots(data);
     } catch (error) {
@@ -23,7 +23,7 @@ const SlotManagement = () => {
 
   const handleCreateSlot = async () => {
     try {
-      await fetch("api/slot", {
+      await fetch("api/slots", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSlot),

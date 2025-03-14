@@ -20,13 +20,15 @@ const ExpertDetail = () => {
   const [isBooking, setIsBooking] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-const handleGoBack = () => {
-  navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
-};
+  const handleGoBack = () => {
+    navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
+  };
 
   useEffect(() => {
+    console.log("Danh sách chuyên gia:", experts); // Kiểm tra experts có dữ liệu chưa
     if (!experts || experts.length === 0) return;
     const expert = experts.find((e) => e.name === decodeURIComponent(name));
+    console.log("Chuyên gia tìm thấy:", expert); // Kiểm tra chuyên gia có tồn tại không
     if (!expert) return;
 
     const storedExperience = localStorage.getItem(`experience_${expert.name}`);
@@ -51,53 +53,73 @@ const handleGoBack = () => {
     }
   };
 
-  const fetchAvailableSlots = async () => {
+  const fetchAvailableSlots = async (expertId, serviceId) => {
     try {
-      const response = await fetch("/api/booking");
+      const response = await fetch(`/api/slots?expertId=${expertId}&serviceId=${serviceId}`);
       if (!response.ok) throw new Error("Lỗi khi tải lịch trống");
       const data = await response.json();
+      console.log("Dữ liệu slot nhận được:", data); // 🔥 Kiểm tra dữ liệu
       setAvailableSlots(data);
     } catch (error) {
       console.error(error);
     }
   };
 
+
   const handleSelectPackage = (pkg) => {
     setSelectedPackage(pkg);
-    fetchAvailableSlots();
+    const expert = experts.find((e) => e.name === decodeURIComponent(name));
+    if (expert) {
+      fetchAvailableSlots(expert.id, pkg.id); // Gọi API slots với chuyên gia & gói dịch vụ
+    }
   };
 
   const handleBooking = async () => {
-    if (!selectedPackage || !selectedSlot) {
-      setMessage("Vui lòng chọn đầy đủ thông tin.");
+    if (!selectedSlot) {
+      alert("Vui lòng chọn một khung giờ trước khi đặt lịch!");
       return;
     }
-
-    setIsBooking(true);
+  
+    const expert = experts.find((e) => e.name === decodeURIComponent(name));
+    if (!expert) {
+      alert("Không tìm thấy chuyên gia!");
+      return;
+    }
+  
+    console.log("🔍 Đang đặt lịch với dữ liệu:");
+    console.log("Expert ID:", expert.id); // Đảm bảo expert.id có giá trị
+    console.log("Slot ID:", selectedSlot.id);
+    console.log("Thời gian:", selectedSlot.startTime, " - ", selectedSlot.endTime);
+  
     try {
-      const expert = experts.find((e) => e.name === decodeURIComponent(name));
-      const response = await fetch("/api/booking", {
+      const response = await fetch("/api/book-appointment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          slotId: selectedSlot.id,
           expertId: expert.id,
-          serviceIds: [selectedPackage.id],
-        }),
+          slotId: selectedSlot.id,
+          startTime: selectedSlot.startTime,
+          endTime: selectedSlot.endTime
+        })
       });
-
-      const result = await response.json();
+  
+      const data = await response.json();
+      console.log("📩 Kết quả API:", data);
+  
       if (response.ok) {
-        setMessage("Đặt lịch thành công!");
+        alert("Đặt lịch thành công!");
       } else {
-        setMessage(result.message || "Đặt lịch thất bại.");
+        alert(`Lỗi: ${data.message || "Không thể đặt lịch"}`);
       }
     } catch (error) {
-      setMessage("Lỗi kết nối, vui lòng thử lại.");
-    } finally {
-      setIsBooking(false);
+      console.error("❌ Lỗi khi gửi yêu cầu đặt lịch:", error);
+      alert("Đã có lỗi xảy ra, vui lòng thử lại!");
     }
   };
+  
+  
+  
+  
 
   if (!experts || experts.length === 0) {
     return <p>Đang tải dữ liệu chuyên gia...</p>;
@@ -110,8 +132,8 @@ const handleGoBack = () => {
   console.log("Danh sách gói trước khi đặt lịch:", servicePackages);
   return (
     <div className={styles.container}>
-     
-      
+
+
       <div className={styles.card}>
         <div className={styles.avatarContainer}>
           <img
@@ -144,11 +166,11 @@ const handleGoBack = () => {
           Đặt lịch hẹn
         </button>
         <button className={styles.backButton} onClick={handleGoBack}>
-  ← Quay lại danh sách chuyên gia
-</button>
+          ← Quay lại danh sách chuyên gia
+        </button>
 
       </div>
-      
+
 
       {isModalOpen && (
         <div className={styles.modalOverlay}>
@@ -171,29 +193,33 @@ const handleGoBack = () => {
         </div>
       )}
 
-      {selectedPackage && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h3>Chọn giờ tư vấn</h3>
-            <ul>
-              {availableSlots.map((slot) => (
-                <li key={slot.id}>
-                  <button onClick={() => setSelectedSlot(slot)}>
-                    {slot.time} {selectedSlot?.id === slot.id ? "✅" : ""}
-                  </button>
-                </li>
-              ))}
-            </ul>
+{selectedPackage && (
+  <div className={styles.modalOverlay}>
+    <div className={styles.modal}>
+      <h3>Chọn giờ tư vấn</h3>
+      <ul className={styles.slotContainer}>
+        {availableSlots.length === 0 ? (
+          <p>Không có lịch trống</p>
+        ) : (
+          availableSlots.map((slot) => (
+            <li key={slot.id} className={styles.slotItem}>
+              <button onClick={() => setSelectedSlot(slot)}>
+                {slot.startTime} - {slot.endTime} {selectedSlot?.id === slot.id ? "✅" : ""}
+              </button>
+            </li>
+          ))
+        )}
+      </ul>
+      <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
+        {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
+      </button>
+      <p>{message}</p>
+      <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
+    </div>
+  </div>
+)}
 
-            <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
-              {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
-            </button>
-            <p>{message}</p>
-            <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
-          </div>
-        </div>
-      )}
- 
+
     </div>
   );
 };

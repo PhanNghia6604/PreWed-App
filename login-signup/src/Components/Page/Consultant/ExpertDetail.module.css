@@ -327,5 +327,41 @@ ul {
   .backButton:hover {
     background-color: #ccc;
   }
+  .slotContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Chia slot thành nhiều cột tự động */
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+    justify-content: center;
+  }
+  
+  .slotItem button {
+    width: 100%;
+    padding: 8px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+  }
+  
+  .slotItem button:hover {
+    background: #b3e0ff;
+    border-color: #007bff;
+  }
+  
+  .slotItem button:active {
+    background: #007bff;
+    color: white;
+  }
+  
+  /* Nếu muốn luôn chia thành 4 cột cố định */
+  @media (min-width: 600px) {
+    .slotContainer {
+      grid-template-columns: repeat(4, 1fr); /* Luôn chia thành 4 cột khi màn hình đủ lớn */
+    }
+  }
   
   
