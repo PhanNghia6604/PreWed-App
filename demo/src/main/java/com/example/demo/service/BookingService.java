@@ -94,4 +94,10 @@ public class BookingService {
     public List<Booking> getBooking() {
     return bookingRepository.findAll();
     }
+
+    public Booking updateStatus(BookingEnum status, long id) {
+        Booking booking = bookingRepository.findBookingById(id);
+        booking.setStatus(status);
+        return bookingRepository.save(booking);
+    }
 }
