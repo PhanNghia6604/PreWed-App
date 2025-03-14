@@ -1,0 +1,135 @@
+.container {
+    max-width: 100%;
+    width: 100%;  /* Mở rộng bảng theo container */
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .historyTable th, .historyTable td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .historyTable th {
+    background: #007bff;  /* Giữ màu xanh dương */
+    color: white !important; /* Chữ trắng rõ ràng */
+}
+.historyTable td {
+    color: black; /* Đảm bảo chữ không bị mờ hoặc chìm */
+}
+  .historyTable tbody tr:nth-child(even) {
+    background: #f9f9f9;
+  }
+  .historyTable tbody tr {
+    background: white; /* Đặt nền mặc định */
+    color: black; /* Đặt màu chữ */
+  }
+  .historyTable tbody tr:hover {
+    background: #f1f1f1 !important; /* Khi hover thì chỉ đổi nền sáng */
+  }
+  .historyTable tbody tr:first-child {
+    background: #f9f9f9 !important; /* Nền sáng */
+    color: black !important; /* Chữ đen */
+}
+  .historyTable td:first-child, 
+  .historyTable td:nth-child(2) {
+    text-align: center;
+  }
+  
+  .noData {
+    text-align: center;
+    font-size: 16px;
+    padding: 20px;
+    color: #888;
+  }
+  
+  .noData::before {
+    content: "📌 ";
+  }
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    width: 90%; /* Mở rộng theo 90% màn hình */
+    max-width: 1200px; /* Giới hạn để không quá to trên màn hình lớn */
+    margin: 0 auto; /* Căn giữa */
+  }
+  
+  /* Cập nhật phần nội dung chính */
+  .mainContent {
+    width: 100%; /* Đảm bảo toàn bộ nội dung mở rộng theo wrapper */
+    max-width: 1200px; /* Giữ cho nội dung không quá rộng */
+  }
+  
+  /* Footer cố định ở cuối trang */
+  .footer {
+    text-align: center;
+    padding: 10px;
+    background: #f5f5f5;
+    width: 100%;
+  }
+  .filterContainer {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .filter {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .testButton,
+  .statButton {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .testButton {
+    background-color: #ff9800;
+    color: white;
+  }
+  
+  .statButton {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .testButton:hover {
+    background-color: #e68900;
+  }
+  
+  .statButton:hover {
+    background-color: #45a049;
+  }
+  

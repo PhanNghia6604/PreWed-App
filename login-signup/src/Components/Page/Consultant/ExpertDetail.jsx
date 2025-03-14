@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { ExpertContext } from "./ExpertContext";
 import expertDescriptions from "../Consultant/ExpertDescription";
+import { useNavigate } from "react-router-dom";
+
 import styles from "./ExpertDetail.module.css";
 
 const getRandomExperience = () => Math.floor(Math.random() * 10) + 1;
@@ -17,6 +19,10 @@ const ExpertDetail = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isBooking, setIsBooking] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+const handleGoBack = () => {
+  navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
+};
 
   useEffect(() => {
     if (!experts || experts.length === 0) return;
@@ -101,9 +107,11 @@ const ExpertDetail = () => {
   if (!expert) {
     return <p>Không tìm thấy chuyên gia!</p>;
   }
-
+  console.log("Danh sách gói trước khi đặt lịch:", servicePackages);
   return (
     <div className={styles.container}>
+     
+      
       <div className={styles.card}>
         <div className={styles.avatarContainer}>
           <img
@@ -135,7 +143,12 @@ const ExpertDetail = () => {
         <button className={styles.bookButton} onClick={fetchServicePackages}>
           Đặt lịch hẹn
         </button>
+        <button className={styles.backButton} onClick={handleGoBack}>
+  ← Quay lại danh sách chuyên gia
+</button>
+
       </div>
+      
 
       {isModalOpen && (
         <div className={styles.modalOverlay}>
@@ -180,6 +193,7 @@ const ExpertDetail = () => {
           </div>
         </div>
       )}
+ 
     </div>
   );
 };

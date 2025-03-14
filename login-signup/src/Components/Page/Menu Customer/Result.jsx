@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./Result.module.css";
 
@@ -17,22 +17,25 @@ const Result = () => {
   const testResult = location.state?.testResult;
   const uniqueCategories = [...new Set(testResult?.categoriesToImprove || [])];
 
-  // Chuyển đổi sang tiếng Việt
   const translatedCategories = uniqueCategories.map((category) => categoryMap[category] || category);
-
-  // Xác định class CSS phù hợp
   let resultClass = translatedCategories.length > 0 ? styles.warning : styles.success;
   if (!testResult) resultClass = styles.error;
 
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setIsVisible(true), 200);
+  }, []);
+
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${isVisible ? styles.show : ""}`}>
       <h1 className={styles.title}>🎯 Kết quả Bài Kiểm Tra</h1>
       <div className={`${styles.message} ${resultClass}`}>
         {testResult ? (
           translatedCategories.length > 0 ? (
-            <h2>⚠️ Cần cải thiện các tình trạng sau: {translatedCategories.join(", ")}</h2>
+            <h2>⚠️ Cần cải thiện: {translatedCategories.join(", ")}</h2>
           ) : (
-            <h2>🎉 Chúc mừng! Bạn không cần cải thiện tình trạng nào, nhưng bạn vẫn có thể nhờ chuyên gia tư vấn.</h2>
+            <h2>🎉 Chúc mừng! Không có vấn đề nào đáng lo.</h2>
           )
         ) : (
           <h2>❌ Không có dữ liệu bài kiểm tra.</h2>
@@ -40,6 +43,9 @@ const Result = () => {
       </div>
       <button className={styles.expertBtn} onClick={() => navigate("/expert")}>
         📅 Chọn chuyên gia tư vấn
+      </button>
+      <button className={styles.historyBtn} onClick={() => navigate("/history-test")}>
+        📜 Xem lại lịch sử trắc nghiệm
       </button>
     </div>
   );

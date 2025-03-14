@@ -38,7 +38,7 @@ import { ExpertProvider } from "./Consultant/ExpertContext"; // Import ExpertPro
 
 import ServicePackageManagement from './Menu Admin/ServicePackageManagement';
 import SlotManagement from './Menu Admin/SlotManagement';
-import UserManagement from './Menu Admin/UserManagement';
+import HistoryTest from './Menu Customer/HistoryTest';
 
 
 
@@ -90,10 +90,12 @@ export const Page = () => {
           <Route path='expert-earning' element={<Earnings />} />
           <Route exact path="/expert-appointments" element={<ExpertAppointments />} />
           <Route exact path="/profile" element={<Profile />} />
+          <Route path="/history-test" element={<HistoryTest/>}/>
           <Route exact path="/my-booking" element={<MyBookings />} />
           <Route exact path="/booking-payment/:expertId/:bookingId" element={<BookingPayment />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/test" element={<Test />} />
+          <Route path="/history-test" element={<HistoryTest/>}/>
           <Route exact path="/result" element={<Result />} />
           <Route exact path="/admin-login" element={<AdminLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
           <Route exact path="/admin-dashboard" element={<AdminDashboard />} />
