@@ -18,27 +18,31 @@ import java.util.List;
 public class FeedbackAPI {
     @Autowired
     FeedbackService feedbackService;
-
+//ALL
     @PostMapping
     public ResponseEntity createFeedback(@Valid @RequestBody FeedbackRequest feedbackRequest) {
         Feedback newServicePackage = feedbackService.newFeedback(feedbackRequest);
         return ResponseEntity.ok(newServicePackage);
     }
+    //ALL
     @GetMapping
     public ResponseEntity getFeedback() {
         List<Feedback> feedbacks = feedbackService.getAllFeedback();
         return ResponseEntity.ok(feedbacks);
     }
+    //all
     @GetMapping("{id}")
     public  ResponseEntity getFeedbackById(@PathVariable long id){
         Feedback feedback = feedbackService.getFeedbackById(id);
        return ResponseEntity.ok(feedback);
     }
+    //all
     @DeleteMapping("{id}")
     public ResponseEntity deleteFeedback(@PathVariable long id){
         Feedback feedback = feedbackService.delete(id);
         return ResponseEntity.ok(feedback);
     }
+    //all
     @PutMapping("{id}")
     public ResponseEntity updateFeedback(@PathVariable long id, @RequestBody FeedbackRequest feedbackRequest){
         Feedback feedback = feedbackService.updateFeedback(id, feedbackRequest);

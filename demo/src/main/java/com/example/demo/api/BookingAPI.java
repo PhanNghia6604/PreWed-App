@@ -14,14 +14,16 @@ import org.springframework.web.bind.annotation.*;
 public class BookingAPI {
     @Autowired
     BookingService bookingService;
-
+//ALL
     @PostMapping
     public ResponseEntity createBooking(@RequestBody BookingRequest bookingRequest)  {
         Booking booking = bookingService.createBooking(bookingRequest);
         return ResponseEntity.ok(booking);
     }
+//ADMIN
     @GetMapping
     public ResponseEntity getBooking(){
         return ResponseEntity.ok(bookingService.getBooking());
     }
+    //ALL
 }

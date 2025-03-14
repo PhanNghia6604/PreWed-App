@@ -21,6 +21,7 @@ public class SlotAPI {
         List<Slot> slots = slotService.createSlot(slotRequest);
         return ResponseEntity.ok(slots);
     }
+    //all
     @GetMapping
     public ResponseEntity getSlot(){
         List<Slot> slots = slotService.getSlot();

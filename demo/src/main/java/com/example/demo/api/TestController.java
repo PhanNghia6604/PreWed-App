@@ -22,7 +22,7 @@ public class TestController {
 
     @Autowired
     private DiagnosService diagnosService;
-
+//all
     // Phương thức POST để submit bài kiểm tra
     @PostMapping("/submit")
     public DiagnosResponse submitTest(@RequestBody PremaritalTestRequest testRequest) {
@@ -32,13 +32,13 @@ public class TestController {
         // Tạo DiagnosResponseDTO và trả về kết quả
         return diagnosService.createDiagnosResponse(categoriesToImprove);
     }
-
+//all
     // Phương thức GET để lấy lịch sử bài kiểm tra của người dùng
     @GetMapping("/history/{userId}")
     public List<PremaritalTest> getTestHistory(@PathVariable Long userId) {
         return premaritalTestService.getTestHistory(userId);
     }
-
+//all
     // API lấy tất cả bài kiểm tra
     @GetMapping("/all")
     public List<PremaritalTest> getAllTestHistory() {

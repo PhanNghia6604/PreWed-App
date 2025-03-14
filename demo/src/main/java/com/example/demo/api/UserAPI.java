@@ -30,16 +30,19 @@ public class UserAPI {
     User newUser = userService.create(user);
     return ResponseEntity.ok(newUser);
     }
+    //admin
         @GetMapping("get")
     public ResponseEntity getAllUser(){
         List<User> users =userService.getAllUser();
     return ResponseEntity.ok(users);
     }
+    //admin
     @GetMapping("{id}")
     public ResponseEntity getUserById(@PathVariable long id){
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
+    //admin
     @DeleteMapping("{id}")
     public ResponseEntity delete(@PathVariable long id){
         User user =userService.delete(id);

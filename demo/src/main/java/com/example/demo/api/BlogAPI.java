@@ -41,26 +41,26 @@ public class BlogAPI {
     public ResponseEntity<List<BlogResponse>> getAllBlogs() {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
-//All
+//ADMIN
     @GetMapping("/{id}")
     @Operation(summary = "Lấy chi tiết blog", description = "Lấy thông tin blog theo ID")
     public ResponseEntity<BlogResponse> getBlogById(@PathVariable Long id) {
         return ResponseEntity.ok(blogService.getBlogById(id));
     }
-
+//ADMIN
     @PutMapping("/{id}")
     @Operation(summary = "Cập nhật blog", description = "Cập nhật tiêu đề, nội dung của blog")
     public ResponseEntity<BlogResponse> updateBlog(@PathVariable Long id, @RequestBody BlogRequest request) {
         return ResponseEntity.ok(blogService.updateBlog(id, request.getTitle(), request.getContent(), request.getImage()));
     }
-
+//ADMIN
     @DeleteMapping("/{id}")
     @Operation(summary = "Xóa blog", description = "Xóa mềm blog, đặt isDeleted = true")
     public ResponseEntity<Void> deleteBlog(@PathVariable Long id) {
         blogService.deleteBlog(id);
         return ResponseEntity.noContent().build();
     }
-
+//ADMIN
     @PutMapping("/{id}/restore")
     @Operation(summary = "Khôi phục blog", description = "Khôi phục bài viết đã bị xóa")
     public ResponseEntity<BlogResponse> restoreBlog(@PathVariable Long id) {
