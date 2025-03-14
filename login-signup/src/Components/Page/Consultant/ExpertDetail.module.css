@@ -356,6 +356,22 @@ ul {
     background: #007bff;
     color: white;
   }
+  .selectedSlot {
+    background-color: #e3f2fd; /* Màu xanh nhạt */
+    border: 2px solid #64b5f6; /* Viền xanh nhạt */
+    font-weight: bold;
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px; /* Bo góc mềm mại */
+    padding: 5px;
+  }
+  
+  .selectedSlot button {
+    color: #1565c0; /* Màu chữ xanh đậm */
+    font-weight: bold;
+  }
+  
+  
   
   /* Nếu muốn luôn chia thành 4 cột cố định */
   @media (min-width: 600px) {

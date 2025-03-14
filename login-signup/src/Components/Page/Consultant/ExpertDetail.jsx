@@ -10,7 +10,7 @@ const getRandomExperience = () => Math.floor(Math.random() * 10) + 1;
 
 const ExpertDetail = () => {
   const { name } = useParams();
-  const { experts } = useContext(ExpertContext);
+  const [experts, setExperts] = useState([]);
   const [experience, setExperience] = useState(null);
   const [servicePackages, setServicePackages] = useState([]);
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -19,28 +19,32 @@ const ExpertDetail = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isBooking, setIsBooking] = useState(false);
   const [message, setMessage] = useState("");
+  
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
   };
 
   useEffect(() => {
-    console.log("Danh sách chuyên gia:", experts); // Kiểm tra experts có dữ liệu chưa
-    if (!experts || experts.length === 0) return;
-    const expert = experts.find((e) => e.name === decodeURIComponent(name));
-    console.log("Chuyên gia tìm thấy:", expert); // Kiểm tra chuyên gia có tồn tại không
-    if (!expert) return;
-
-    const storedExperience = localStorage.getItem(`experience_${expert.name}`);
-    if (storedExperience) {
-      setExperience(parseInt(storedExperience, 10));
-    } else {
-      const newExperience = expert.experience || getRandomExperience();
-      setExperience(newExperience);
-      localStorage.setItem(`experience_${expert.name}`, newExperience);
-    }
-  }, [experts, name]);
-
+    const fetchExperts = async () => {
+      try {
+        const response = await fetch("/api/get");
+        if (!response.ok) throw new Error("Lỗi khi tải danh sách chuyên gia");
+        
+        const data = await response.json();
+        console.log("📌 Dữ liệu chuyên gia từ API:", data);
+  
+        // Lọc chỉ lấy các chuyên gia có roleEnum là "EXPERT"
+        const expertList = data.filter((user) => user.roleEnum === "EXPERT");
+        setExperts(expertList);
+      } catch (error) {
+        console.error("❌ Lỗi khi tải danh sách chuyên gia:", error);
+      }
+    };
+  
+    fetchExperts();
+  }, []);
+  
   const fetchServicePackages = async () => {
     try {
       const response = await fetch("/api/servicepackage");
@@ -86,25 +90,36 @@ const ExpertDetail = () => {
       return;
     }
   
-    console.log("🔍 Đang đặt lịch với dữ liệu:");
-    console.log("Expert ID:", expert.id); // Đảm bảo expert.id có giá trị
+    console.log("🔍 Kiểm tra dữ liệu trước khi gửi:");
+    console.log("Expert ID:", expert.id);
     console.log("Slot ID:", selectedSlot.id);
-    console.log("Thời gian:", selectedSlot.startTime, " - ", selectedSlot.endTime);
+    console.log("Thời gian:", selectedSlot.startTime, "-", selectedSlot.endTime);
+  
+    // Nếu ID nào đó bị 0 hoặc undefined, báo lỗi sớm
+    if (!expert.id || !selectedSlot.id) {
+      console.error("❌ Lỗi: expertId hoặc slotId không hợp lệ!");
+      alert("Có lỗi xảy ra, vui lòng thử lại!");
+      return;
+    }
+  
+    const bookingData = {
+      expertId: expert.id,
+      slotId: selectedSlot.id,
+      bookingDate: new Date().toISOString().split("T")[0], // Lấy ngày hôm nay
+      serviceIds: [selectedPackage?.id || 0], // Đảm bảo serviceId hợp lệ
+    };
+  
+    console.log("📦 Payload gửi lên API:", bookingData);
   
     try {
-      const response = await fetch("/api/book-appointment", {
+      const response = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          expertId: expert.id,
-          slotId: selectedSlot.id,
-          startTime: selectedSlot.startTime,
-          endTime: selectedSlot.endTime
-        })
+        body: JSON.stringify(bookingData),
       });
   
       const data = await response.json();
-      console.log("📩 Kết quả API:", data);
+      console.log("📨 Phản hồi từ server:", data);
   
       if (response.ok) {
         alert("Đặt lịch thành công!");
@@ -116,6 +131,7 @@ const ExpertDetail = () => {
       alert("Đã có lỗi xảy ra, vui lòng thử lại!");
     }
   };
+  
   
   
   
@@ -198,18 +214,23 @@ const ExpertDetail = () => {
     <div className={styles.modal}>
       <h3>Chọn giờ tư vấn</h3>
       <ul className={styles.slotContainer}>
-        {availableSlots.length === 0 ? (
-          <p>Không có lịch trống</p>
-        ) : (
-          availableSlots.map((slot) => (
-            <li key={slot.id} className={styles.slotItem}>
-              <button onClick={() => setSelectedSlot(slot)}>
-                {slot.startTime} - {slot.endTime} {selectedSlot?.id === slot.id ? "✅" : ""}
-              </button>
-            </li>
-          ))
-        )}
-      </ul>
+  {availableSlots.length === 0 ? (
+    <p>Không có lịch trống</p>
+  ) : (
+    availableSlots.map((slot) => (
+      <li
+        key={slot.id}
+        className={`${styles.slotItem} ${
+          selectedSlot?.id === slot.id ? styles.selectedSlot : ""
+        }`}
+      >
+        <button onClick={() => setSelectedSlot(slot)}>
+          {slot.startTime} - {slot.endTime} {selectedSlot?.id === slot.id ? "✅" : ""}
+        </button>
+      </li>
+    ))
+  )}
+</ul>
       <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
         {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
       </button>
