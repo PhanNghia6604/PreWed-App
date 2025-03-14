@@ -54,7 +54,7 @@ public class Filter extends OncePerRequestFilter {
         if(method.equals("GET") && pathMatcher.match("/api/blog/**", uri)){
             return true;
         }
-        return PUBLIC_API.stream().anyMatch(item -> pathMatcher.match(item, uri));
+        return PUBLIC_API.contains(uri);
     }
 
     @Override
