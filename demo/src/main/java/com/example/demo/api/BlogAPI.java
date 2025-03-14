@@ -35,13 +35,13 @@ public class BlogAPI {
         BlogResponse blogResponse = blogService.createBlog(request);
         return ResponseEntity.ok(blogResponse);
     }
-
+//All
     @GetMapping
     @Operation(summary = "Lấy danh sách blog", description = "Lấy tất cả blog chưa bị xóa")
     public ResponseEntity<List<BlogResponse>> getAllBlogs() {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
-
+//All
     @GetMapping("/{id}")
     @Operation(summary = "Lấy chi tiết blog", description = "Lấy thông tin blog theo ID")
     public ResponseEntity<BlogResponse> getBlogById(@PathVariable Long id) {
