@@ -19,13 +19,9 @@ export const ExpertsList = () => {
   useEffect(() => {
     setLoading(true);
     fetch("/api/expert/all")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Lỗi khi tải dữ liệu");
-        }
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
+        console.log("Experts Data:", data); // Kiểm tra avatar nhận được
         setList(data);
         setFilteredList(data);
         setSpecialties(["Tất cả", ...new Set(data.map((expert) => expert.specialty))]);
@@ -36,7 +32,7 @@ export const ExpertsList = () => {
         setLoading(false);
       });
   }, []);
-
+  
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
@@ -120,11 +116,11 @@ export const ExpertsList = () => {
               currentExperts.map((expert) => (
                 <div className={style.box} key={expert.id}>
                   <div className={style.imgWrapper}>
-                    <img
-                      src={`/images/experts/${expert.avatar}`}
-                      alt={expert.name}
-                      onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
-                    />
+                  <img
+  src={expert.avatar.includes("/") ? expert.avatar : `/images/experts/${expert.avatar}`}
+  alt={expert.name}
+  onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
+/>
                   </div>
                   <h3>{expert.name}</h3>
                   <p className={style.specialty}>{expert.specialty}</p>

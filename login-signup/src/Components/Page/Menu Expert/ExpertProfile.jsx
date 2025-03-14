@@ -53,13 +53,12 @@ const ExpertProfile = () => {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setExpertData({ ...expertData, avatar: reader.result });
-            };
-            reader.readAsDataURL(file);
+            // Giả sử bạn có một URL cố định để lưu ảnh trên server
+            const imageUrl = `/uploads/${file.name}`; // Chỉ lấy tên file
+            setExpertData({ ...expertData, avatar: imageUrl });
         }
     };
+    
 
     // Xử lý thêm & xóa phần tử của mảng (chứng chỉ)
     const handleAddItem = (field) => {
@@ -75,13 +74,18 @@ const ExpertProfile = () => {
         try {
             const token = localStorage.getItem("token");
             const expertId = localStorage.getItem("expertId");
-
+    
             if (!expertData.name || !expertData.phone || !expertData.email || !expertData.specialty) {
                 alert("Vui lòng điền đầy đủ thông tin!");
                 return;
             }
-
-            const response = await fetch(`/api/expert/profile/${expertId}`, {
+    
+            // Log dữ liệu gửi lên BE
+            console.log("🔹 Expert ID:", expertId);
+            console.log("🔹 Token:", token);
+            console.log("🔹 Dữ liệu gửi lên API:", expertData);
+    
+            const response = await fetch(`/api/expert/expert/${expertId}`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -89,16 +93,27 @@ const ExpertProfile = () => {
                 },
                 body: JSON.stringify(expertData),
             });
-
-            if (!response.ok) throw new Error("Không thể cập nhật thông tin.");
-
+    
+            // Log phản hồi từ server
+            console.log("🔹 Response status:", response.status);
+    
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("🔺 Lỗi từ API:", errorText);
+                throw new Error("Không thể cập nhật thông tin.");
+            }
+    
+            const result = await response.json();
+            console.log("🔹 Phản hồi từ API:", result);
+    
             alert("Cập nhật thông tin thành công!");
             setIsEditing(false);
         } catch (err) {
+            console.error("🔺 Lỗi trong handleSave:", err.message);
             alert(err.message);
         }
     };
-
+    
     const handleLogout = () => {
         localStorage.removeItem("expertId");
         localStorage.removeItem("token");
@@ -115,14 +130,25 @@ const ExpertProfile = () => {
             <div className={styles["profile-form"]}>
                 {/* Ảnh đại diện */}
                 <label>Ảnh đại diện:</label>
-                <div className={styles["avatar-container"]}>
-                    {expertData.avatar ? (
-                        <img src={expertData.avatar} alt="Avatar" className={styles.avatar} />
-                    ) : (
-                        <div className={styles["avatar-placeholder"]}>Chưa có ảnh</div>
-                    )}
-                    {isEditing && <input type="file" accept="image/*" onChange={handleImageUpload} />}
-                </div>
+<div className={styles["avatar-container"]}>
+    {expertData.avatar ? (
+        <img src={expertData.avatar} alt="Avatar" className={styles.avatar} />
+    ) : (
+        <div className={styles["avatar-placeholder"]}>Chưa có ảnh</div>
+    )}
+    {isEditing && (
+        <>
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
+            <input
+                type="text"
+                name="avatar"
+                value={expertData.avatar}
+                onChange={(e) => setExpertData({ ...expertData, avatar: e.target.value })}
+                placeholder="Nhập URL ảnh..."
+            />
+        </>
+    )}
+</div>
 
                 {/* Thông tin cá nhân */}
                 {["name", "phone", "address", "email", "specialty"].map((field) => (
