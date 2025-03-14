@@ -38,6 +38,7 @@ import { ExpertProvider } from "./Consultant/ExpertContext"; // Import ExpertPro
 
 import ServicePackageManagement from './Menu Admin/ServicePackageManagement';
 import SlotManagement from './Menu Admin/SlotManagement';
+import UserManagement from './Menu Admin/UserManagement';
 
 
 
@@ -99,6 +100,7 @@ export const Page = () => {
          <Route path="/admin-servicepackage" element={<ServicePackageManagement/>}/>
           <Route exact path="/admin-register" element={<AdminRegister />} />
           <Route exact path="/admin-slots" element={<SlotManagement />} />
+          <Route exact path="/admin-users" element={<UserManagement />} />
         </Routes>
 
         <Footer />
