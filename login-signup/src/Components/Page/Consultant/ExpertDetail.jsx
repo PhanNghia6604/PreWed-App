@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { ExpertContext } from "./ExpertContext";
-import expertDescriptions from "../Consultant/ExpertDescription"; // Import dữ liệu mô tả chuyên môn
+import expertDescriptions from "../Consultant/ExpertDescription";
 import styles from "./ExpertDetail.module.css";
 
 const getRandomExperience = () => Math.floor(Math.random() * 10) + 1;
@@ -10,15 +10,19 @@ const ExpertDetail = () => {
   const { name } = useParams();
   const { experts } = useContext(ExpertContext);
   const [experience, setExperience] = useState(null);
+  const [servicePackages, setServicePackages] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [isBooking, setIsBooking] = useState(false);
+  const [message, setMessage] = useState("");
 
-  // ✅ Luôn gọi useEffect trước return, không đặt sau if()
   useEffect(() => {
-    if (!experts || experts.length === 0) return; // Tránh lỗi nếu dữ liệu chưa có
-
+    if (!experts || experts.length === 0) return;
     const expert = experts.find((e) => e.name === decodeURIComponent(name));
     if (!expert) return;
 
-    // Kiểm tra localStorage trước khi random
     const storedExperience = localStorage.getItem(`experience_${expert.name}`);
     if (storedExperience) {
       setExperience(parseInt(storedExperience, 10));
@@ -27,14 +31,73 @@ const ExpertDetail = () => {
       setExperience(newExperience);
       localStorage.setItem(`experience_${expert.name}`, newExperience);
     }
-  }, [experts, name]); // Phụ thuộc vào danh sách chuyên gia và tên chuyên gia
+  }, [experts, name]);
+
+  const fetchServicePackages = async () => {
+    try {
+      const response = await fetch("/api/servicepackage");
+      if (!response.ok) throw new Error("Lỗi khi tải gói tư vấn");
+      const data = await response.json();
+      setServicePackages(data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchAvailableSlots = async () => {
+    try {
+      const response = await fetch("/api/booking");
+      if (!response.ok) throw new Error("Lỗi khi tải lịch trống");
+      const data = await response.json();
+      setAvailableSlots(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSelectPackage = (pkg) => {
+    setSelectedPackage(pkg);
+    fetchAvailableSlots();
+  };
+
+  const handleBooking = async () => {
+    if (!selectedPackage || !selectedSlot) {
+      setMessage("Vui lòng chọn đầy đủ thông tin.");
+      return;
+    }
+
+    setIsBooking(true);
+    try {
+      const expert = experts.find((e) => e.name === decodeURIComponent(name));
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slotId: selectedSlot.id,
+          expertId: expert.id,
+          serviceIds: [selectedPackage.id],
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setMessage("Đặt lịch thành công!");
+      } else {
+        setMessage(result.message || "Đặt lịch thất bại.");
+      }
+    } catch (error) {
+      setMessage("Lỗi kết nối, vui lòng thử lại.");
+    } finally {
+      setIsBooking(false);
+    }
+  };
 
   if (!experts || experts.length === 0) {
     return <p>Đang tải dữ liệu chuyên gia...</p>;
   }
 
   const expert = experts.find((e) => e.name === decodeURIComponent(name));
-
   if (!expert) {
     return <p>Không tìm thấy chuyên gia!</p>;
   }
@@ -42,7 +105,6 @@ const ExpertDetail = () => {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        {/* Avatar chuyên gia */}
         <div className={styles.avatarContainer}>
           <img
             src={expert.avatar || "/images/experts/default-avatar.png"}
@@ -51,21 +113,15 @@ const ExpertDetail = () => {
             onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
           />
         </div>
-
-        {/* Thông tin chính */}
         <h2>{expert.name}</h2>
+        <p><strong>Kinh nghiệm:</strong> {experience} năm</p>
         <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
-        <p><strong>Kinh nghiệm:</strong> {experience !== null ? experience : "Đang tải..."} năm</p>
         <p><strong>Đánh giá:</strong> ⭐ {expert.rating} / 5</p>
-
-        {/* Mô tả theo chuyên môn */}
         {expert.specialty && (
           <p className={styles.description}>
             <strong>Mô tả chuyên môn:</strong> {expertDescriptions[expert.specialty] || "Chưa có mô tả"}
           </p>
         )}
-
-        {/* Danh sách chứng chỉ */}
         {expert.certificates && expert.certificates.length > 0 && (
           <div className={styles.certifications}>
             <h3>Chứng chỉ:</h3>
@@ -76,22 +132,54 @@ const ExpertDetail = () => {
             </ul>
           </div>
         )}
+        <button className={styles.bookButton} onClick={fetchServicePackages}>
+          Đặt lịch hẹn
+        </button>
+      </div>
 
-        {/* Gói tư vấn */}
-        {expert.packages && expert.packages.length > 0 && (
-          <div className={styles.consultingPackages}>
-            <h3>Gói tư vấn:</h3>
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Chọn gói tư vấn</h3>
             <ul>
-              {expert.packages.map((pkg, index) => (
-                <li key={index}>{pkg}</li>
+              {servicePackages.map((pkg) => (
+                <li key={pkg.id} className={styles.packageItem}>
+                  <p><strong>{pkg.name}</strong></p>
+                  <p>{pkg.description}</p>
+                  <p>⏳ {pkg.duration} phút - 💰 {pkg.price.toLocaleString()} VND</p>
+                  <button disabled={!pkg.available} onClick={() => handleSelectPackage(pkg)}>
+                    {pkg.available ? "Chọn" : "Hết chỗ"}
+                  </button>
+                </li>
               ))}
             </ul>
+            <button className={styles.closeButton} onClick={() => setIsModalOpen(false)}>Đóng</button>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Nút đặt lịch */}
-        <button className={styles.bookButton}>Đặt lịch hẹn</button>
-      </div>
+      {selectedPackage && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Chọn giờ tư vấn</h3>
+            <ul>
+              {availableSlots.map((slot) => (
+                <li key={slot.id}>
+                  <button onClick={() => setSelectedSlot(slot)}>
+                    {slot.time} {selectedSlot?.id === slot.id ? "✅" : ""}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
+              {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
+            </button>
+            <p>{message}</p>
+            <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
