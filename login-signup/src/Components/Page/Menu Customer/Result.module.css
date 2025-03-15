@@ -3,9 +3,9 @@
   min-height: 500px;
   margin: 50px auto;
   padding: 30px;
-  background: white;
+  background: #1e1e1e; /* Màu nền tối */
   border-radius: 10px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
   text-align: center;
   animation: fadeIn 0.8s ease-in-out;
 }
@@ -23,7 +23,7 @@
 
 .title {
   font-size: 26px;
-  color: #333;
+  color: #f8f9fa; /* Màu chữ sáng để dễ đọc trên nền tối */
   margin-bottom: 15px;
 }
 
@@ -35,21 +35,23 @@
   margin-bottom: 20px;
 }
 
+/* Thay đổi màu sắc để phù hợp với dark mode */
 .warning {
   background: #ffcc00;
   color: #333;
 }
 
 .success {
-  background: #4caf50;
-  color: white;
+  background: #2e7d32; /* Màu xanh lá đậm hơn */
+  color: #ffffff;
 }
 
 .error {
-  background: #f44336;
+  background: #d32f2f; /* Màu đỏ đậm hơn */
   color: white;
 }
 
+/* Nút với tông màu tối */
 .expertBtn, .historyBtn {
   padding: 12px 20px;
   margin: 10px;
@@ -58,18 +60,18 @@
   border-radius: 5px;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
+  color: white;
 }
 
 .expertBtn {
-  background: #007bff;
-  color: white;
+  background: #3a3f47; /* Màu xanh đậm gần đen */
 }
 
 .historyBtn {
-  background: #6c757d;
-  color: white;
+  background: #5a5f66; /* Màu xám nhẹ */
 }
 
 .expertBtn:hover, .historyBtn:hover {
   transform: scale(1.05);
+  opacity: 0.9;
 }

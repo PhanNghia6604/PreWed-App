@@ -122,7 +122,7 @@ export const ExpertsList = () => {
   onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
 />
                   </div>
-                  <h3>{expert.name}</h3>
+                  <h3 class={style.expertName}>{expert.name}</h3>
                   <p className={style.specialty}>{expert.specialty}</p>
                   <p className={style.rating}>⭐ {expert.rating || "Chưa có đánh giá"}</p>
                   <Link to={`/expert/${expert.name}`} className={style.detailButton}>
