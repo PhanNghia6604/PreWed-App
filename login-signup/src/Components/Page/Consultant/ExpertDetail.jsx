@@ -19,12 +19,46 @@ const ExpertDetail = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isBooking, setIsBooking] = useState(false);
   const [message, setMessage] = useState("");
+  const [rating, setRating] = useState(null);
+  const [reviews, setReviews] = useState([]); // Danh sách đánh giá
+
+
   
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
   };
 
+  useEffect(() => {
+    const fetchRating = async () => {
+      const token = localStorage.getItem("token"); 
+
+      try {
+        const expert = experts.find((e) => e.name === decodeURIComponent(name));
+        if (!expert) return;
+  
+        const response = await fetch(`/api/feedback/${expert.id}`,   {
+          method: "Get",
+          headers:{
+            "Authorization": `Bearer ${token}`, // Gửi token trong headers
+          }
+        });
+        if (!response.ok) throw new Error("Không thể lấy đánh giá");
+  
+        const data = await response.json();
+        console.log("📌 Đánh giá chuyên gia:", data);
+        setRating(data.rating); // Giả sử API trả về { rating: 4.5 }
+      } catch (error) {
+        console.error("❌ Lỗi khi tải đánh giá:", error);
+      }
+    };
+  
+    fetchRating();
+  }, [experts, name]);
+  
+
+
+  
   useEffect(() => {
     const fetchExperts = async () => {
       try {
@@ -46,8 +80,15 @@ const ExpertDetail = () => {
   }, []);
   
   const fetchServicePackages = async () => {
+    const token = localStorage.getItem("token"); 
     try {
-      const response = await fetch("/api/servicepackage");
+      const response = await fetch("/api/servicepackage",   {
+        method: "Get",
+        headers:{
+          "Authorization": `Bearer ${token}`, // Gửi token trong headers
+        }
+      });
+      
       if (!response.ok) throw new Error("Lỗi khi tải gói tư vấn");
       const data = await response.json();
       setServicePackages(data);
@@ -57,18 +98,39 @@ const ExpertDetail = () => {
     }
   };
 
-  const fetchAvailableSlots = async (expertId, serviceId) => {
+  const fetchAvailableSlots = async () => {
     try {
-      const response = await fetch(`/api/slots?expertId=${expertId}&serviceId=${serviceId}`);
-      if (!response.ok) throw new Error("Lỗi khi tải lịch trống");
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch("/api/slots", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+  
+      // In ra response để kiểm tra chi tiết phản hồi từ API
+      console.log("📌 API Response:", response);
+  
+      if (!response.ok) {
+        const errorText = await response.text(); // Lấy thông tin lỗi nếu có
+        throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
+      }
+  
       const data = await response.json();
-      console.log("Dữ liệu slot nhận được:", data); // 🔥 Kiểm tra dữ liệu
+      console.log("📌 Lịch trống nhận được:", data);
+      
+      // Nếu API trả về mảng rỗng, báo lỗi lịch trống
+      if (data.length === 0) {
+        throw new Error("Không có lịch trống nào!");
+      }
+  
       setAvailableSlots(data);
     } catch (error) {
-      console.error(error);
+      console.error("❌ Lỗi khi tải lịch trống:", error);
     }
   };
-
+  
 
   const handleSelectPackage = (pkg) => {
     setSelectedPackage(pkg);
@@ -94,7 +156,7 @@ const ExpertDetail = () => {
     console.log("Slot ID:", selectedSlot.id);
     console.log("Thời gian:", selectedSlot.startTime, "-", selectedSlot.endTime);
   
-    // Nếu ID nào đó bị 0 hoặc undefined, báo lỗi sớm
+    // Kiểm tra ID hợp lệ
     if (!expert.id || !selectedSlot.id) {
       console.error("❌ Lỗi: expertId hoặc slotId không hợp lệ!");
       alert("Có lỗi xảy ra, vui lòng thử lại!");
@@ -105,32 +167,45 @@ const ExpertDetail = () => {
       expertId: expert.id,
       slotId: selectedSlot.id,
       bookingDate: new Date().toISOString().split("T")[0], // Lấy ngày hôm nay
-      serviceIds: [selectedPackage?.id || 0], // Đảm bảo serviceId hợp lệ
+      serviceIds: selectedPackage?.id ? [selectedPackage.id] : [], // Bỏ [0] để tránh lỗi
     };
   
     console.log("📦 Payload gửi lên API:", bookingData);
   
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch("/api/booking", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify(bookingData),
       });
   
-      const data = await response.json();
-      console.log("📨 Phản hồi từ server:", data);
+      const responseText = await response.text(); // Kiểm tra phản hồi API
+      console.log("📨 Phản hồi từ server (raw text):", responseText);
   
-      if (response.ok) {
-        navigate("/my-booking");
-        alert("Đặt lịch thành công!");
-      } else {
-        alert(`Lỗi: ${data.message || "Không thể đặt lịch"}`);
+      try {
+        const data = JSON.parse(responseText); // Chỉ parse JSON nếu phản hồi hợp lệ
+        console.log("📨 Phản hồi từ server (JSON):", data);
+  
+        if (response.ok) {
+          navigate("/my-booking");
+          alert("Đặt lịch thành công!");
+        } else {
+          alert(`Lỗi: ${data.message || "Không thể đặt lịch"}`);
+        }
+      } catch (jsonError) {
+        console.error("❌ Lỗi khi parse JSON:", jsonError);
+        alert("Phản hồi từ server không hợp lệ!");
       }
     } catch (error) {
       console.error("❌ Lỗi khi gửi yêu cầu đặt lịch:", error);
       alert("Đã có lỗi xảy ra, vui lòng thử lại!");
     }
   };
+  
   
   
 
@@ -149,6 +224,8 @@ const ExpertDetail = () => {
     return <p>Không tìm thấy chuyên gia!</p>;
   }
   console.log("Danh sách gói trước khi đặt lịch:", servicePackages);
+
+  
   return (
     <div className={styles.container}>
 
@@ -165,7 +242,7 @@ const ExpertDetail = () => {
         <h2>{expert.name}</h2>
         <p><strong>Kinh nghiệm:</strong> {experience} năm</p>
         <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
-        <p><strong>Đánh giá:</strong> ⭐ {expert.rating} / 5</p>
+        <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p>
         {expert.specialty && (
           <p className={styles.description}>
             <strong>Mô tả chuyên môn:</strong> {expertDescriptions[expert.specialty] || "Chưa có mô tả"}
@@ -239,6 +316,20 @@ const ExpertDetail = () => {
       <p>{message}</p>
       <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
     </div>
+    <div className="review-form">
+        <h3>Gửi đánh giá của bạn</h3>
+        <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
+          {[5, 4, 3, 2, 1].map((num) => (
+            <option key={num} value={num}>{num} sao</option>
+          ))}
+        </select>
+        <textarea
+          placeholder="Viết nhận xét của bạn..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <button onClick={handleSubmitReview}>Gửi đánh giá</button>
+      </div>
   </div>
 )}
 

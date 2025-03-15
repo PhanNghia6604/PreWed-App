@@ -18,20 +18,33 @@ export const ExpertsList = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/expert/all")
-      .then((res) => res.json())
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage hoặc context
+  
+    fetch("/api/expert/all", {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token}`, // Gửi token trong headers
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
-        console.log("Experts Data:", data); // Kiểm tra avatar nhận được
+        console.log("Experts Data:", data);
         setList(data);
         setFilteredList(data);
         setSpecialties(["Tất cả", ...new Set(data.map((expert) => expert.specialty))]);
-        setLoading(false);
       })
       .catch((error) => {
         setError(error.message);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, []);
+  
   
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
@@ -122,7 +135,7 @@ export const ExpertsList = () => {
   onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
 />
                   </div>
-                  <h3>{expert.name}</h3>
+                  <h3 class={style.expertName}>{expert.name}</h3>
                   <p className={style.specialty}>{expert.specialty}</p>
                   <p className={style.rating}>⭐ {expert.rating || "Chưa có đánh giá"}</p>
                   <Link to={`/expert/${expert.name}`} className={style.detailButton}>

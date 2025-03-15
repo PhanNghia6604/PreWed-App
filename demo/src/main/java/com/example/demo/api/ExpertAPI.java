@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -16,20 +17,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/expert")
-
 public class ExpertAPI {
     private final ExpertService expertService;
 
     public ExpertAPI(ExpertService expertService) {
         this.expertService = expertService;
     }
-//ADMIN
+
     @PostMapping("/register")
     public ResponseEntity<Expert> registerExpert(@Valid @RequestBody ExpertRequest request) {
         Expert expert = expertService.createExpert(request);
         return ResponseEntity.ok(expert);
     }
-//ALL
+
     @GetMapping("/profile/{id}")
     public ResponseEntity<ExpertResponse> getExpertProfile(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,13 +43,12 @@ public class ExpertAPI {
         }
         return ResponseEntity.ok(response); // Trả về thông tin profile của Expert
     }
-    //all
     @GetMapping("/all")
     public List<ExpertResponse> getAllExperts() {
         return expertService.getAllExperts(); // Gọi phương thức từ service
     }
+
     @PutMapping("/expert/{id}")
-    //ADMIN
     public ExpertResponse updateExpert(@PathVariable Long id, @RequestBody ExpertRequest request) {
         Expert updatedExpert = expertService.updateExpertbyID(id, request);
 
@@ -66,7 +65,7 @@ public class ExpertAPI {
 
         return response;
     }
-    //ADMIN
+
     @PutMapping("/expert/update")
     public ExpertResponse updateLoggedInExpert(@RequestBody ExpertRequest request) {
         Expert updatedExpert = expertService.updateExpert(request);

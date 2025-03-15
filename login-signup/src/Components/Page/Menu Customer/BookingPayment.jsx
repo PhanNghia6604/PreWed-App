@@ -1,103 +1,66 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { servicePackages } from "../../fake data/data"; // Import danh sách gói dịch vụ
-import style from "./BookingPayment.module.css";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-export const BookingPayment = () => {
-  const { expertId, bookingId } = useParams();
-  const navigate = useNavigate();
+// Component: BookingPayment
+
+const BookingPayment = () => {
+  const { bookingId } = useParams();
   const [booking, setBooking] = useState(null);
-  const [user, setUser] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [totalAmount, setTotalAmount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || null;
-    setUser(storedUser);
-  
-    if (storedUser) {
-      const userBookings = JSON.parse(localStorage.getItem(`bookings_${storedUser.id}`)) || [];
-      const foundBooking = userBookings.find((b) => Number(b.id) === Number(bookingId));
-  
-      if (foundBooking) {
-        setBooking(foundBooking);
-  
-        // 🔹 Dùng regex để lấy số tiền từ packageName
-        const priceMatch = foundBooking.packageName.match(/(\d+)\s*Đồng/);
-        const extractedPrice = priceMatch ? Number(priceMatch[1]) : 0;
-  
-        setTotalAmount(extractedPrice);
-      }
-    }
-  }, [expertId, bookingId]); 
-  const handlePayment = () => {
-    if (!paymentMethod) {
-        alert("Vui lòng chọn phương thức thanh toán!");
-        return;
-    }
-
-    if (!booking) {
-        alert("Không tìm thấy lịch đặt.");
-        return;
-    }
-
-    if (booking.status !== "Chờ thanh toán") {
-        alert("Lịch hẹn chưa được chuyên gia chấp nhận hoặc đã thanh toán.");
-        return;
-    }
-
-    // ✅ Cập nhật trạng thái cho user (đặt lịch)
-    const updatedBookings = JSON.parse(localStorage.getItem(`bookings_${user.id}`)) || [];
-    const newBookings = updatedBookings.map((b) =>
-        Number(b.id) === Number(booking.id) ? { ...b, status: "Đã thanh toán", amountPaid: totalAmount } : b
-    );
-    localStorage.setItem(`bookings_${user.id}`, JSON.stringify(newBookings));
-
-    // ✅ Cập nhật trạng thái trong danh sách chuyên gia
-    Object.keys(localStorage)
-        .filter((key) => key.startsWith("bookings_")) // Lấy danh sách đặt lịch từ tất cả user
-        .forEach((key) => {
-            const userBookings = JSON.parse(localStorage.getItem(key)) || [];
-            const updatedUserBookings = userBookings.map((b) =>
-                Number(b.id) === Number(booking.id) ? { ...b, status: "Chưa bắt đầu tư vấn" } : b
-            );
-            localStorage.setItem(key, JSON.stringify(updatedUserBookings));
+    const fetchBooking = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Lấy token từ localStorage
+        const response = await fetch(`/api/booking/${bookingId}`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
+        if (!response.ok) throw new Error("Failed to fetch booking");
+        const data = await response.json();
+        setBooking(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBooking();
+  }, [bookingId]);
 
-    alert(`Thanh toán thành công ${totalAmount.toLocaleString()} VNĐ bằng ${paymentMethod}!`);
-    navigate("/my-booking");
-};
+  const handlePayment = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Lấy token từ localStorage
+      const response = await fetch("/api/payment/vnpay", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ bookingId }),
+      });
+      if (!response.ok) throw new Error("Failed to initiate payment");
+      const { paymentUrl } = await response.json();
+      window.location.href = paymentUrl; // Chuyển hướng đến VNPay
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-  if (!user) return <div className={style.notFound}>Bạn chưa đăng nhập!</div>;
-  if (!booking) return <div className={style.notFound}>Lịch đặt không tồn tại!</div>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className={style.container}>
+    <div>
       <h2>Thanh toán lịch hẹn</h2>
-      <div className={style.bookingInfo}>
-        <p><strong>Chuyên gia:</strong> {booking.expertName}</p>
-        <p><strong>Ngày:</strong> {booking.date}</p>
-        <p><strong>Gói dịch vụ:</strong> {booking.packageName}</p>
-        <p><strong>Trạng thái:</strong> {booking.status || "Chưa thanh toán"}</p>
-        <p className={style.totalAmount}><strong>Tổng tiền:</strong> {totalAmount.toLocaleString()} VNĐ</p>
-      </div>
-
-      <h3>Chọn phương thức thanh toán:</h3>
-      <div className={style.paymentOptions}>
-        {["Thẻ tín dụng", "MoMo", "Chuyển khoản ngân hàng"].map((method) => (
-          <label key={method}>
-            <input
-              type="radio"
-              value={method}
-              checked={paymentMethod === method}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            />
-            {method === "Thẻ tín dụng" ? "💳" : method === "MoMo" ? "📱" : "🏦"} {method}
-          </label>
-        ))}
-      </div>
-
-      <button className={style.payButton} onClick={handlePayment}>Xác nhận & Thanh toán</button>
+      <p>Dịch vụ: {booking.services[0].name}</p>
+      <p>Giá: {booking.services[0].price.toLocaleString()} VND</p>
+      <p>Chuyên gia: {booking.slotExpert.expert.name}</p>
+      <p>Ngày: {booking.slotExpert.date}</p>
+      <p>Giờ: {booking.slotExpert.slot.startTime} - {booking.slotExpert.slot.endTime}</p>
+      <button onClick={handlePayment}>Thanh toán ngay</button>
     </div>
   );
 };
+
+export default BookingPayment;

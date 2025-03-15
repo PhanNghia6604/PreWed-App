@@ -116,20 +116,20 @@
   }
   
   .testButton {
-    background-color: #ff9800;
+    background-color: #007bff;
     color: white;
   }
   
   .statButton {
-    background-color: #4caf50;
+    background-color: #007bff;
     color: white;
   }
   
   .testButton:hover {
-    background-color: #e68900;
+    background-color: #818181;
   }
   
   .statButton:hover {
-    background-color: #45a049;
+    background-color: #818181;
   }
   

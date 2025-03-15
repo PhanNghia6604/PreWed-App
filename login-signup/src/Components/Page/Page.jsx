@@ -20,7 +20,7 @@ import Profile from './Menu Customer/Profile';
 import Test from './Menu Customer/Test';
 import Result from './Menu Customer/Result';
 import { MyBookings } from './Menu Customer/MyBooking';
-import { BookingPayment } from './Menu Customer/BookingPayment';
+import  BookingPayment  from './Menu Customer/BookingPayment';
 import { ChooseRole } from '../Common/ChooseRole';
 import { ExpertLogin } from './Menu Expert/ExpertLogin';
 import ExpertDashboard from './Menu Expert/ExpertDashboard';
@@ -40,6 +40,7 @@ import ServicePackageManagement from './Menu Admin/ServicePackageManagement';
 import SlotManagement from './Menu Admin/SlotManagement';
 import HistoryTest from './Menu Customer/HistoryTest';
 import UserManagement from './Menu Admin/UserManagement';
+import WaitingPayment from './Menu Customer/WaitingPayment';
 
 
 
@@ -93,7 +94,8 @@ export const Page = () => {
           <Route exact path="/profile" element={<Profile />} />
           <Route path="/history-test" element={<HistoryTest/>}/>
           <Route exact path="/my-booking" element={<MyBookings />} />
-          <Route exact path="/booking-payment/:expertId/:bookingId" element={<BookingPayment />} />
+          <Route exactpath="/booking-payment/:bookingId" element={<BookingPayment />} />
+          <Route path="/waiting-payment" element={<WaitingPayment/>}/>
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/test" element={<Test />} />
           <Route path="/history-test" element={<HistoryTest/>}/>

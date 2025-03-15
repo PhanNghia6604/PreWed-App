@@ -16,28 +16,30 @@ const ExpertAppointment = () => {
   }, []);
 
   // Hàm cập nhật trạng thái lịch hẹn
-  const updateStatus = (id, status) => {
-    fetch(`/api/booking/${id}?status=${status}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`
-      },
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Unauthorized");
-        return response.json();
-      })
-      .then(() => {
-        setAppointments((prevAppointments) =>
-          prevAppointments.map((appointment) =>
-            appointment.id === id ? { ...appointment, status } : appointment
-          )
-        );
-      })
-      .catch((error) => console.error("Error updating status:", error));
+  const updateStatus = async (bookingId, newStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch(`/api/booking/${bookingId}?status=${newStatus}`, {
+        method: "PATCH",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Gửi token trong header
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Lỗi: ${response.status} - ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log("✅ Cập nhật trạng thái thành công:", data);
+      alert("Cập nhật trạng thái thành công!");
+    } catch (error) {
+      console.error("❌ Lỗi khi cập nhật trạng thái:", error);
+      alert("Không thể cập nhật trạng thái, vui lòng thử lại!");
+    }
   };
-
+ 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Danh sách lịch hẹn</h2>

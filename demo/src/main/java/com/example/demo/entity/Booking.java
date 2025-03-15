@@ -34,7 +34,6 @@ public class Booking {
     @JoinColumn(name = "slot_expert_id")
     SlotExpert slotExpert;
 
-
     @Enumerated(EnumType.STRING)
     BookingEnum status;
 

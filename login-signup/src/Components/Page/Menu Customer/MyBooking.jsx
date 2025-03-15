@@ -4,56 +4,61 @@ import style from "./MyBookings.module.css";
 
 export const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const [reviewedExperts, setReviewedExperts] = useState({});
-
 
   useEffect(() => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("user")) || null;
-      if (storedUser) {
-        setUser(storedUser);
-        const userBookings = JSON.parse(localStorage.getItem(`bookings_${storedUser.id}`)) || [];
-        setBookings(userBookings);
-  
-        // ✅ Lấy trạng thái đánh giá theo từng bookingId
-        const savedReviewedBookings = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
-        console.log("Dữ liệu đánh giá đã lưu:", savedReviewedBookings); // 🛠 Debug
-        setReviewedExperts(savedReviewedBookings);
-      }
-    } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu từ localStorage:", error);
-    }
+    fetch("/api/booking", {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setBookings(data))
+      .catch((error) => console.error("Lỗi lấy danh sách lịch hẹn:", error));
   }, []);
 
-
-  const handleCancelBooking = (index) => {
-    if (!user) return;
+  // Xử lý hủy lịch hẹn
+  const handleCancelBooking = (id) => {
     if (!window.confirm("Bạn có chắc muốn hủy lịch hẹn này không?")) return;
 
-    setBookings((prevBookings) => {
-      const updatedBookings = prevBookings.map((b, i) =>
-        i === index ? { ...b, status: "Đã hủy & Hoàn tiền" } : b
-      );
-      localStorage.setItem(`bookings_${user.id}`, JSON.stringify(updatedBookings));
-      return updatedBookings;
-    });
+    fetch(`/api/booking/${id}?status=CANCELLED`, {
+      method: "PATCH",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setBookings((prev) =>
+          prev.map((b) => (b.id === id ? { ...b, status: "CANCELLED" } : b))
+        );
+      })
+      .catch((error) => console.error("Lỗi hủy lịch:", error));
   };
-
-  const handlePayment = (booking) => {
-    navigate(`/booking-payment/${booking.expertId}/${booking.id}`);
+  const handlePayment = async (bookingId) => {
+    try{
+    localStorage.setItem("bookingId", bookingId);
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/payments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ bookingId }),
+      });
+  
+      if (!response.ok) throw new Error("Lỗi tạo yêu cầu thanh toán!");
+  
+      const paymentUrl = await response.text(); // Lấy URL trực tiếp từ API
+      window.location.href = paymentUrl; // Chuyển hướng đến VNPay
+    } catch (error) {
+      console.error("Lỗi thanh toán:", error);
+      alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
+    }
   };
+  
 
-  const getDayOfWeek = (dateString) => {
-    const daysMap = ["Chủ Nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
-    const date = new Date(dateString);
-    return daysMap[date.getDay()];
-  };
-
-  if (!user) {
-    return <div className={style.notFound}>Bạn chưa đăng nhập!</div>;
-  }
 
   return (
     <div className={style.container}>
@@ -62,62 +67,75 @@ export const MyBookings = () => {
         <p>Bạn chưa có lịch đặt nào.</p>
       ) : (
         <ul className={style.bookingList}>
-          {bookings.map((b, index) => {
-            const experts = JSON.parse(localStorage.getItem("experts")) || [];
-            const expert = experts.find(e => e.id === Number(b.expertId));
-
+          {bookings.map((b) => {
+            const expert = b.slotExpert.expert;
             return (
-              <li key={index} className={style.bookingItem}>
-                {expert ? (
-                  <>
-                    <img src={expert.avatar} alt={expert.name} className={style.expertAvatar} />
-                    <div className={style.bookingInfo}>
-                      <strong className={style.expertName}>{expert.name}</strong>
-                      <p className={style.specialty}>🛠 {expert.specialty}</p>
-                      <p className={style.dateTime}>📅 Ngày: {b.date} ({getDayOfWeek(b.date)}) - ⏰ Giờ: {b.time} | Gói dịch vụ: {b.packageName}</p>
-                      <p className={style.status}>📌 Trạng thái: <strong>{b.status}</strong></p>
-                      {b.status === "Đang tư vấn" && (
-                        <div className={style.consultationLink}>
-                          <a href="https://meet.google.com/new" className={style.link} target="_blank" rel="noopener noreferrer">
-                            🌐 Vào phòng tư vấn qua Google Meet
-                          </a>
-                        </div>
-                      )}
-                    </div>
+              <li key={b.id} className={style.bookingItem}>
+                <img src={expert.avatar} alt={expert.name} className={style.expertAvatar} />
+                <div className={style.bookingInfo}>
+                  <strong>{expert.name}</strong>
+                  <p>📅 Ngày: {b.slotExpert.date}</p>
+                  <p>⏰ Giờ: {b.slotExpert.slot.startTime} - {b.slotExpert.slot.endTime}</p>
+                  <p>📌 Trạng thái: <strong>{b.status}</strong></p>
 
-                    {b.status === "Chờ chuyên gia xác nhận" && (
-                      <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>
-                    )}
+                  {/* 🟡 Chờ chuyên gia xác nhận */}
+                  {b.status === "PENDING" && (
+                    <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>
+                  )}
 
-                    {b.status === "Chờ thanh toán" && (
-                      <button className={style.payButton} onClick={() => handlePayment(b)}>
-                        💳 Thanh toán
-                      </button>
-                    )}
-
-                    {b.status === "Chờ chuyên gia xác nhận" || b.status === "Chờ thanh toán" ? (
-                      <button className={style.cancelButton} onClick={() => handleCancelBooking(index)}>
-                        ❌ Hủy lịch
-                      </button>
-                    ) : null}
-                    {b.status === "Đã hoàn thành" && (
-                      <div className={style.feedbackSection}>
-                        <button
-                          className={style.toggleFeedbackButton}
-                          onClick={() => navigate(`/feedback/${b.id}/${b.expertId}`)}
-                          disabled={reviewedExperts[b.id]}
-                        >
-                          {reviewedExperts[b.id] ? "Đã đánh giá" : "Đánh giá"}
-                        </button>
-                    
-                      </div>
-                    )}
+                  {/* 💳 Chờ thanh toán */}
+                  {b.status === "PENDING_PAYMENT" && (
+                    <button
+                      className={style.payButton}
+                      onClick={() => handlePayment(b.id)}
+                    >
+                      💳 Thanh toán
+                    </button>
+                  )}
 
 
-                  </>
-                ) : (
-                  <p className={style.missingExpert}>⚠ Chuyên gia không tồn tại! (ID: {b.expertId})</p>
-                )}
+                  {/* ⏳ Đang chờ đến giờ tư vấn */}
+                  {b.status === "AWAIT" && (
+                    <p className={style.awaitText}>⏳ Bạn đã thanh toán. Vui lòng đợi đến giờ tư vấn!</p>
+                  )}
+
+                  {/* 🔵 Đang tư vấn */}
+                  {b.status === "PROCESSING" && (
+                    <a
+                      href="https://meet.google.com/new"
+                      className={style.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      🌐 Vào phòng tư vấn qua Google Meet
+                    </a>
+                  )}
+
+                  {/* ✅ Đã hoàn thành */}
+                  {b.status === "FINISHED" && (
+                    <button
+                      className={style.feedbackButton}
+                      onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}
+                    >
+                      ✍️ Đánh giá chuyên gia
+                    </button>
+                  )}
+
+                  {/* ❌ Đã hủy */}
+                  {b.status === "CANCELLED" && (
+                    <p className={style.cancelledText}>❌ Lịch hẹn đã bị hủy.</p>
+                  )}
+
+                  {/* Nút hủy lịch cho các trạng thái PENDING và PENDING_PAYMENT */}
+                  {["PENDING", "PENDING_PAYMENT"].includes(b.status) && (
+                    <button
+                      className={style.cancelButton}
+                      onClick={() => handleCancelBooking(b.id)}
+                    >
+                      ❌ Hủy lịch
+                    </button>
+                  )}
+                </div>
               </li>
             );
           })}
