@@ -77,7 +77,6 @@ const ExpertDetail = () => {
       fetchAvailableSlots(expert.id, pkg.id); // Gọi API slots với chuyên gia & gói dịch vụ
     }
   };
-
   const handleBooking = async () => {
     if (!selectedSlot) {
       alert("Vui lòng chọn một khung giờ trước khi đặt lịch!");
@@ -122,6 +121,7 @@ const ExpertDetail = () => {
       console.log("📨 Phản hồi từ server:", data);
   
       if (response.ok) {
+        navigate("/my-booking");
         alert("Đặt lịch thành công!");
       } else {
         alert(`Lỗi: ${data.message || "Không thể đặt lịch"}`);
@@ -131,6 +131,9 @@ const ExpertDetail = () => {
       alert("Đã có lỗi xảy ra, vui lòng thử lại!");
     }
   };
+  
+  
+
   
   
   
@@ -214,22 +217,21 @@ const ExpertDetail = () => {
     <div className={styles.modal}>
       <h3>Chọn giờ tư vấn</h3>
       <ul className={styles.slotContainer}>
-  {availableSlots.length === 0 ? (
-    <p>Không có lịch trống</p>
-  ) : (
-    availableSlots.map((slot) => (
-      <li
-        key={slot.id}
-        className={`${styles.slotItem} ${
-          selectedSlot?.id === slot.id ? styles.selectedSlot : ""
-        }`}
-      >
-        <button onClick={() => setSelectedSlot(slot)}>
-          {slot.startTime} - {slot.endTime} {selectedSlot?.id === slot.id ? "✅" : ""}
-        </button>
-      </li>
-    ))
-  )}
+      {availableSlots.length === 0 ? (
+  <p>Không có lịch trống</p>
+) : (
+  availableSlots.map((slot) => (
+    <li
+      key={slot.id}
+      className={`${styles.slotItem} ${selectedSlot?.id === slot.id ? styles.selectedSlot : ""}`}
+    >
+      <button onClick={() => setSelectedSlot(slot)}>
+        Giờ bắt đầu: {slot.startTime.split(":").slice(0, 2).join(":")} - Giờ kết thúc: {slot.endTime.split(":").slice(0, 2).join(":")}
+        {selectedSlot?.id === slot.id ? " ✅" : ""}
+      </button>
+    </li>
+  ))
+)}
 </ul>
       <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
         {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
