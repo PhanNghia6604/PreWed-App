@@ -35,6 +35,30 @@ export const MyBookings = () => {
       })
       .catch((error) => console.error("Lỗi hủy lịch:", error));
   };
+  const handlePayment = async (bookingId) => {
+    try{
+    localStorage.setItem("bookingId", bookingId);
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/payments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ bookingId }),
+      });
+  
+      if (!response.ok) throw new Error("Lỗi tạo yêu cầu thanh toán!");
+  
+      const paymentUrl = await response.text(); // Lấy URL trực tiếp từ API
+      window.location.href = paymentUrl; // Chuyển hướng đến VNPay
+    } catch (error) {
+      console.error("Lỗi thanh toán:", error);
+      alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
+    }
+  };
+  
+
 
   return (
     <div className={style.container}>
@@ -63,11 +87,12 @@ export const MyBookings = () => {
                   {b.status === "PENDING_PAYMENT" && (
                     <button
                       className={style.payButton}
-                      onClick={() => navigate(`/booking-payment/${expert.id}/${b.id}`)}
+                      onClick={() => handlePayment(b.id)}
                     >
                       💳 Thanh toán
                     </button>
                   )}
+
 
                   {/* ⏳ Đang chờ đến giờ tư vấn */}
                   {b.status === "AWAIT" && (
