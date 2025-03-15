@@ -252,24 +252,29 @@ ul {
     }
 }
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px;
-    text-align: center;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Chiếm toàn bộ chiều rộng màn hình */
+  height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+  background: rgba(0, 0, 0, 0.5); /* Làm mờ nền */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Điều chỉnh modal để to hơn */
+.modal {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 60vw; /* Tăng chiều rộng modal */
+  max-width: 700px; /* Giới hạn tối đa */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
   
   .packageItem {
     padding: 10px;
@@ -329,23 +334,40 @@ ul {
   }
   .slotContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Chia slot thành nhiều cột tự động */
-    gap: 10px;
-    padding: 0;
-    list-style: none;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
     justify-content: center;
-  }
-  
-  .slotItem button {
-    width: 100%;
-    padding: 8px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-    text-align: center;
-  }
+}
+.slotItem {
+  background: #f1f1f1;
+  padding: 10px; /* Giảm padding để phù hợp với hình vuông */
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1; /* Giữ hình vuông */
+  width: 100%; /* Để slotItem tự động điều chỉnh theo grid */
+}
+
+
+.slotItem button {
+  width: 100%;
+  padding: 14px; /* Làm nút lớn hơn */
+  font-size: 18px; /* Chữ to hơn để dễ đọc */
+  background: #f9f9f9;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+}
+
   
   .slotItem button:hover {
     background: #b3e0ff;

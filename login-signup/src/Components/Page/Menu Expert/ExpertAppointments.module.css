@@ -1,65 +1,128 @@
 .container {
-    max-width: 900px;
-    margin: 20px auto;
+    max-width: 800px;
+    margin: auto;
     padding: 20px;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
     text-align: center;
-}
-
-h2 {
     color: #333;
+    font-size: 24px;
     margin-bottom: 20px;
-}
-
-.notFound {
-    text-align: center;
-    color: red;
-    font-size: 18px;
-    margin-top: 20px;
-}
-
-.table {
+  }
+  
+  .list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .listItem {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .select {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.table th, 
-.table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
-
-.table th {
-    background-color: #f4f4f4;
-    color: #333;
-    font-weight: bold;
-}
-
-.table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.table tbody tr:hover {
-    background-color: #f1f1f1;
-}
-
-.table td {
-    color: #555;
-}
-.completeButton {
-    background-color: #4caf50;
+    max-width: 200px;
+  }
+  
+  /* Nút Chấp nhận */
+  .acceptButton {
+    background-color: #4CAF50;
     color: white;
-    padding: 5px 10px;
+    padding: 8px 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 5px;
-}
-
-.completeButton:hover {
+    transition: background 0.3s ease;
+  }
+  
+  .acceptButton:hover {
     background-color: #45a049;
-}
+  }
+  
+  /* Nút Từ chối */
+  .rejectButton {
+    background-color: #FF4D4D;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .rejectButton:hover {
+    background-color: #D63434;
+  }
+  
+  /* Nút Bắt đầu tư vấn */
+  .startButton {
+    background-color: #2196F3;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .startButton:hover {
+    background-color: #1E87E2;
+  }
+  
+  /* Nút Hoàn tất tư vấn */
+  .finishButton {
+    background-color: #FF9800;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .finishButton:hover {
+    background-color: #E68900;
+  }
+  
+  /* Phần thông tin khách hàng & dịch vụ */
+  .details {
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .details p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .serviceList {
+    margin-left: 15px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .serviceList li {
+    margin-bottom: 5px;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    gap: 10px;
+  }
+  
