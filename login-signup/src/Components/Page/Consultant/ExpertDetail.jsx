@@ -46,8 +46,15 @@ const ExpertDetail = () => {
   }, []);
   
   const fetchServicePackages = async () => {
+    const token = localStorage.getItem("token"); 
     try {
-      const response = await fetch("/api/servicepackage");
+      const response = await fetch("/api/servicepackage", {
+        method: "Get",
+        headers:{
+          "Authorization": `Bearer ${token}`, // Gửi token trong headers
+        }
+      });
+      
       if (!response.ok) throw new Error("Lỗi khi tải gói tư vấn");
       const data = await response.json();
       setServicePackages(data);
@@ -57,18 +64,39 @@ const ExpertDetail = () => {
     }
   };
 
-  const fetchAvailableSlots = async (expertId, serviceId) => {
+  const fetchAvailableSlots = async () => {
     try {
-      const response = await fetch(`/api/slots?expertId=${expertId}&serviceId=${serviceId}`);
-      if (!response.ok) throw new Error("Lỗi khi tải lịch trống");
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch("/api/slots", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+  
+      // In ra response để kiểm tra chi tiết phản hồi từ API
+      console.log("📌 API Response:", response);
+  
+      if (!response.ok) {
+        const errorText = await response.text(); // Lấy thông tin lỗi nếu có
+        throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
+      }
+  
       const data = await response.json();
-      console.log("Dữ liệu slot nhận được:", data); // 🔥 Kiểm tra dữ liệu
+      console.log("📌 Lịch trống nhận được:", data);
+      
+      // Nếu API trả về mảng rỗng, báo lỗi lịch trống
+      if (data.length === 0) {
+        throw new Error("Không có lịch trống nào!");
+      }
+  
       setAvailableSlots(data);
     } catch (error) {
-      console.error(error);
+      console.error("❌ Lỗi khi tải lịch trống:", error);
     }
   };
-
+  
 
   const handleSelectPackage = (pkg) => {
     setSelectedPackage(pkg);
@@ -94,7 +122,7 @@ const ExpertDetail = () => {
     console.log("Slot ID:", selectedSlot.id);
     console.log("Thời gian:", selectedSlot.startTime, "-", selectedSlot.endTime);
   
-    // Nếu ID nào đó bị 0 hoặc undefined, báo lỗi sớm
+    // Kiểm tra ID hợp lệ
     if (!expert.id || !selectedSlot.id) {
       console.error("❌ Lỗi: expertId hoặc slotId không hợp lệ!");
       alert("Có lỗi xảy ra, vui lòng thử lại!");
@@ -105,32 +133,45 @@ const ExpertDetail = () => {
       expertId: expert.id,
       slotId: selectedSlot.id,
       bookingDate: new Date().toISOString().split("T")[0], // Lấy ngày hôm nay
-      serviceIds: [selectedPackage?.id || 0], // Đảm bảo serviceId hợp lệ
+      serviceIds: selectedPackage?.id ? [selectedPackage.id] : [], // Bỏ [0] để tránh lỗi
     };
   
     console.log("📦 Payload gửi lên API:", bookingData);
   
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch("/api/booking", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify(bookingData),
       });
   
-      const data = await response.json();
-      console.log("📨 Phản hồi từ server:", data);
+      const responseText = await response.text(); // Kiểm tra phản hồi API
+      console.log("📨 Phản hồi từ server (raw text):", responseText);
   
-      if (response.ok) {
-        navigate("/my-booking");
-        alert("Đặt lịch thành công!");
-      } else {
-        alert(`Lỗi: ${data.message || "Không thể đặt lịch"}`);
+      try {
+        const data = JSON.parse(responseText); // Chỉ parse JSON nếu phản hồi hợp lệ
+        console.log("📨 Phản hồi từ server (JSON):", data);
+  
+        if (response.ok) {
+          navigate("/my-booking");
+          alert("Đặt lịch thành công!");
+        } else {
+          alert(`Lỗi: ${data.message || "Không thể đặt lịch"}`);
+        }
+      } catch (jsonError) {
+        console.error("❌ Lỗi khi parse JSON:", jsonError);
+        alert("Phản hồi từ server không hợp lệ!");
       }
     } catch (error) {
       console.error("❌ Lỗi khi gửi yêu cầu đặt lịch:", error);
       alert("Đã có lỗi xảy ra, vui lòng thử lại!");
     }
   };
+  
   
   
 
