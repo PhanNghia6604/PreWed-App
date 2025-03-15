@@ -29,16 +29,16 @@ const Result = () => {
 
   return (
     <div className={`${styles.container} ${isVisible ? styles.show : ""}`}>
-      <h1 className={styles.title}>🎯 Kết quả Bài Kiểm Tra</h1>
+      <h1 className={styles.title}> Kết quả Bài Kiểm Tra</h1>
       <div className={`${styles.message} ${resultClass}`}>
         {testResult ? (
           translatedCategories.length > 0 ? (
-            <h2>⚠️ Cần cải thiện: {translatedCategories.join(", ")}</h2>
+            <h2> Cần cải thiện: {translatedCategories.join(", ")}</h2>
           ) : (
-            <h2>🎉 Chúc mừng! Không có vấn đề nào đáng lo.</h2>
+            <h2> Chúc mừng! Không có vấn đề nào đáng lo.</h2>
           )
         ) : (
-          <h2>❌ Không có dữ liệu bài kiểm tra.</h2>
+          <h2> Không có dữ liệu bài kiểm tra.</h2>
         )}
       </div>
       <button className={styles.expertBtn} onClick={() => navigate("/expert")}>
