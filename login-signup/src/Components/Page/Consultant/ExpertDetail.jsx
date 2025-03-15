@@ -19,12 +19,46 @@ const ExpertDetail = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isBooking, setIsBooking] = useState(false);
   const [message, setMessage] = useState("");
+  const [rating, setRating] = useState(null);
+  const [reviews, setReviews] = useState([]); // Danh sách đánh giá
+
+
   
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
   };
 
+  useEffect(() => {
+    const fetchRating = async () => {
+      const token = localStorage.getItem("token"); 
+
+      try {
+        const expert = experts.find((e) => e.name === decodeURIComponent(name));
+        if (!expert) return;
+  
+        const response = await fetch(`/api/feedback/${expert.id}`,   {
+          method: "Get",
+          headers:{
+            "Authorization": `Bearer ${token}`, // Gửi token trong headers
+          }
+        });
+        if (!response.ok) throw new Error("Không thể lấy đánh giá");
+  
+        const data = await response.json();
+        console.log("📌 Đánh giá chuyên gia:", data);
+        setRating(data.rating); // Giả sử API trả về { rating: 4.5 }
+      } catch (error) {
+        console.error("❌ Lỗi khi tải đánh giá:", error);
+      }
+    };
+  
+    fetchRating();
+  }, [experts, name]);
+  
+
+
+  
   useEffect(() => {
     const fetchExperts = async () => {
       try {
@@ -48,7 +82,7 @@ const ExpertDetail = () => {
   const fetchServicePackages = async () => {
     const token = localStorage.getItem("token"); 
     try {
-      const response = await fetch("/api/servicepackage", {
+      const response = await fetch("/api/servicepackage",   {
         method: "Get",
         headers:{
           "Authorization": `Bearer ${token}`, // Gửi token trong headers
@@ -190,6 +224,8 @@ const ExpertDetail = () => {
     return <p>Không tìm thấy chuyên gia!</p>;
   }
   console.log("Danh sách gói trước khi đặt lịch:", servicePackages);
+
+  
   return (
     <div className={styles.container}>
 
@@ -206,7 +242,7 @@ const ExpertDetail = () => {
         <h2>{expert.name}</h2>
         <p><strong>Kinh nghiệm:</strong> {experience} năm</p>
         <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
-        <p><strong>Đánh giá:</strong> ⭐ {expert.rating} / 5</p>
+        <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p>
         {expert.specialty && (
           <p className={styles.description}>
             <strong>Mô tả chuyên môn:</strong> {expertDescriptions[expert.specialty] || "Chưa có mô tả"}
@@ -280,6 +316,20 @@ const ExpertDetail = () => {
       <p>{message}</p>
       <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
     </div>
+    <div className="review-form">
+        <h3>Gửi đánh giá của bạn</h3>
+        <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
+          {[5, 4, 3, 2, 1].map((num) => (
+            <option key={num} value={num}>{num} sao</option>
+          ))}
+        </select>
+        <textarea
+          placeholder="Viết nhận xét của bạn..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <button onClick={handleSubmitReview}>Gửi đánh giá</button>
+      </div>
   </div>
 )}
 
