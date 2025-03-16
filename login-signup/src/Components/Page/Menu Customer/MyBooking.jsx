@@ -57,7 +57,6 @@ export const MyBookings = () => {
       alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
     }
   };
-  
 
 
   return (
@@ -69,6 +68,7 @@ export const MyBookings = () => {
         <ul className={style.bookingList}>
           {bookings.map((b) => {
             const expert = b.slotExpert.expert;
+            const meetLink = localStorage.getItem(`meetLink-${b.id}`);
             return (
               <li key={b.id} className={style.bookingItem}>
                 <img src={expert.avatar} alt={expert.name} className={style.expertAvatar} />
@@ -100,16 +100,22 @@ export const MyBookings = () => {
                   )}
 
                   {/* 🔵 Đang tư vấn */}
-                  {b.status === "PROCESSING" && (
-                    <a
-                      href="https://meet.google.com/new"
-                      className={style.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      🌐 Vào phòng tư vấn qua Google Meet
-                    </a>
-                  )}
+                  {b.status === "PROCESSING" && meetLink ? (
+  <p>
+    🔗 Link tư vấn:{" "}
+    <a
+      href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`} 
+      target="_blank"
+      rel="noopener noreferrer"
+      className={style.link}
+    >
+      {meetLink}
+    </a>
+  </p>
+) : (
+  <p>⏳ Chuyên gia chưa cung cấp link Google Meet.</p>
+)}
+
 
                   {/* ✅ Đã hoàn thành */}
                   {b.status === "FINISHED" && (
