@@ -16,34 +16,96 @@ export const ExpertsList = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState("Tất cả");
   const expertsPerPage = 6;
 
-  useEffect(() => {
-    setLoading(true);
-    const token = localStorage.getItem("token"); // Lấy token từ localStorage hoặc context
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const token = localStorage.getItem("token"); // Lấy token từ localStorage hoặc context
   
-    fetch("/api/expert/all", {
-      method: "GET",
-      headers: {
-        "Accept": "application/json",
-        // "Authorization": `Bearer ${token}`, // Gửi token trong headers
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Experts Data:", data);
-        setList(data);
-        setFilteredList(data);
-        setSpecialties(["Tất cả", ...new Set(data.map((expert) => expert.specialty))]);
+  //   fetch("/api/expert/all", {
+  //     method: "GET",
+  //     headers: {
+  //       "Accept": "application/json",
+  //       // "Authorization": `Bearer ${token}`, // Gửi token trong headers
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("Experts Data:", data);
+  //       setList(data);
+  //       setFilteredList(data);
+  //       setSpecialties(["Tất cả", ...new Set(data.map((expert) => expert.specialty))]);
+  //     })
+  //     .catch((error) => {
+  //       setError(error.message);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+      
+  // }, []);
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/expert/all", {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+      }).then((res) => res.json()),
+  
+      fetch("/api/feedback", {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+      }).then((res) => res.json()),
+    ])
+      .then(([expertsData, feedbacksData]) => {
+        console.log("Experts Data:", expertsData);
+        console.log("Feedbacks Data:", feedbacksData);
+  
+        // Kiểm tra ID của expert trong feedback
+        feedbacksData.forEach((fb) => {
+          console.log(`Feedback ID: ${fb.id}, Expert ID: ${fb.expert?.id}, Rating: ${fb.rating}`);
+        });
+  
+        const feedbackMap = new Map();
+
+  
+        feedbacksData.forEach((feedback) => {
+          const expertId = feedback.expert?.id;
+          if (!expertId) return;
+  
+          if (!feedbackMap.has(expertId)) {
+            feedbackMap.set(expertId, []);
+          }
+          feedbackMap.get(expertId).push(feedback.rating);
+        });
+        
+        console.log("Feedback Map:", feedbackMap);
+  
+        const updatedExperts = expertsData.map((expert) => {
+          const ratings = feedbackMap.get(expert.id) || [];
+          const avgRating =
+            ratings.length > 0 ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1) : 0;
+  
+            console.log(`Expert: ${expert.name}, Ratings: ${ratings}, Avg Rating: ${avgRating}`);
+
+  
+          return { ...expert, rating: parseFloat(avgRating) };
+        });
+  
+        console.log("Updated Experts:", updatedExperts);
+        setList(updatedExperts);
+        setFilteredList(updatedExperts);
       })
       .catch((error) => {
-        setError(error.message);
+        console.error("Lỗi khi tải dữ liệu:", error);
       })
       .finally(() => {
         setLoading(false);
       });
   }, []);
+  
+  
+  
   
   
   const handleSearch = (e) => {
@@ -61,8 +123,8 @@ export const ExpertsList = () => {
       filtered = filtered.filter((expert) => expert.name.toLowerCase().includes(search));
     }
     if (rating > 0) {
-      filtered = filtered.filter((expert) => expert.rating >= rating);
-    }
+      filtered = filtered.filter((expert) => expert.rating >= parseFloat(rating));
+    } 
     setFilteredList(filtered);
     setCurrentPage(1);
   };
@@ -137,7 +199,9 @@ export const ExpertsList = () => {
                   </div>
                   <h3 class={style.expertName}>{expert.name}</h3>
                   <p className={style.specialty}>{expert.specialty}</p>
-                  <p className={style.rating}>⭐ {expert.rating || "Chưa có đánh giá"}</p>
+                  <p className={style.rating}>
+  ⭐ {expert.rating > 0 ? expert.rating : "Chưa có đánh giá"}
+</p>
                   <Link to={`/expert/${expert.name}`} className={style.detailButton}>
                     Xem chi tiết
                   </Link>

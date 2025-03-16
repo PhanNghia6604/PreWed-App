@@ -6,6 +6,8 @@ const ExpertDashboard = () => {
   const [newCustomerPayments, setNewCustomerPayments] = useState(0);
   const [feedbackList, setFeedbackList] = useState([]);
 const [totalFeedbacks, setTotalFeedbacks] = useState(0);
+const [currentPage, setCurrentPage] = useState(1);
+const feedbacksPerPage = 5; // Số feedback mỗi trang
 
 useEffect(() => {
     const token = localStorage.getItem("token");
@@ -41,21 +43,25 @@ useEffect(() => {
       })
       .catch((error) => console.error("❌ Lỗi khi tải booking:", error));
   }, []);
-useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
-  
+    const expertId = localStorage.getItem("expertId");
+
     fetch(`/api/feedback`, {
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("📌 Feedback API response:", data);  // Kiểm tra log
-  
+        console.log("📌 Feedback API response:", data);
+
         if (Array.isArray(data)) {
-          setFeedbackList(data);
+          const filteredFeedbacks = data.filter(
+            (feedback) => feedback.expert.id.toString() === expertId
+          );
+          setFeedbackList(filteredFeedbacks);
         } else {
           console.error("❌ API trả về dữ liệu không hợp lệ:", data);
         }
@@ -65,7 +71,15 @@ useEffect(() => {
   
   
   
+    // 📌 Tính toán index cho phân trang
+    const indexOfLastFeedback = currentPage * feedbacksPerPage;
+    const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
+    const currentFeedbacks = feedbackList.slice(indexOfFirstFeedback, indexOfLastFeedback);
   
+    // 📌 Chuyển trang
+    const totalPages = Math.ceil(feedbackList.length / feedbacksPerPage);
+    const nextPage = () => setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+    const prevPage = () => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
   
   
   return (
@@ -87,22 +101,32 @@ useEffect(() => {
       )}
 
      {/* ⭐ Danh sách feedback từ khách hàng */}
-     {Array.isArray(feedbackList) && feedbackList.length > 0 && (
-  <div className={styles.feedbackSection}>
-    <h2>⭐ Đánh giá từ khách hàng</h2>
-    <ul className={styles.feedbackList}>
-  {feedbackList.map((feedback, index) => (
-    <li key={index} className={styles.feedbackItem}>
-      <p><strong>Khách hàng:</strong> {feedback.username || "Ẩn danh"}</p> {/* 👈 Hiển thị username */}
-      <p><strong>Đánh giá:</strong> {feedback.rating} ⭐</p>
-      <p><strong>Bình luận:</strong> {feedback.comments}</p>
-    </li>
-  ))}
-</ul>
+     
+     {feedbackList.length > 0 && (
+        <div className={styles.feedbackSection}>
+          <h2>⭐ Đánh giá từ khách hàng</h2>
+          <ul className={styles.feedbackList}>
+            {currentFeedbacks.map((feedback, index) => (
+              <li key={index} className={styles.feedbackItem}>
+                <p><strong>Khách hàng:</strong> {feedback.user?.name || "Ẩn danh"}</p>
+                <p><strong>Đánh giá:</strong> {feedback.rating} ⭐</p>
+                <p><strong>Bình luận:</strong> {feedback.comments}</p>
+              </li>
+            ))}
+          </ul>
 
-  </div>
-)}
-      {/* Các nội dung khác của Dashboard */}
+          {/* 🔹 Nút chuyển trang */}
+          <div className={styles.pagination}>
+            <button onClick={prevPage} disabled={currentPage === 1}>
+              ◀ Trang trước
+            </button>
+            <span>Trang {currentPage} / {totalPages}</span>
+            <button onClick={nextPage} disabled={currentPage === totalPages}>
+              Trang sau ▶
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
