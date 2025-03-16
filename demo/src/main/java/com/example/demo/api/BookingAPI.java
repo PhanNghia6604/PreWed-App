@@ -25,7 +25,7 @@ public class BookingAPI {
     }
 
     @GetMapping
-    @Secured({"ROLE_CUSTOMER", "ROLE_EXPERT", "ROLE_ADMIN"})
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity getBooking(){
         return ResponseEntity.ok(bookingService.getBooking());
     }

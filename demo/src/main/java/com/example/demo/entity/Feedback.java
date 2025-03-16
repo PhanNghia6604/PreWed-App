@@ -19,4 +19,10 @@ public class Feedback {
     protected void onCreate() {
         this.date = LocalDateTime.now();
     }
+    @ManyToOne
+    @JoinColumn(name = "expert_id")
+    Expert expert;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 }

@@ -29,7 +29,11 @@ public class Expert extends User {
     private List<String> certificates; // Danh sách chứng chỉ
 
 
+
     public Expert() {
         this.setRoleEnum(RoleEnum.EXPERT); // Mặc định role là EXPERT
     }
+    @OneToMany(mappedBy = "expert")
+    @JsonIgnore
+    List<Feedback> feedbacks = new ArrayList<>();
 }

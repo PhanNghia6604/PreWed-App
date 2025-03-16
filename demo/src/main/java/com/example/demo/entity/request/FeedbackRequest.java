@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedbackRequest {
+    Long expertId;
     double rating;
     String comments;
 }
