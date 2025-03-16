@@ -23,7 +23,7 @@ const ExpertAppointment = () => {
       const response = await fetch(`/api/booking/${bookingId}?status=${newStatus}`, {
         method: "PATCH",
         headers: {
-          "Authorization": `Bearer ${token}`, // Gửi token trong header
+          "Authorization": `Bearer ${token}`,
         },
       });
   
@@ -31,14 +31,25 @@ const ExpertAppointment = () => {
         throw new Error(`Lỗi: ${response.status} - ${response.statusText}`);
       }
   
-      const data = await response.json();
-      console.log("✅ Cập nhật trạng thái thành công:", data);
+      // Cập nhật trạng thái trong state ngay lập tức
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment.id === bookingId ? { ...appointment, status: newStatus } : appointment
+        )
+      );
+  
+      console.log("✅ Cập nhật trạng thái thành công!");
       alert("Cập nhật trạng thái thành công!");
     } catch (error) {
       console.error("❌ Lỗi khi cập nhật trạng thái:", error);
       alert("Không thể cập nhật trạng thái, vui lòng thử lại!");
     }
   };
+  const saveMeetLink = (bookingId, meetLink) => {
+    localStorage.setItem(`meetLink-${bookingId}`, meetLink);
+    alert("✅ Link Google Meet đã được lưu vào trình duyệt!");
+  };
+  
  
   return (
     <div className={styles.container}>
@@ -97,6 +108,31 @@ const ExpertAppointment = () => {
                 Bắt đầu tư vấn
               </button>
             )}
+            {/* Ô nhập link Google Meet */}
+            {appointment.status === "AWAIT" && (
+  <div className={styles.meetContainer}>
+    <input
+      type="text"
+      placeholder="Nhập link Google Meet"
+      className={styles.meetInput}
+      value={appointment.meetLink || ""}
+      onChange={(e) => {
+        const newLink = e.target.value;
+        setAppointments((prev) =>
+          prev.map((appt) =>
+            appt.id === appointment.id ? { ...appt, meetLink: newLink } : appt
+          )
+        );
+      }}
+    />
+    <button
+      className={styles.saveButton}
+      onClick={() => saveMeetLink(appointment.id, appointment.meetLink)}
+    >
+      💾 Lưu Link
+    </button>
+  </div>
+)}
 
             {/* Nếu trạng thái là PROCESSING, hiển thị nút Hoàn tất tư vấn */}
             {appointment.status === "PROCESSING" && (
