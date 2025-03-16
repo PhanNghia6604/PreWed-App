@@ -9,20 +9,53 @@ export const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1); // 🔹 Phân trang
   const itemsPerPage = 5; // 🔹 Số lượng lịch hẹn mỗi trang
   const navigate = useNavigate();
-
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const userId = storedUser ? JSON.parse(storedUser).userId : null;
+    
+    if (!userId) {
+      console.error("❌ Không tìm thấy userId trong localStorage!");
+      return;
+    }
+    console.log("✅ User ID hiện tại:", userId);
+    
+  
+    
+  
     fetch("/api/booking", {
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => response.json())
       .then((data) => {
-        setBookings(data);
-        setFilteredBookings(sortBookings(data)); // 🔹 Áp dụng sắp xếp ngay từ đầu
+        console.log("📌 Dữ liệu API trả về:", data);
+    
+        if (!Array.isArray(data)) {
+          console.error("❌ API không trả về mảng dữ liệu hợp lệ!", data);
+          return;
+        }
+    
+        console.log("✅ User ID hiện tại:", userId);
+    
+        // 🔹 Kiểm tra từng phần tử trước khi lọc
+        data.forEach((booking, index) => {
+          console.log(`📌 Booking ${index}:`, booking);
+        });
+    
+        // 🔹 Lọc danh sách chỉ lấy của user hiện tại
+        const filteredData = data.filter(
+          (booking) => booking?.user?.id === userId
+        );
+    
+        console.log("✅ Danh sách booking của user hiện tại:", filteredData);
+    
+        setBookings(filteredData);
+        setFilteredBookings(sortBookings(filteredData));
       })
-      .catch((error) => console.error("Lỗi lấy danh sách lịch hẹn:", error));
+      .catch((error) => console.error("❌ Lỗi lấy danh sách lịch hẹn:", error));
+    
   }, []);
+  
+  
 
   // Lọc theo trạng thái
   useEffect(() => {
@@ -82,6 +115,14 @@ export const MyBookings = () => {
       alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
     }
   };
+  const [reviewedBookings, setReviewedBookings] = useState(() => {
+    return JSON.parse(localStorage.getItem("reviewedBookings")) || {};
+  });
+  
+  useEffect(() => {
+    const storedReviews = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
+    setReviewedBookings(storedReviews);
+  }, []);
 
   // Phân trang
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -132,13 +173,27 @@ export const MyBookings = () => {
                   <strong>{expert.name}</strong>
                   <p>📅 Ngày: {b.slotExpert.date}</p>
                   <p>⏰ Giờ: {b.slotExpert.slot.startTime} - {b.slotExpert.slot.endTime}</p>
+                  {b.services.length > 0 && (
+      <p>💼 Dịch vụ: {b.services[0].name} - 💰 {b.services[0].price.toLocaleString()} VND</p>
+    )}
+                 
                   <p>📌 Trạng thái: <strong>{b.status}</strong></p>
 
                   {b.status === "PENDING" && <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>}
                   {b.status === "PENDING_PAYMENT" && <button className={style.payButton} onClick={() => handlePayment(b.id)}>💳 Thanh toán</button>}
                   {b.status === "AWAIT" && <p className={style.awaitText}>⏳ Bạn đã thanh toán. Vui lòng đợi đến giờ tư vấn!</p>}
                   {b.status === "PROCESSING" && meetLink && <p>🔗 Link tư vấn: <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`} target="_blank" rel="noopener noreferrer" className={style.link}>{meetLink}</a></p>}
-                  {b.status === "FINISHED" && <button className={style.feedbackButton} onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}>✍️ Đánh giá chuyên gia</button>}
+                  {b.status === "FINISHED" && (
+  reviewedBookings[b.id] ? (
+    <p className={style.reviewedText}>✅ Đã đánh giá</p>
+  ) : (
+    <button 
+      className={style.feedbackButton} 
+      onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}
+    >
+      ✍️ Đánh giá chuyên gia
+    </button>
+  ))}
                   {b.status === "CANCELLED" && <p className={style.cancelledText}>❌ Lịch hẹn đã bị hủy.</p>}
                   {["PENDING", "PENDING_PAYMENT"].includes(b.status) && <button className={style.cancelButton} onClick={() => handleCancelBooking(b.id)}>❌ Hủy lịch</button>}
                 </div>
@@ -150,12 +205,17 @@ export const MyBookings = () => {
 
       {/* 🔹 Phân trang */}
       {totalPages > 1 && (
-        <div className={style.pagination}>
-          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>◀ Trước</button>
-          <span>Trang {currentPage} / {totalPages}</span>
-          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>Sau ▶</button>
-        </div>
-      )}
-    </div>
-  );
-};
+  <div className={style.pagination}>
+    <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+      ◀ Trước
+    </button>
+    <span>Trang {currentPage} / {totalPages}</span>
+    <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+      Sau ▶
+    </button>
+  </div>
+)}
+</div>
+  )
+}
+

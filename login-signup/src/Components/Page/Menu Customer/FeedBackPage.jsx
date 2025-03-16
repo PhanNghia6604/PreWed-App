@@ -6,7 +6,7 @@ const FeedbackPage = () => {
   const { bookingId, expertId } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [feedback, setFeedback] = useState({ rating: 5, comment: "" });
+  const [feedback, setFeedback] = useState({ rating: 5, comments: "" });
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user")) || null;
@@ -15,7 +15,7 @@ const FeedbackPage = () => {
 
   
   const handleFeedbackSubmit = async () => {
-    if (!feedback.comment || !feedback.rating) {
+    if (!feedback.comments || !feedback.rating) {
       alert("Vui lòng nhập đầy đủ đánh giá!");
       return;
     }
@@ -26,19 +26,26 @@ const FeedbackPage = () => {
       return;
     }
   
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser || !storedUser.username) {
+      alert("Không tìm thấy thông tin người dùng!");
+      return;
+    }
+  
     const newFeedback = {
       bookingId,
       expertId,
       rating: feedback.rating,
-      comment: feedback.comment,
+      comments: feedback.comments,
+      username: storedUser.username,
     };
   
     try {
-      const response = await fetch("http://localhost:8080/api/feedback", {
+      const response = await fetch("/api/feedback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(newFeedback),
       });
@@ -47,13 +54,19 @@ const FeedbackPage = () => {
         throw new Error("Lỗi khi gửi đánh giá!");
       }
   
+      // ✅ Lưu trạng thái đã đánh giá vào localStorage
+      const reviewedBookings = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
+      reviewedBookings[bookingId] = true;
+      localStorage.setItem("reviewedBookings", JSON.stringify(reviewedBookings));
+  
       alert("Cảm ơn bạn đã gửi đánh giá!");
-      navigate("/my-booking");
+      navigate("/my-booking"); // Quay về danh sách lịch hẹn
     } catch (error) {
       console.error(error);
       alert("Không thể gửi đánh giá, vui lòng thử lại!");
     }
   };
+  
   
 
   if (!user) {
@@ -77,8 +90,8 @@ const FeedbackPage = () => {
         <textarea
           className={style.feedbackInput}
           placeholder="Nhập phản hồi của bạn..."
-          value={feedback.comment}
-          onChange={(e) => setFeedback({ ...feedback, comment: e.target.value })}
+          value={feedback.comments}
+          onChange={(e) => setFeedback({ ...feedback, comments: e.target.value })}
         />
 
         <button className={style.submitFeedbackButton} onClick={handleFeedbackSubmit}>

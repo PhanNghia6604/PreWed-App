@@ -35,3 +35,60 @@
     background: #f0f0f0;
     border-radius: 8px;
 }
+.notification {
+    background-color: #fffae6;
+    color: #d35400;
+    padding: 10px;
+    margin: 10px 0;
+    border-left: 5px solid #d35400;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  .feedbackSection {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+  }
+  
+  .feedbackList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .feedbackItem {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .feedbackItem:last-child {
+    border-bottom: none;
+  }
+  .pagination {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    gap: 10px; /* Khoảng cách giữa các nút */
+    margin-top: 10px;
+  }
+  
+  .pagination button {
+    padding: 5px 10px;
+    font-size: 14px; /* Giảm kích thước chữ */
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination span {
+    font-size: 14px; /* Kích thước chữ nhỏ hơn */
+    font-weight: bold;
+  }

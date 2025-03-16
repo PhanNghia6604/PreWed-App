@@ -19,7 +19,7 @@ export const Login = ({ setIsLoggedIn }) => {
         method: "POST",
         headers: {
            "Content-Type": "application/json",
-            
+
 
          },
         body: JSON.stringify({ username, password }),
@@ -57,6 +57,8 @@ export const Login = ({ setIsLoggedIn }) => {
             token: data.token,
             username: data.username
           }));
+            // 🔹 Lưu thêm userId riêng biệt (Để dễ lấy)
+  localStorage.setItem("userId", data.id);
         }
         
         setIsLoggedIn(true);

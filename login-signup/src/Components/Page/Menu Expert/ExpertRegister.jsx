@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ExpertRegister.module.css"; // Import CSS Module
+import { useNavigate } from "react-router-dom";
 
 const ExpertRegister = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const ExpertRegister = () => {
   });
 
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
@@ -50,6 +52,7 @@ const ExpertRegister = () => {
       const result = await response.json();
       if (response.ok) {
         setMessage("Đăng ký thành công!");
+        
         setFormData({
           username: "",
           password: "",
@@ -61,6 +64,8 @@ const ExpertRegister = () => {
           avatar: "",
           certificates: [""],
         });
+        navigate("/expert-login");
+      
       } else {
         setMessage(result.message || "Đăng ký thất bại");
       }

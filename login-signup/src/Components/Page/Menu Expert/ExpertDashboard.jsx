@@ -1,140 +1,134 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, Typography, Grid, Divider, Skeleton, Box } from "@mui/material";
-import { People, Event, Star } from "@mui/icons-material";
-import styles from "./ExpertDashboard.module.css";
+import React, { useEffect, useState } from "react";
+import styles from "./ExpertDashboard.module.css"; // Import CSS
 
 const ExpertDashboard = () => {
-    const storedExperts = JSON.parse(localStorage.getItem("experts")) || [];
-    const loggedInExpertUsername = localStorage.getItem("currentExpert");
-    
-    const loggedInExpert = storedExperts.find(expert => expert.username === loggedInExpertUsername);
-    const expertId = loggedInExpert?.id || localStorage.getItem("id");
+  const [newExpertBookings, setNewExpertBookings] = useState(0);
+  const [newCustomerPayments, setNewCustomerPayments] = useState(0);
+  const [feedbackList, setFeedbackList] = useState([]);
+const [totalFeedbacks, setTotalFeedbacks] = useState(0);
+const [currentPage, setCurrentPage] = useState(1);
+const feedbacksPerPage = 5; // Số feedback mỗi trang
 
-    const [stats, setStats] = useState({
-        totalAppointments: 0,
-        totalClients: 0,
-        averageRating: null,  // Để tránh hiển thị "0 / 5" nếu chưa có đánh giá
-    });
-    const [feedbacks, setFeedbacks] = useState([]);
-    const [loading, setLoading] = useState(true);
+useEffect(() => {
+    const token = localStorage.getItem("token");
 
-    // Hàm lấy tất cả lịch hẹn từ localStorage
-    const getAllBookings = () => {
-        return Object.keys(localStorage)
-            .filter(key => key.startsWith("bookings_"))
-            .flatMap(key => JSON.parse(localStorage.getItem(key)) || []);
-    };
+    // 📌 Gọi API lấy danh sách booking
+    fetch(`/api/booking`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("📌 Booking API response:", data);
 
-    useEffect(() => {
-        if (!expertId) {
-            console.error("Expert ID is not available!");
-            return;
+        if (Array.isArray(data)) {
+          // 🔍 Đếm số lịch hẹn mới (trạng thái PENDING)
+          const pendingBookings = data.filter(
+            (booking) => booking.status === "PENDING"
+          ).length;
+
+          // 💰 Đếm số lịch đã thanh toán (trạng thái PENDING_PAYMENT)
+          const pendingPayments = data.filter(
+            (booking) => booking.status === "PENDING_PAYMENT"
+          ).length;
+
+          // ⏫ Cập nhật state
+          setNewExpertBookings(pendingBookings);
+          setNewCustomerPayments(pendingPayments);
+        } else {
+          console.error("❌ API trả về dữ liệu không hợp lệ:", data);
         }
+      })
+      .catch((error) => console.error("❌ Lỗi khi tải booking:", error));
+  }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const expertId = localStorage.getItem("expertId");
 
-        setLoading(true);
-        setTimeout(() => {
-            const storedBookings = getAllBookings();
-            const storedFeedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
-            
+    fetch(`/api/feedback`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("📌 Feedback API response:", data);
 
-            // Lọc lịch hẹn đã hoàn thành
-            const expertAppointments = storedBookings.filter(
-                booking => String(booking.expertId) === String(expertId) && booking.status === "Đã hoàn thành"
-            );
-            const totalAppointments = expertAppointments.length;
-            const uniqueClients = new Set(expertAppointments.map(booking => booking.userName)).size;
+        if (Array.isArray(data)) {
+          const filteredFeedbacks = data.filter(
+            (feedback) => feedback.expert.id.toString() === expertId
+          );
+          setFeedbackList(filteredFeedbacks);
+        } else {
+          console.error("❌ API trả về dữ liệu không hợp lệ:", data);
+        }
+      })
+      .catch((error) => console.error("❌ Lỗi khi tải feedback:", error));
+  }, []);
+  
+  
+  
+    // 📌 Tính toán index cho phân trang
+    const indexOfLastFeedback = currentPage * feedbacksPerPage;
+    const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
+    const currentFeedbacks = feedbackList.slice(indexOfFirstFeedback, indexOfLastFeedback);
+  
+    // 📌 Chuyển trang
+    const totalPages = Math.ceil(feedbackList.length / feedbacksPerPage);
+    const nextPage = () => setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+    const prevPage = () => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+  
+  
+  return (
+    <div className={styles.container}>
+      <h1>📊 Dashboard Chuyên Gia</h1>
 
-            // Lọc đánh giá của chuyên gia
-            const expertFeedbacks = storedFeedbacks.filter(feedback =>
-                String(feedback.expertId) === String(expertId)
-            );
-
-            // Tính điểm trung bình rating
-            const totalRatings = expertFeedbacks.reduce((sum, fb) => sum + (fb.rating || 0), 0);
-            const ratingCount = expertFeedbacks.length;
-            const averageRating = ratingCount ? (totalRatings / ratingCount).toFixed(1) : null;
-
-            setStats({ totalAppointments, totalClients: uniqueClients, averageRating });
-            setFeedbacks(expertFeedbacks);
-            setLoading(false);
-        }, 1000);
-    }, [expertId]);
-
-    return (
-        <div className={styles.dashboardContainer}>
-            <Typography variant="h4" className={styles.dashboardTitle}>
-                📊 Thống kê tổng quan
-            </Typography>
-
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={4}>
-                    <Card className={styles.card}>
-                        <CardContent>
-                            <Event fontSize="large" color="primary" />
-                            <Typography variant="h5">
-                                {loading ? <Skeleton width={40} /> : stats.totalAppointments}
-                            </Typography>
-                            <Typography variant="subtitle1">Buổi tư vấn</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                    <Card className={styles.card}>
-                        <CardContent>
-                            <People fontSize="large" color="primary" />
-                            <Typography variant="h5">
-                                {loading ? <Skeleton width={40} /> : stats.totalClients}
-                            </Typography>
-                            <Typography variant="subtitle1">Khách hàng</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                    <Card className={styles.card}>
-                        <CardContent>
-                            <Star fontSize="large" color="primary" />
-                            <Typography variant="h5">
-                                {loading ? <Skeleton width={60} /> : (stats.averageRating ? `${stats.averageRating} / 5` : "Chưa có đánh giá")}
-                            </Typography>
-                            <Typography variant="subtitle1">Đánh giá trung bình</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
-
-            <Typography variant="h5" className={styles.feedbackTitle} style={{ marginTop: "20px" }}>
-                ⭐ Đánh giá từ khách hàng
-            </Typography>
-
-            {loading ? (
-                <Skeleton variant="rectangular" width="100%" height={100} />
-            ) : feedbacks.length === 0 ? (
-                <Typography variant="body1" color="textSecondary">
-                    Chưa có đánh giá nào.
-                </Typography>
-            ) : (
-                feedbacks.map((feedback, index) => (
-                    <Card key={index} className={styles.feedbackCard}>
-                        <CardContent>
-                            <Box display="flex" alignItems="center">
-                                <Star color="primary" />
-                                <Typography variant="h6" style={{ marginLeft: "8px" }}>
-                                    {feedback.rating ? `${feedback.rating} / 5` : "Chưa có đánh giá sao"}
-                                </Typography>
-                            </Box>
-                            <Typography variant="subtitle1">
-                                <b>{feedback.user}</b> - {feedback.date}
-                            </Typography>
-                            <Divider style={{ margin: "10px 0" }} />
-                            <Typography variant="body1">{feedback.comment}</Typography>
-                        </CardContent>
-                    </Card>
-                ))
-            )}
+      {/* 🔔 Thông báo lịch hẹn mới */}
+      {newExpertBookings > 0 && (
+        <div className={styles.notification}>
+          🔔 Bạn có <strong>{newExpertBookings}</strong> lịch hẹn mới cần xác nhận!
         </div>
-    );
+      )}
+
+      {/* 💰 Thông báo lịch hẹn đã thanh toán */}
+      {newCustomerPayments > 0 && (
+        <div className={styles.notification}>
+          💰 Có <strong>{newCustomerPayments}</strong> lịch hẹn đã được thanh toán!
+        </div>
+      )}
+
+     {/* ⭐ Danh sách feedback từ khách hàng */}
+     
+     {feedbackList.length > 0 && (
+        <div className={styles.feedbackSection}>
+          <h2>⭐ Đánh giá từ khách hàng</h2>
+          <ul className={styles.feedbackList}>
+            {currentFeedbacks.map((feedback, index) => (
+              <li key={index} className={styles.feedbackItem}>
+                <p><strong>Khách hàng:</strong> {feedback.user?.name || "Ẩn danh"}</p>
+                <p><strong>Đánh giá:</strong> {feedback.rating} ⭐</p>
+                <p><strong>Bình luận:</strong> {feedback.comments}</p>
+              </li>
+            ))}
+          </ul>
+
+          {/* 🔹 Nút chuyển trang */}
+          <div className={styles.pagination}>
+            <button onClick={prevPage} disabled={currentPage === 1}>
+              ◀ Trang trước
+            </button>
+            <span>Trang {currentPage} / {totalPages}</span>
+            <button onClick={nextPage} disabled={currentPage === totalPages}>
+              Trang sau ▶
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ExpertDashboard;

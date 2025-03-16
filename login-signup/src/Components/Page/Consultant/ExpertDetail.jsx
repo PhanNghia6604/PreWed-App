@@ -10,6 +10,7 @@ const getRandomExperience = () => Math.floor(Math.random() * 10) + 1;
 
 const ExpertDetail = () => {
   const { name } = useParams();
+  
   const [experts, setExperts] = useState([]);
   const [experience, setExperience] = useState(null);
   const [servicePackages, setServicePackages] = useState([]);
@@ -20,10 +21,25 @@ const ExpertDetail = () => {
   const [isBooking, setIsBooking] = useState(false);
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(null);
-  const [reviews, setReviews] = useState([]); // Danh sách đánh giá
+  const [currentPage, setCurrentPage] = useState(1);
+const [reviewsPerPage] = useState(3); // Số lượng đánh giá hiển thị trên mỗi trang
+
  
+  const [reviews, setReviews] = useState([]);
 
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+const nextPage = () => {
+  if (currentPage < Math.ceil(reviews.length / reviewsPerPage)) {
+    setCurrentPage(currentPage + 1);
+  }
+};
+
+const prevPage = () => {
+  if (currentPage > 1) {
+    setCurrentPage(currentPage - 1);
+  }
+};
   
   const navigate = useNavigate();
   const handleGoBack = () => {
@@ -31,32 +47,35 @@ const ExpertDetail = () => {
   };
 
   useEffect(() => {
-    const fetchRating = async () => {
-      const token = localStorage.getItem("token"); 
-
+    const fetchReviews = async () => {
+      const token = localStorage.getItem("token");
+  
       try {
         const expert = experts.find((e) => e.name === decodeURIComponent(name));
         if (!expert) return;
   
-        const response = await fetch(`/api/feedback/${expert.id}`,   {
-          method: "Get",
-          headers:{
-            "Authorization": `Bearer ${token}`, // Gửi token trong headers
-          }
-          
-
+        // Gọi API để lấy tất cả feedback
+        const response = await fetch(`/api/feedback`, {
+          method: "GET",
+          headers: {
+            // "Authorization": `Bearer ${token}`,
+          },
         });
-        if (!response.ok) throw new Error("Không thể lấy đánh giá");
+  
+        if (!response.ok) throw new Error("Không thể lấy bình luận");
   
         const data = await response.json();
-        console.log("📌 Đánh giá chuyên gia:", data);
-        setRating(data.rating); // Giả sử API trả về { rating: 4.5 }
+        console.log("📌 Bình luận chuyên gia:", data);
+  
+        // Lọc feedback chỉ lấy những feedback có expert.id trùng với ID của chuyên gia hiện tại
+        const filteredReviews = data.filter((review) => review.expert.id === expert.id);
+        setReviews(filteredReviews);
       } catch (error) {
-        console.error("❌ Lỗi khi tải đánh giá:", error);
+        console.error("❌ Lỗi khi tải bình luận:", error);
       }
     };
   
-    fetchRating();
+    fetchReviews();
   }, [experts, name]);
   
 
@@ -81,6 +100,23 @@ const ExpertDetail = () => {
   
     fetchExperts();
   }, []);
+  useEffect(() => {
+    const expert = experts.find((e) => e.name === decodeURIComponent(name));
+    if (expert) {
+      // Tạo key duy nhất cho từng chuyên gia
+      const experienceKey = `experience_${expert.id}`;
+      const storedExperience = localStorage.getItem(experienceKey);
+  
+      if (storedExperience) {
+        setExperience(parseInt(storedExperience, 10)); // Lấy từ localStorage
+      } else {
+        const newExperience = getRandomExperience();
+        localStorage.setItem(experienceKey, newExperience); // Lưu vào localStorage
+        setExperience(newExperience);
+      }
+    }
+  }, [experts, name]);
+  
   
   const fetchServicePackages = async () => {
     const token = localStorage.getItem("token"); 
@@ -154,6 +190,16 @@ const ExpertDetail = () => {
       return;
     }
   
+    // Giả sử bookingDate là ngày hôm nay, nếu không có thông tin ngày riêng trong slot
+    const today = new Date().toISOString().split("T")[0]; // Lấy ngày hôm nay theo định dạng YYYY-MM-DD
+    const slotDateTime = new Date(today + "T" + selectedSlot.startTime);
+  
+    // Kiểm tra nếu khung giờ được chọn đã qua
+    if (slotDateTime < new Date()) {
+      alert("Khung giờ đã qua, vui lòng chọn khung giờ hợp lệ!");
+      return;
+    }
+  
     console.log("🔍 Kiểm tra dữ liệu trước khi gửi:");
     console.log("Expert ID:", expert.id);
     console.log("Slot ID:", selectedSlot.id);
@@ -169,8 +215,8 @@ const ExpertDetail = () => {
     const bookingData = {
       expertId: expert.id,
       slotId: selectedSlot.id,
-      bookingDate: new Date().toISOString().split("T")[0], // Lấy ngày hôm nay
-      serviceIds: selectedPackage?.id ? [selectedPackage.id] : [], // Bỏ [0] để tránh lỗi
+      bookingDate: today, // Sử dụng ngày hôm nay
+      serviceIds: selectedPackage?.id ? [selectedPackage.id] : [],
     };
   
     console.log("📦 Payload gửi lên API:", bookingData);
@@ -186,11 +232,11 @@ const ExpertDetail = () => {
         body: JSON.stringify(bookingData),
       });
   
-      const responseText = await response.text(); // Kiểm tra phản hồi API
+      const responseText = await response.text();
       console.log("📨 Phản hồi từ server (raw text):", responseText);
   
       try {
-        const data = JSON.parse(responseText); // Chỉ parse JSON nếu phản hồi hợp lệ
+        const data = JSON.parse(responseText);
         console.log("📨 Phản hồi từ server (JSON):", data);
   
         if (response.ok) {
@@ -242,9 +288,9 @@ const ExpertDetail = () => {
           />
         </div>
         <h2>{expert.name}</h2>
-        <p><strong>Kinh nghiệm:</strong> {experience} năm</p>
+        <p><strong>Kinh nghiệm:</strong> {experience !== null ? `${experience} năm` : "Đang cập nhật..."}</p>
         <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
-        <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p>
+        {/* <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p> */}
         {expert.specialty && (
           <p className={styles.description}>
             <strong>Mô tả chuyên môn:</strong> {expertDescriptions[expert.specialty] || "Chưa có mô tả"}
@@ -296,22 +342,40 @@ const ExpertDetail = () => {
     <div className={styles.modal}>
       <h3>Chọn giờ tư vấn</h3>
       <ul className={styles.slotContainer}>
-      {availableSlots.length === 0 ? (
-  <p>Không có lịch trống</p>
-) : (
-  availableSlots.map((slot) => (
-    <li
-      key={slot.id}
-      className={`${styles.slotItem} ${selectedSlot?.id === slot.id ? styles.selectedSlot : ""}`}
-    >
-      <button onClick={() => setSelectedSlot(slot)}>
-        Giờ bắt đầu: {slot.startTime.split(":").slice(0, 2).join(":")} - Giờ kết thúc: {slot.endTime.split(":").slice(0, 2).join(":")}
-        {selectedSlot?.id === slot.id ? " ✅" : ""}
-      </button>
-    </li>
-  ))
-)}
+  {availableSlots.length === 0 ? (
+    <p>Không có lịch trống</p>
+  ) : (
+    availableSlots.map((slot) => {
+      // Lấy thời gian hiện tại
+      const now = new Date();
+      
+      // Tạo đối tượng Date với thời gian của slot
+      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      const slotTime = new Date(`${today}T${slot.startTime}`);
+
+      // Kiểm tra xem slot đã qua hay chưa
+      const isPast = slotTime < now;
+
+      return (
+        <li
+          key={slot.id}
+          className={`${styles.slotItem} ${selectedSlot?.id === slot.id ? styles.selectedSlot : ""}`}
+        >
+          <button 
+            onClick={() => !isPast && setSelectedSlot(slot)} 
+            disabled={isPast} // Disable nếu slot đã qua
+          >
+            Giờ bắt đầu: {slot.startTime.split(":").slice(0, 2).join(":")} - 
+            Giờ kết thúc: {slot.endTime.split(":").slice(0, 2).join(":")}
+            {selectedSlot?.id === slot.id ? " ✅" : ""}
+            {isPast ? " (Hết hạn)" : ""}
+          </button>
+        </li>
+      );
+    })
+  )}
 </ul>
+
       <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
         {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
       </button>
@@ -321,6 +385,34 @@ const ExpertDetail = () => {
     
   </div>
 )}
+<div className={styles.reviewsSection}>
+  <h3>Đánh giá từ khách hàng</h3>
+  {reviews.length > 0 ? (
+    <ul className={styles.reviewsList}>
+      {reviews.map((review, index) => (
+        <li key={index} className={styles.reviewItem}>
+          <p><strong>{review.user.name}</strong> - ⭐ {review.rating}</p>
+          <p>{review.comments}</p>
+          <p><small>{review.date ? new Date(review.date).toLocaleDateString() : "Ngày không xác định"}</small></p>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p>Chưa có đánh giá nào.</p>
+  )}
+   <div className={styles.pagination}>
+          <button onClick={prevPage} disabled={currentPage === 1}>
+            Trang trước
+          </button>
+          <span>Trang {currentPage}</span>
+          <button
+            onClick={nextPage}
+            disabled={currentPage === Math.ceil(reviews.length / reviewsPerPage)}
+          >
+            Trang sau
+          </button>
+        </div>
+</div>
 
 
     </div>
