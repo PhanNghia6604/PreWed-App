@@ -283,3 +283,8 @@ strong {
 .pagination span {
   font-weight: bold;
 }
+.buttonContainer {
+  display: flex;
+  gap: 10px; /* Khoảng cách giữa hai nút */
+  margin-top: 20px; /* Khoảng cách từ phần trên xuống */
+}

@@ -11,13 +11,20 @@ const ExpertAppointment = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
+    const expertId = Number(localStorage.getItem("expertId"));
+
+  
     fetch("/api/booking", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     })
       .then((response) => response.json())
       .then((data) => {
-        setAppointments(data);
-        setFilteredAppointments(data);
+        console.log("Dữ liệu từ API:", data); // Kiểm tra dữ liệu
+        const expertId = Number(localStorage.getItem("expertId"));
+        const filteredByExpert = data.filter(appt => appt.slotExpert.expert.id === expertId);
+        console.log("Lịch hẹn của chuyên gia:", filteredByExpert); // Kiểm tra danh sách đã lọc
+        setAppointments(filteredByExpert);
+        setFilteredAppointments(filteredByExpert);
       })
       .catch((error) => console.error("Lỗi khi tải lịch hẹn:", error));
   }, []);
