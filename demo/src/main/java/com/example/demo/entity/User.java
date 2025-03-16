@@ -30,6 +30,8 @@ public class User implements UserDetails {
     public String address;
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email do not match email pattern!")
     public String email;
+
+    @Column(unique = true)
     public String username;
     public boolean isDeleted = false;
     @Enumerated(value = EnumType.STRING)
