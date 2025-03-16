@@ -15,10 +15,6 @@ public class Feedback {
     public String comments;
     public LocalDateTime date;
     public boolean isDeleted = false;
-    @PrePersist
-    protected void onCreate() {
-        this.date = LocalDateTime.now();
-    }
     @ManyToOne
     @JoinColumn(name = "expert_id")
     Expert expert;
