@@ -159,6 +159,8 @@ const prevPage = () => {
       const data = await response.json();
       console.log("📌 Lịch trống nhận được:", data);
       
+    
+      
       // Nếu API trả về mảng rỗng, báo lỗi lịch trống
       if (data.length === 0) {
         throw new Error("Không có lịch trống nào!");
@@ -169,6 +171,8 @@ const prevPage = () => {
       console.error("❌ Lỗi khi tải lịch trống:", error);
     }
   };
+
+  
   
 
   const handleSelectPackage = (pkg) => {
