@@ -17,9 +17,13 @@ const ServicePackageForm = ({ setPackages }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // const token = localStorage.getItem("token"); // Lấy token từ localStorage
       const response = await fetch("/api/servicepackage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // Authorization: `Bearer ${token}`,
+          
+
         body: JSON.stringify({
           ...formData,
           price: parseFloat(formData.price),
