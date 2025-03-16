@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,6 +31,7 @@ public class FeedbackService {
 
         newFeedback.setExpert(expert);
         newFeedback.setUser(userUtils.getCurrentUser());
+        newFeedback.setDate(LocalDateTime.now());
         return feedbackRepository.save(newFeedback);
     }
     public List<Feedback> getAllFeedback(){
@@ -49,6 +51,7 @@ public class FeedbackService {
 
         feedback.setRating(feedbackRequest.getRating());
         feedback.setComments(feedbackRequest.getComments());
+        feedback.setDate(LocalDateTime.now());
 
         // Update Expert if provided
         if (feedbackRequest.getExpertId() != null) {
