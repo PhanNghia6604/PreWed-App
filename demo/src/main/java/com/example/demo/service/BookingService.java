@@ -76,7 +76,7 @@ public class BookingService {
         booking.setCreateAt(LocalDateTime.now());
         booking.setServices(servicePackages);
         booking.setStatus(BookingEnum.PENDING);
-      //  booking.setUser(userUtils.getCurrentUser());
+        booking.setUser(userUtils.getCurrentUser());
         booking.setSlotExpert(slotExpert);
 
         //tao slotexpert
