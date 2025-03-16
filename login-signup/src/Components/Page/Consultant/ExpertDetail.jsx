@@ -81,6 +81,23 @@ const ExpertDetail = () => {
   
     fetchExperts();
   }, []);
+  useEffect(() => {
+    const expert = experts.find((e) => e.name === decodeURIComponent(name));
+    if (expert) {
+      // Tạo key duy nhất cho từng chuyên gia
+      const experienceKey = `experience_${expert.id}`;
+      const storedExperience = localStorage.getItem(experienceKey);
+  
+      if (storedExperience) {
+        setExperience(parseInt(storedExperience, 10)); // Lấy từ localStorage
+      } else {
+        const newExperience = getRandomExperience();
+        localStorage.setItem(experienceKey, newExperience); // Lưu vào localStorage
+        setExperience(newExperience);
+      }
+    }
+  }, [experts, name]);
+  
   
   const fetchServicePackages = async () => {
     const token = localStorage.getItem("token"); 
@@ -154,6 +171,16 @@ const ExpertDetail = () => {
       return;
     }
   
+    // Giả sử bookingDate là ngày hôm nay, nếu không có thông tin ngày riêng trong slot
+    const today = new Date().toISOString().split("T")[0]; // Lấy ngày hôm nay theo định dạng YYYY-MM-DD
+    const slotDateTime = new Date(today + "T" + selectedSlot.startTime);
+  
+    // Kiểm tra nếu khung giờ được chọn đã qua
+    if (slotDateTime < new Date()) {
+      alert("Khung giờ đã qua, vui lòng chọn khung giờ hợp lệ!");
+      return;
+    }
+  
     console.log("🔍 Kiểm tra dữ liệu trước khi gửi:");
     console.log("Expert ID:", expert.id);
     console.log("Slot ID:", selectedSlot.id);
@@ -169,8 +196,8 @@ const ExpertDetail = () => {
     const bookingData = {
       expertId: expert.id,
       slotId: selectedSlot.id,
-      bookingDate: new Date().toISOString().split("T")[0], // Lấy ngày hôm nay
-      serviceIds: selectedPackage?.id ? [selectedPackage.id] : [], // Bỏ [0] để tránh lỗi
+      bookingDate: today, // Sử dụng ngày hôm nay
+      serviceIds: selectedPackage?.id ? [selectedPackage.id] : [],
     };
   
     console.log("📦 Payload gửi lên API:", bookingData);
@@ -186,11 +213,11 @@ const ExpertDetail = () => {
         body: JSON.stringify(bookingData),
       });
   
-      const responseText = await response.text(); // Kiểm tra phản hồi API
+      const responseText = await response.text();
       console.log("📨 Phản hồi từ server (raw text):", responseText);
   
       try {
-        const data = JSON.parse(responseText); // Chỉ parse JSON nếu phản hồi hợp lệ
+        const data = JSON.parse(responseText);
         console.log("📨 Phản hồi từ server (JSON):", data);
   
         if (response.ok) {
@@ -242,7 +269,7 @@ const ExpertDetail = () => {
           />
         </div>
         <h2>{expert.name}</h2>
-        <p><strong>Kinh nghiệm:</strong> {experience} năm</p>
+        <p><strong>Kinh nghiệm:</strong> {experience !== null ? `${experience} năm` : "Đang cập nhật..."}</p>
         <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
         <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p>
         {expert.specialty && (
@@ -296,22 +323,40 @@ const ExpertDetail = () => {
     <div className={styles.modal}>
       <h3>Chọn giờ tư vấn</h3>
       <ul className={styles.slotContainer}>
-      {availableSlots.length === 0 ? (
-  <p>Không có lịch trống</p>
-) : (
-  availableSlots.map((slot) => (
-    <li
-      key={slot.id}
-      className={`${styles.slotItem} ${selectedSlot?.id === slot.id ? styles.selectedSlot : ""}`}
-    >
-      <button onClick={() => setSelectedSlot(slot)}>
-        Giờ bắt đầu: {slot.startTime.split(":").slice(0, 2).join(":")} - Giờ kết thúc: {slot.endTime.split(":").slice(0, 2).join(":")}
-        {selectedSlot?.id === slot.id ? " ✅" : ""}
-      </button>
-    </li>
-  ))
-)}
+  {availableSlots.length === 0 ? (
+    <p>Không có lịch trống</p>
+  ) : (
+    availableSlots.map((slot) => {
+      // Lấy thời gian hiện tại
+      const now = new Date();
+      
+      // Tạo đối tượng Date với thời gian của slot
+      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      const slotTime = new Date(`${today}T${slot.startTime}`);
+
+      // Kiểm tra xem slot đã qua hay chưa
+      const isPast = slotTime < now;
+
+      return (
+        <li
+          key={slot.id}
+          className={`${styles.slotItem} ${selectedSlot?.id === slot.id ? styles.selectedSlot : ""}`}
+        >
+          <button 
+            onClick={() => !isPast && setSelectedSlot(slot)} 
+            disabled={isPast} // Disable nếu slot đã qua
+          >
+            Giờ bắt đầu: {slot.startTime.split(":").slice(0, 2).join(":")} - 
+            Giờ kết thúc: {slot.endTime.split(":").slice(0, 2).join(":")}
+            {selectedSlot?.id === slot.id ? " ✅" : ""}
+            {isPast ? " (Hết hạn)" : ""}
+          </button>
+        </li>
+      );
+    })
+  )}
 </ul>
+
       <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
         {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
       </button>

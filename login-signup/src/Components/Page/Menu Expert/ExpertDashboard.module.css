@@ -35,3 +35,33 @@
     background: #f0f0f0;
     border-radius: 8px;
 }
+.notification {
+    background-color: #fffae6;
+    color: #d35400;
+    padding: 10px;
+    margin: 10px 0;
+    border-left: 5px solid #d35400;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  .feedbackSection {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+  }
+  
+  .feedbackList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .feedbackItem {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .feedbackItem:last-child {
+    border-bottom: none;
+  }
+  

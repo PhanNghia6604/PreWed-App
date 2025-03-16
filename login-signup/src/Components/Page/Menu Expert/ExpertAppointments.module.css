@@ -108,7 +108,8 @@
   
   .details p {
     margin: 5px 0;
-    font-size: 14px;
+    font-size: 14px;  
+    
   }
   
   .serviceList {
@@ -157,6 +158,7 @@
   .listItem {
     padding: 10px;
     border-bottom: 1px solid #ccc;
+    color:#333;
   }
   
   .pagination {

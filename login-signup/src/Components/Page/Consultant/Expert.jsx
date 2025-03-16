@@ -24,7 +24,7 @@ export const ExpertsList = () => {
       method: "GET",
       headers: {
         "Accept": "application/json",
-        "Authorization": `Bearer ${token}`, // Gửi token trong headers
+        // "Authorization": `Bearer ${token}`, // Gửi token trong headers
       },
     })
       .then((res) => {

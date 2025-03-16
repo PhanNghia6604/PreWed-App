@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap');
 
@@ -80,6 +81,11 @@ header {
   left: 0;
   width: 100%;
   z-index: 999;
+}
+header .nav {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Khoảng cách giữa các phần tử */
 }
 header a {
   margin-left: 40px;
@@ -441,4 +447,24 @@ footer i {
   top: 50%;
   right: 20px;
   transform: translateY(-50%);
+}
+/* Icon thông báo và menu */
+.icon-noti,
+.menu-button-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Khoảng cách giữa các biểu tượng */
+}
+
+.icon-noti .MuiIconButton-root,
+.menu-button-container .MuiIconButton-root {
+  padding: 8px; /* Giảm padding để biểu tượng nhỏ gọn hơn */
+  color: var(--white); /* Màu biểu tượng */
+}
+
+.icon-noti .MuiBadge-badge {
+  top: 8px; /* Điều chỉnh vị trí badge */
+  right: 8px; /* Điều chỉnh vị trí badge */
+  background-color: var(--primaryColor); /* Màu nền badge */
+  color: var(--white); /* Màu chữ badge */
 }
