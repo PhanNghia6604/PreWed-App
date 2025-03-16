@@ -27,7 +27,7 @@ public class FeedbackAPI {
     }
 
     @GetMapping
-    @Secured({"ROLE_CUSTOMER", "ROLE_EXPERT"})
+
     public ResponseEntity getFeedback() {
         List<Feedback> feedbacks = feedbackService.getAllFeedback();
         return ResponseEntity.ok(feedbacks);
