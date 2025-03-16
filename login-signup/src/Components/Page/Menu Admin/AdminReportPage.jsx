@@ -7,6 +7,7 @@ const AdminReportPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    
     const fetchReportData = async () => {
       try {
         const token = localStorage.getItem("token"); // Lấy token từ localStorage
@@ -16,15 +17,21 @@ const AdminReportPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          
         });
+
+      
+
 
         if (!response.ok) {
           throw new Error("Lỗi khi lấy dữ liệu booking");
         }
         
+        
 
         const bookings = await response.json();
-        
+
+          console.log("Dữ liệu API trả về:", bookings); 
         // Lọc chỉ lấy booking có status "finished"
         const finishedBookings = bookings.filter(
           (booking) => booking.status === "FINISHED"
