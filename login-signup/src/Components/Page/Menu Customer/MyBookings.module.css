@@ -10,8 +10,11 @@
   h2 {
     text-align: center;
     color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
   }
   
+  /* Danh sách lịch hẹn */
   .bookingList {
     list-style-type: none;
     padding: 0;
@@ -23,26 +26,38 @@
     justify-content: space-between;
     padding: 15px;
     border-bottom: 1px solid #ddd;
-    background: #fff;
+    background: #ffffff;
     margin: 10px 0;
     border-radius: 8px;
+    transition: box-shadow 0.3s ease;
   }
   
+  .bookingItem:hover {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Avatar chuyên gia */
   .expertAvatar {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid #ddd;
   }
   
+  /* Thông tin lịch hẹn */
   .bookingInfo {
     flex-grow: 1;
     margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
   
   .expertName {
     font-size: 16px;
     font-weight: bold;
+    color: #333;
   }
   
   .specialty {
@@ -55,27 +70,87 @@
     color: black;
   }
   
-  .cancelButton {
+  /* Trạng thái */
+  .status {
+    font-weight: bold;
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+  
+  .status-pending {
+    color: #d39e00;
+  }
+  
+  .status-pending-payment {
+    color: #e67e22;
+  }
+  
+  .status-await {
+    color: #3498db;
+  }
+  
+  .status-processing {
+    color: #17a2b8;
+  }
+  
+  .status-finished {
+    color: #28a745;
+  }
+  
+  .status-cancelled {
+    color: #dc3545;
+  }
+  
+  /* Nút bấm */
+  button {
     padding: 8px 12px;
-    background-color: red;
-    color: white;
-    border: none;
-    cursor: pointer;
     border-radius: 5px;
     font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+  }
+  
+  .payButton {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .payButton:hover {
+    background-color: #218838;
+  }
+  
+  .cancelButton {
+    background-color: #dc3545;
+    color: white;
   }
   
   .cancelButton:hover {
-    background-color: darkred;
+    background-color: #c82333;
   }
   
-  .missingExpert {
-    color: red;
+  .feedbackButton {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .feedbackButton:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Link */
+  .link {
+    color: #007bff;
+    text-decoration: none;
     font-weight: bold;
   }
-  .link{
-    color: rgb(86, 143, 230);
+  
+  .link:hover {
+    text-decoration: underline;
   }
+  
+  /* Phản hồi */
   .feedbackSection {
     margin-top: 10px;
     padding: 10px;
@@ -97,11 +172,6 @@
   .submitFeedbackButton {
     background-color: #007bff;
     color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 5px;
   }
   
   .submitFeedbackButton:hover {
