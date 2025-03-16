@@ -29,6 +29,7 @@ const [reviewsPerPage] = useState(3); // Số lượng đánh giá hiển thị 
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+
 const nextPage = () => {
   if (currentPage < Math.ceil(reviews.length / reviewsPerPage)) {
     setCurrentPage(currentPage + 1);
@@ -40,6 +41,9 @@ const prevPage = () => {
     setCurrentPage(currentPage - 1);
   }
 };
+const indexOfLastReview = currentPage * reviewsPerPage;
+const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
   
   const navigate = useNavigate();
   const handleGoBack = () => {
@@ -306,12 +310,14 @@ const prevPage = () => {
             </ul>
           </div>
         )}
-        <button className={styles.bookButton} onClick={fetchServicePackages}>
-          Đặt lịch hẹn
-        </button>
-        <button className={styles.backButton} onClick={handleGoBack}>
-          ← Quay lại danh sách chuyên gia
-        </button>
+       <div className={styles.buttonContainer}>
+  <button className={styles.bookButton} onClick={handleGoBack}>
+  ← Quay lại danh sách chuyên gia
+  </button>
+  <button className={styles.backButton} onClick={fetchServicePackages}>
+    Đặt lịch hẹn
+  </button>
+</div>
 
       </div>
 
@@ -389,13 +395,13 @@ const prevPage = () => {
   <h3>Đánh giá từ khách hàng</h3>
   {reviews.length > 0 ? (
     <ul className={styles.reviewsList}>
-      {reviews.map((review, index) => (
-        <li key={index} className={styles.reviewItem}>
-          <p><strong>{review.user.name}</strong> - ⭐ {review.rating}</p>
-          <p>{review.comments}</p>
-          <p><small>{review.date ? new Date(review.date).toLocaleDateString() : "Ngày không xác định"}</small></p>
-        </li>
-      ))}
+     {currentReviews.map((review, index) => (
+  <li key={index} className={styles.reviewItem}>
+    <p><strong>{review.user.name}</strong> - ⭐ {review.rating}</p>
+    <p>{review.comments}</p>
+    <p><small>{review.date ? new Date(review.date).toLocaleDateString() : "Ngày không xác định"}</small></p>
+  </li>
+))}
     </ul>
   ) : (
     <p>Chưa có đánh giá nào.</p>
