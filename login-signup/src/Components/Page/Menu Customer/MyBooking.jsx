@@ -173,6 +173,10 @@ export const MyBookings = () => {
                   <strong>{expert.name}</strong>
                   <p>📅 Ngày: {b.slotExpert.date}</p>
                   <p>⏰ Giờ: {b.slotExpert.slot.startTime} - {b.slotExpert.slot.endTime}</p>
+                  {b.services.length > 0 && (
+      <p>💼 Dịch vụ: {b.services[0].name} - 💰 {b.services[0].price.toLocaleString()} VND</p>
+    )}
+                 
                   <p>📌 Trạng thái: <strong>{b.status}</strong></p>
 
                   {b.status === "PENDING" && <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>}
@@ -201,12 +205,17 @@ export const MyBookings = () => {
 
       {/* 🔹 Phân trang */}
       {totalPages > 1 && (
-        <div className={style.pagination}>
-          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>◀ Trước</button>
-          <span>Trang {currentPage} / {totalPages}</span>
-          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>Sau ▶</button>
-        </div>
-      )}
-    </div>
-  );
-};
+  <div className={style.pagination}>
+    <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+      ◀ Trước
+    </button>
+    <span>Trang {currentPage} / {totalPages}</span>
+    <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+      Sau ▶
+    </button>
+  </div>
+)}
+</div>
+  )
+}
+

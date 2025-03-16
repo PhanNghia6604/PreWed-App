@@ -10,6 +10,7 @@ const getRandomExperience = () => Math.floor(Math.random() * 10) + 1;
 
 const ExpertDetail = () => {
   const { name } = useParams();
+  
   const [experts, setExperts] = useState([]);
   const [experience, setExperience] = useState(null);
   const [servicePackages, setServicePackages] = useState([]);
@@ -20,10 +21,25 @@ const ExpertDetail = () => {
   const [isBooking, setIsBooking] = useState(false);
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(null);
-  const [reviews, setReviews] = useState([]); // Danh sách đánh giá
+  const [currentPage, setCurrentPage] = useState(1);
+const [reviewsPerPage] = useState(3); // Số lượng đánh giá hiển thị trên mỗi trang
+
  
+  const [reviews, setReviews] = useState([]);
 
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+const nextPage = () => {
+  if (currentPage < Math.ceil(reviews.length / reviewsPerPage)) {
+    setCurrentPage(currentPage + 1);
+  }
+};
+
+const prevPage = () => {
+  if (currentPage > 1) {
+    setCurrentPage(currentPage - 1);
+  }
+};
   
   const navigate = useNavigate();
   const handleGoBack = () => {
@@ -31,32 +47,35 @@ const ExpertDetail = () => {
   };
 
   useEffect(() => {
-    const fetchRating = async () => {
-      const token = localStorage.getItem("token"); 
-
+    const fetchReviews = async () => {
+      const token = localStorage.getItem("token");
+  
       try {
         const expert = experts.find((e) => e.name === decodeURIComponent(name));
         if (!expert) return;
   
-        const response = await fetch(`/api/feedback/${expert.id}`,   {
-          method: "Get",
-          headers:{
-            "Authorization": `Bearer ${token}`, // Gửi token trong headers
-          }
-          
-
+        // Gọi API để lấy tất cả feedback
+        const response = await fetch(`/api/feedback`, {
+          method: "GET",
+          headers: {
+            // "Authorization": `Bearer ${token}`,
+          },
         });
-        if (!response.ok) throw new Error("Không thể lấy đánh giá");
+  
+        if (!response.ok) throw new Error("Không thể lấy bình luận");
   
         const data = await response.json();
-        console.log("📌 Đánh giá chuyên gia:", data);
-        setRating(data.rating); // Giả sử API trả về { rating: 4.5 }
+        console.log("📌 Bình luận chuyên gia:", data);
+  
+        // Lọc feedback chỉ lấy những feedback có expert.id trùng với ID của chuyên gia hiện tại
+        const filteredReviews = data.filter((review) => review.expert.id === expert.id);
+        setReviews(filteredReviews);
       } catch (error) {
-        console.error("❌ Lỗi khi tải đánh giá:", error);
+        console.error("❌ Lỗi khi tải bình luận:", error);
       }
     };
   
-    fetchRating();
+    fetchReviews();
   }, [experts, name]);
   
 
@@ -271,7 +290,7 @@ const ExpertDetail = () => {
         <h2>{expert.name}</h2>
         <p><strong>Kinh nghiệm:</strong> {experience !== null ? `${experience} năm` : "Đang cập nhật..."}</p>
         <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
-        <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p>
+        {/* <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p> */}
         {expert.specialty && (
           <p className={styles.description}>
             <strong>Mô tả chuyên môn:</strong> {expertDescriptions[expert.specialty] || "Chưa có mô tả"}
@@ -366,6 +385,34 @@ const ExpertDetail = () => {
     
   </div>
 )}
+<div className={styles.reviewsSection}>
+  <h3>Đánh giá từ khách hàng</h3>
+  {reviews.length > 0 ? (
+    <ul className={styles.reviewsList}>
+      {reviews.map((review, index) => (
+        <li key={index} className={styles.reviewItem}>
+          <p><strong>{review.user.name}</strong> - ⭐ {review.rating}</p>
+          <p>{review.comments}</p>
+          <p><small>{review.date ? new Date(review.date).toLocaleDateString() : "Ngày không xác định"}</small></p>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p>Chưa có đánh giá nào.</p>
+  )}
+   <div className={styles.pagination}>
+          <button onClick={prevPage} disabled={currentPage === 1}>
+            Trang trước
+          </button>
+          <span>Trang {currentPage}</span>
+          <button
+            onClick={nextPage}
+            disabled={currentPage === Math.ceil(reviews.length / reviewsPerPage)}
+          >
+            Trang sau
+          </button>
+        </div>
+</div>
 
 
     </div>
