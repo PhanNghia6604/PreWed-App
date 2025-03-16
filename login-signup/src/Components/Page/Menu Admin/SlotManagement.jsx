@@ -13,27 +13,49 @@ const SlotManagement = () => {
 
   const fetchSlots = async () => {
     try {
-      const response = await fetch("/api/slots");
+      const response = await fetch("/api/slots", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) throw new Error("Không thể lấy danh sách slot");
+  
       const data = await response.json();
       setSlots(data);
     } catch (error) {
       console.error("Lỗi khi lấy slot: ", error);
     }
   };
-
+  
   const handleCreateSlot = async () => {
     try {
-      await fetch("api/slots", {
+      const token = localStorage.getItem("token"); // 🔹 Lấy token từ localStorage
+  
+      if (!token) {
+        throw new Error("Token không tồn tại, vui lòng đăng nhập lại.");
+      }
+  
+      const response = await fetch("/api/slots", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(newSlot),
       });
+  
+      if (!response.ok) throw new Error("Không thể tạo slot");
+  
       fetchSlots();
       setOpen(false);
     } catch (error) {
       console.error("Lỗi khi tạo slot: ", error);
     }
   };
+  
 
   return (
     <div style={{ padding: "100px" }}>

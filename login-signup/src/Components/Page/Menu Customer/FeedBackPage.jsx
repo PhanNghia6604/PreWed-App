@@ -7,43 +7,54 @@ const FeedbackPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [feedback, setFeedback] = useState({ rating: 5, comment: "" });
-  const [reviewedExperts, setReviewedExperts] = useState({});
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user")) || null;
     setUser(storedUser);
-    const reviewedBookings = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
-    setReviewedExperts(reviewedBookings);
   }, []);
 
-  const handleFeedbackSubmit = () => {
-    if (!feedback.comment) {
-      alert("Vui lòng nhập phản hồi trước khi gửi!");
+  
+  const handleFeedbackSubmit = async () => {
+    if (!feedback.comment || !feedback.rating) {
+      alert("Vui lòng nhập đầy đủ đánh giá!");
       return;
     }
-    if (!feedback.rating) {
-      alert("Vui lòng chọn số sao trước khi gửi đánh giá!");
+  
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
       return;
     }
-
-    const storedFeedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
+  
     const newFeedback = {
       bookingId,
       expertId,
-      user: user?.fullName || "Ẩn danh",
-      date: new Date().toLocaleString(),
       rating: feedback.rating,
       comment: feedback.comment,
     };
-
-    localStorage.setItem("feedbacks", JSON.stringify([...storedFeedbacks, newFeedback]));
-    const updatedReviewedExperts = { ...reviewedExperts, [bookingId]: true };
-    localStorage.setItem("reviewedBookings", JSON.stringify(updatedReviewedExperts));
-    setReviewedExperts(updatedReviewedExperts);
-
-    alert("Cảm ơn bạn đã gửi đánh giá!");
-    navigate("/my-booking");
+  
+    try {
+      const response = await fetch("http://localhost:8080/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(newFeedback),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Lỗi khi gửi đánh giá!");
+      }
+  
+      alert("Cảm ơn bạn đã gửi đánh giá!");
+      navigate("/my-booking");
+    } catch (error) {
+      console.error(error);
+      alert("Không thể gửi đánh giá, vui lòng thử lại!");
+    }
   };
+  
 
   if (!user) {
     return <div className={style.notFound}>Bạn chưa đăng nhập!</div>;
@@ -52,32 +63,28 @@ const FeedbackPage = () => {
   return (
     <div className={style.container}>
       <h2>Gửi đánh giá</h2>
-      {reviewedExperts[bookingId] ? (
-        <p>Bạn đã đánh giá lịch hẹn này trước đó!</p>
-      ) : (
-        <div className={style.feedbackForm}>
-          <label>⭐ Đánh giá chuyên gia:</label>
-          <select
-            value={feedback.rating}
-            onChange={(e) => setFeedback({ ...feedback, rating: Number(e.target.value) })}
-          >
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>{star} ⭐</option>
-            ))}
-          </select>
+      <div className={style.feedbackForm}>
+        <label>⭐ Đánh giá chuyên gia:</label>
+        <select
+          value={feedback.rating}
+          onChange={(e) => setFeedback({ ...feedback, rating: Number(e.target.value) })}
+        >
+          {[1, 2, 3, 4, 5].map((star) => (
+            <option key={star} value={star}>{star} ⭐</option>
+          ))}
+        </select>
 
-          <textarea
-            className={style.feedbackInput}
-            placeholder="Nhập phản hồi của bạn..."
-            value={feedback.comment}
-            onChange={(e) => setFeedback({ ...feedback, comment: e.target.value })}
-          />
+        <textarea
+          className={style.feedbackInput}
+          placeholder="Nhập phản hồi của bạn..."
+          value={feedback.comment}
+          onChange={(e) => setFeedback({ ...feedback, comment: e.target.value })}
+        />
 
-          <button className={style.submitFeedbackButton} onClick={handleFeedbackSubmit}>
-            Gửi phản hồi
-          </button>
-        </div>
-      )}
+        <button className={style.submitFeedbackButton} onClick={handleFeedbackSubmit}>
+          Gửi phản hồi
+        </button>
+      </div>
     </div>
   );
 };
