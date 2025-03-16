@@ -2,41 +2,48 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminLogin.module.css";
 
-export const AdminLogin = ({ setIsLoggedIn,setUserRole }) => {
-  const [username, setUsername] = useState("");
+export const AdminLogin = ({ setIsLoggedIn, setUserRole }) => {
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (event) => {
-    event.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
     setError("");
-  
-    const existingUsers = JSON.parse(localStorage.getItem("adminUsers")) || [];
-  
-    const user = existingUsers.find(user => user.username === username && user.password === password);
-  
-    if (!user) {
-      setError("Invalid username or password!");
-      return;
-    }
-  
-    // Lưu thông tin đăng nhập
-    localStorage.setItem("adminSession", JSON.stringify(user));
-    localStorage.setItem("token", "admin-Token"); 
-    localStorage.setItem("userRole", "admin");
-  
-    setIsLoggedIn(true);
-    setUserRole("admin");
-    console.log("Login successful! Redirecting...");
-    
-    
-    
-    // Chuyển hướng sau khi đăng nhập
-    navigate("/admin-dashboard");
-  };
-  
 
+    try {
+      const response = await fetch("/api/login", { 
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+      console.log("Dữ liệu nhận từ API:", data);
+
+      if (response.ok) {
+        // 🔹 Lưu token và thông tin admin vào localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userRole", "admin");
+        localStorage.setItem("adminId", data.id); // Lưu ID admin vào localStorage
+
+        // 🔹 Cập nhật state
+        setIsLoggedIn(true);
+        setUserRole("admin");
+
+        // 🔹 Chuyển hướng đến Admin Dashboard
+        navigate("/admin-dashboard");
+      } else {
+        setError(data.message || "Đăng nhập thất bại!");
+      }
+    } catch (error) {
+      setError("Lỗi kết nối! Vui lòng thử lại.");
+      console.error("Login error:", error);
+    }
+  };
 
   return (
     <section className={styles["admin-login"]}>
@@ -51,7 +58,7 @@ export const AdminLogin = ({ setIsLoggedIn,setUserRole }) => {
               placeholder="Username"
               required
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </div>
           <div className={styles["input-box"]}>
@@ -64,18 +71,7 @@ export const AdminLogin = ({ setIsLoggedIn,setUserRole }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className={styles["forgot-password"]}>
-            <span onClick={() => alert("Redirect to Forgot Password")}>
-              Forgot Password?
-            </span>
-          </div>
-          <button type="submit" className={styles.btn}>
-            Login
-          </button>
-          <div className={styles["register-link"]}>
-            Don't have an account?{" "}
-            <span onClick={() => navigate("/admin-register")}>Register</span>
-          </div>
+          <button type="submit" className={styles.btn}>Login</button>
         </form>
       </div>
     </section>

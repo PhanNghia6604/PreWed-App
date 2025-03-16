@@ -9,22 +9,44 @@ const ServicePackageManagement = () => {
   const [editingPackage, setEditingPackage] = useState(null);
 
   useEffect(() => {
-    fetch("/api/servicepackage")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchPackages = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token không tồn tại, vui lòng đăng nhập lại.");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/servicepackage", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Lỗi khi lấy dữ liệu gói dịch vụ");
+        const data = await res.json();
         setPackages(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching service packages:", error);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchPackages();
   }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc muốn xóa gói dịch vụ này?")) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token không tồn tại, vui lòng đăng nhập lại.");
+        return;
+      }
+
       try {
-        await fetch(`/api/servicepackage/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/servicepackage/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Lỗi khi xóa gói dịch vụ");
         setPackages(packages.filter((pkg) => pkg.id !== id));
       } catch (error) {
         console.error("Error deleting package:", error);
@@ -64,8 +86,18 @@ const ServicePackageManagement = () => {
                 <td>{pkg.price}</td>
                 <td>{pkg.duration} phút</td>
                 <td>
-                  <button className={styles.editButton} onClick={() => setEditingPackage(pkg)}>Sửa</button>
-                  <button className={styles.deleteButton} onClick={() => handleDelete(pkg.id)}>Xóa</button>
+                  <button
+                    className={styles.editButton}
+                    onClick={() => setEditingPackage(pkg)}
+                  >
+                    Sửa
+                  </button>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => handleDelete(pkg.id)}
+                  >
+                    Xóa
+                  </button>
                 </td>
               </tr>
             ))}
