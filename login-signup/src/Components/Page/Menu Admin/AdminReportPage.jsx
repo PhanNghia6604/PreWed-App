@@ -40,32 +40,31 @@ const AdminReportPage = () => {
 
         // Nhóm dữ liệu theo expertId và tính toán số lượng & tổng thu nhập
         const report = finishedBookings.reduce((acc, booking) => {
-          // Kiểm tra dữ liệu hợp lệ trước khi xử lý
           if (!booking.slotExpert || !booking.slotExpert.expert) {
-              console.warn("Dữ liệu không hợp lệ:", booking);
-              return acc;
+            console.warn("Dữ liệu không hợp lệ:", booking);
+            return acc;
           }
-      
-          const expert = booking.slotExpert.expert; // Lấy chuyên gia từ slotExpert.expert
+        
+          const expert = booking.slotExpert.expert;
           const expertId = expert.id;
-          console.log(expertId);
-          
+        
           if (!acc[expertId]) {
-              acc[expertId] = {
-                  expertId,
-                  expertName: expert.name,
-                  expertEmail: expert.email,
-                  totalBookings: 0,
-                  totalIncome: 0, // Kiểm tra xem API có cung cấp price không
-              };
+            acc[expertId] = {
+              expertId,
+              expertName: expert.name,
+              expertEmail: expert.email,
+              totalBookings: 0,
+              totalIncome: 0,
+            };
           }
-      
+        
           acc[expertId].totalBookings += 1;
-          acc[expertId].totalIncome += booking.price || 0; // Nếu không có price, mặc định là 0
-      
+          const servicePrice = booking.services?.[0]?.price || 0; // ✅ Lấy price từ services
+          acc[expertId].totalIncome += servicePrice;
+          
           return acc;
-      }, {});
-      
+        }, {});
+        
     
         // Chuyển object thành array để render
         setReportData(Object.values(report));
