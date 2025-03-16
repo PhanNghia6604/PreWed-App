@@ -41,6 +41,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "expert")
     @JsonIgnore
     List<SlotExpert> slotExperts = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Feedback> feedbacks = new ArrayList<>();
     public User() {
 
     }
