@@ -42,6 +42,8 @@ const ExpertDetail = () => {
           headers:{
             "Authorization": `Bearer ${token}`, // Gửi token trong headers
           }
+          
+
         });
         if (!response.ok) throw new Error("Không thể lấy đánh giá");
   
@@ -316,20 +318,7 @@ const ExpertDetail = () => {
       <p>{message}</p>
       <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
     </div>
-    <div className="review-form">
-        <h3>Gửi đánh giá của bạn</h3>
-        <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
-          {[5, 4, 3, 2, 1].map((num) => (
-            <option key={num} value={num}>{num} sao</option>
-          ))}
-        </select>
-        <textarea
-          placeholder="Viết nhận xét của bạn..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <button onClick={handleSubmitReview}>Gửi đánh giá</button>
-      </div>
+    
   </div>
 )}
 

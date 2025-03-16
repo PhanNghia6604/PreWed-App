@@ -106,6 +106,7 @@ export const Page = () => {
           <Route exact path="/admin-register" element={<AdminRegister />} />
           <Route exact path="/admin-slots" element={<SlotManagement />} />
           <Route exact path="/admin-users" element={<UserManagement />} />
+          <Route exact path="/feedback" element={<FeedbackPage />} />
         </Routes>
 
         <Footer />
