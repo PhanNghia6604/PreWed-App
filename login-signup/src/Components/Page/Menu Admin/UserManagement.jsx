@@ -16,7 +16,12 @@ import {
   Avatar,
 } from "@mui/material";
 import styles from "./UserManagement.module.css"; // Import CSS
-
+const ROLE_LABELS = {
+  EXPERT: "Chuyên gia",
+  CUSTOMER: "Khách hàng",
+  ADMIN: "Quản trị viên",
+};
+const ITEMS_PER_PAGE = 10; // Định nghĩa số lượng user hiển thị trên mỗi trang
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
@@ -29,7 +34,7 @@ const UserManagement = () => {
     certificates: "",
     role_enum: "", 
   });
-
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -48,7 +53,7 @@ const UserManagement = () => {
     try {
       await fetch("/api/get", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", },
         body: JSON.stringify(newUser),
       });
       fetchUsers(); // Cập nhật lại danh sách user
@@ -57,6 +62,26 @@ const UserManagement = () => {
       console.error("Lỗi khi tạo user:", error);
     }
   };
+  const handleDeleteUser = async (id) => {
+    const token = localStorage.getItem("token"); // Hoặc từ sessionStorage/cookie tùy vào cách lưu trữ token
+
+    if (window.confirm("Bạn có chắc chắn muốn xóa người dùng này không?")) {
+      try {
+        await fetch(`http://localhost:8080/api/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json", 
+             "Authorization": `Bearer ${token}`,
+
+          }
+        });
+        fetchUsers(); // Cập nhật lại danh sách user sau khi xóa
+      } catch (error) {
+        console.error("Lỗi khi xóa user:", error);
+      }
+    }
+  };
+  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
+  const displayedUsers = users.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
     <div style={{ padding: "120px" }}>
@@ -70,6 +95,7 @@ const UserManagement = () => {
       >
         + Thêm Người Dùng
       </Button>
+      
 
       {/* Bảng danh sách user */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
@@ -83,7 +109,6 @@ const UserManagement = () => {
               <TableCell><strong>Số điện thoại</strong></TableCell>
               <TableCell><strong>Địa chỉ</strong></TableCell>
               <TableCell><strong>Chứng chỉ</strong></TableCell>
-              <TableCell><strong>Role</strong></TableCell> {/* ➕ Thêm cột Role */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,7 +124,6 @@ const UserManagement = () => {
                   <TableCell>{user.phone}</TableCell>
                   <TableCell>{user.address}</TableCell>
                   <TableCell>{user.certificates}</TableCell>
-                  <TableCell>{user.role_enum}</TableCell> 
                 </TableRow>
               ))
             ) : (
@@ -112,7 +136,18 @@ const UserManagement = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      {/* Nút chuyển trang */}
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <Button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
+          Trang trước
+        </Button>
+        <span style={{ margin: "0 20px" }}>
+          Trang {currentPage} / {totalPages}
+        </span>
+        <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
+          Trang sau
+        </Button>
+      </div>
       {/* Dialog tạo user */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Thêm Người Dùng</DialogTitle>
