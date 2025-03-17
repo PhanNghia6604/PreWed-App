@@ -9,29 +9,28 @@ export const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');  // Ensure setMessage is defined
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
     setMessage("");
-  
+    setSuccessMessage(""); // Clear any previous success message
+
     try {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
            "Content-Type": "application/json",
-
-
-         },
+        },
         body: JSON.stringify({ username, password }),
       });
   
-      // Kiểm tra nếu server trả về lỗi
       if (!response.ok) {
-        const text = await response.text(); // Đọc response dưới dạng text
+        const text = await response.text();
         console.error("🚨 Lỗi từ server:", response.status, text);
   
         try {
-          const errorData = JSON.parse(text); // Cố gắng parse JSON
+          const errorData = JSON.parse(text);
           setError(errorData.message || "Login failed.");
         } catch {
           setError(text || "Login failed, server error.");
@@ -39,16 +38,15 @@ export const Login = ({ setIsLoggedIn }) => {
         return;
       }
   
-      // Nếu phản hồi hợp lệ, parse JSON
       const data = await response.json();
       console.log("🔹 API Response:", data);
   
       if (data.token) {
         console.log("✔ Đăng nhập thành công:", data.token);
         localStorage.setItem("token", data.token);
-        if (data.token && data.id) {  // Đảm bảo có userId (id)
+        if (data.token && data.id) {
           localStorage.setItem("user", JSON.stringify({ 
-            userId: data.id,  // Lưu id thành userId
+            userId: data.id,
             fullName: data.fullName,
             email: data.email,
             role: data.roleEnum,
@@ -57,12 +55,14 @@ export const Login = ({ setIsLoggedIn }) => {
             token: data.token,
             username: data.username
           }));
-            // 🔹 Lưu thêm userId riêng biệt (Để dễ lấy)
-  localStorage.setItem("userId", data.id);
+          localStorage.setItem("userId", data.id);
         }
-        
+
         setIsLoggedIn(true);
-        navigate("/");
+        setSuccessMessage("Login successful! Redirecting...");  // Set success message
+        setTimeout(() => {
+          navigate("/");  // Redirect after showing success message
+        }, 100); // Redirect after 2 seconds
       } else {
         setMessage("Login failed: No token received");
       }

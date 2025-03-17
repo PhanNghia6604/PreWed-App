@@ -199,9 +199,9 @@ export const ExpertsList = () => {
                   </div>
                   <h3 class={style.expertName}>{expert.name}</h3>
                   <p className={style.specialty}>{expert.specialty}</p>
-                  <p className={style.rating}>
+                  {/* <p className={style.rating}>
   ⭐ {expert.rating > 0 ? expert.rating : "Chưa có đánh giá"}
-</p>
+</p> */}
                   <Link to={`/expert/${expert.name}`} className={style.detailButton}>
                     Xem chi tiết
                   </Link>

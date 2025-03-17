@@ -141,40 +141,44 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
     }
   };
 
-  const fetchAvailableSlots = async () => {
+ const fetchAvailableSlots = async () => {
     try {
-      const token = localStorage.getItem("token");
-  
-      const response = await fetch("/api/slots", {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-  
-      // In ra response để kiểm tra chi tiết phản hồi từ API
-      console.log("📌 API Response:", response);
-  
-      if (!response.ok) {
-        const errorText = await response.text(); // Lấy thông tin lỗi nếu có
-        throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
-      }
-  
-      const data = await response.json();
-      console.log("📌 Lịch trống nhận được:", data);
-      
-    
-      
-      // Nếu API trả về mảng rỗng, báo lỗi lịch trống
-      if (data.length === 0) {
-        throw new Error("Không có lịch trống nào!");
-      }
-  
-      setAvailableSlots(data);
+        const token = localStorage.getItem("token");
+        const response = await fetch("/api/slots", {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}` },
+        });
+
+        console.log("📌 API Response:", response);
+
+        if (!response.ok) {
+            // Thử lấy phản hồi dạng text vì không phải JSON
+            const errorText = await response.text();
+            console.log("📨 Phản hồi từ server (raw text):", errorText);
+
+            if (errorText.includes("Selected staff is not available for the chosen slot")) {
+                throw new Error("Slot này đã có người đặt, vui lòng chọn slot khác!");
+            } else {
+                throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
+            }
+        }
+
+        const data = await response.json();
+        console.log("📌 Lịch trống nhận được:", data);
+
+        if (data.length === 0) {
+            throw new Error("Không có lịch trống nào!");
+        }
+
+        setAvailableSlots(data);
     } catch (error) {
-      console.error("❌ Lỗi khi tải lịch trống:", error);
+        console.error("❌ Lỗi khi tải lịch trống:", error);
+        alert(error.message); // Hiển thị lỗi trên giao diện
     }
-  };
+};
+
+
+
 
   
   

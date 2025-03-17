@@ -11,42 +11,44 @@ const ExpertAppointment = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    const expertId = Number(localStorage.getItem("expertId"));
-
-  
+    const expertId = Number(localStorage.getItem("expertId")); // Lấy expertId của chuyên gia hiện tại
+    
     fetch("/api/booking", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Dữ liệu từ API:", data); // Kiểm tra dữ liệu
-        const expertId = Number(localStorage.getItem("expertId"));
+        console.log("Dữ liệu từ API:", data); // Kiểm tra dữ liệu trả về từ API
+        // Lọc các lịch hẹn chỉ dành cho chuyên gia hiện tại
         const filteredByExpert = data.filter(appt => appt.slotExpert.expert.id === expertId);
-        console.log("Lịch hẹn của chuyên gia:", filteredByExpert); // Kiểm tra danh sách đã lọc
+        console.log("Lịch hẹn của chuyên gia:", filteredByExpert); // Kiểm tra dữ liệu đã lọc
         setAppointments(filteredByExpert);
         setFilteredAppointments(filteredByExpert);
       })
       .catch((error) => console.error("Lỗi khi tải lịch hẹn:", error));
-  }, []);
+  }, []); // Chạy lần đầu tiên khi component mount
 
-  useEffect(() => {
-    let filtered = appointments;
+// Xử lý bộ lọc khi có sự thay đổi
+useEffect(() => {
+  let filtered = appointments;
 
-    if (statusFilter) {
-      filtered = filtered.filter(appt => appt.status === statusFilter);
-    }
-    if (dateFilter) {
-      filtered = filtered.filter(appt => appt.slotExpert.date === dateFilter);
-    }
-    if (searchTerm) {
-      filtered = filtered.filter(appt =>
-        appt.user?.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+  if (statusFilter) {
+    filtered = filtered.filter(appt => appt.status === statusFilter);
+  }
 
-    setFilteredAppointments(filtered);
-    setCurrentPage(1);
-  }, [statusFilter, dateFilter, searchTerm, appointments]);
+  if (dateFilter) {
+    filtered = filtered.filter(appt => appt.slotExpert.date === dateFilter);
+  }
+
+  if (searchTerm) {
+    filtered = filtered.filter(appt =>
+      appt.user?.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+
+  setFilteredAppointments(filtered);
+  setCurrentPage(1);
+}, [statusFilter, dateFilter, searchTerm, appointments]); // Thêm appointments vào dependency array
 
   // Phân trang
   const startIndex = (currentPage - 1) * itemsPerPage;
