@@ -27,6 +27,7 @@ const UserManagement = () => {
     email: "",
     avatar: "",
     certificates: "",
+    role_enum: "", 
   });
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/get");
+      const response = await fetch("/api/get");
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -45,7 +46,7 @@ const UserManagement = () => {
 
   const handleCreateUser = async () => {
     try {
-      await fetch("http://localhost:8080/api/get", {
+      await fetch("/api/get", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUser),
@@ -58,8 +59,8 @@ const UserManagement = () => {
   };
 
   return (
-    <div style={{ padding: "100px" }}>
-      <h2>Quản lý Người Dùng</h2>
+    <div style={{ padding: "120px" }}>
+      
 
       {/* Nút tạo user */}
       <Button
@@ -82,6 +83,7 @@ const UserManagement = () => {
               <TableCell><strong>Số điện thoại</strong></TableCell>
               <TableCell><strong>Địa chỉ</strong></TableCell>
               <TableCell><strong>Chứng chỉ</strong></TableCell>
+              <TableCell><strong>Role</strong></TableCell> {/* ➕ Thêm cột Role */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -97,11 +99,12 @@ const UserManagement = () => {
                   <TableCell>{user.phone}</TableCell>
                   <TableCell>{user.address}</TableCell>
                   <TableCell>{user.certificates}</TableCell>
+                  <TableCell>{user.role_enum}</TableCell> 
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={8} align="center">
                   Không có dữ liệu
                 </TableCell>
               </TableRow>
@@ -154,6 +157,13 @@ const UserManagement = () => {
             fullWidth
             value={newUser.certificates}
             onChange={(e) => setNewUser({ ...newUser, certificates: e.target.value })}
+            margin="normal"
+          />
+          <TextField
+            label="Role_enum"
+            fullWidth
+            value={newUser.role_enum}
+            onChange={(e) => setNewUser({ ...newUser, role_enum: e.target.value })}
             margin="normal"
           />
         </DialogContent>
