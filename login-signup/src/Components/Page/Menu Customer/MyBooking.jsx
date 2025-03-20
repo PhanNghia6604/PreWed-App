@@ -248,7 +248,7 @@ export const MyBookings = () => {
                           className={style.feedbackButton} 
                           onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}
                         >
-                          ✍️ Đánh giá chuyên gia
+                           ✩ Đánh giá chuyên gia
                         </button>
                       )
                     )}
