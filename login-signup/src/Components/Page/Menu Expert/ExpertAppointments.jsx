@@ -12,22 +12,39 @@ const ExpertAppointment = () => {
 
   useEffect(() => {
     const expertId = Number(localStorage.getItem("expertId")); // Lấy expertId của chuyên gia hiện tại
-    
+  
     fetch("/api/booking", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Dữ liệu từ API:", data); // Kiểm tra dữ liệu trả về từ API
-        // Lọc các lịch hẹn chỉ dành cho chuyên gia hiện tại
+        console.log("Dữ liệu từ API:", data);
         const filteredByExpert = data.filter(appt => appt.slotExpert.expert.id === expertId);
-        console.log("Lịch hẹn của chuyên gia:", filteredByExpert); // Kiểm tra dữ liệu đã lọc
-        setAppointments(filteredByExpert);
-        setFilteredAppointments(filteredByExpert);
+        
+        // Xếp hạng mức độ ưu tiên của status
+        const statusPriority = {
+          "PENDING": 1,  // Ưu tiên cao nhất
+          "PENDING_PAYMENT": 2,
+          "PROCESSING": 3,
+          "FINISHED": 4,
+          "CANCELLED": 5  // Ưu tiên thấp nhất
+        };
+  
+        // Sắp xếp lịch hẹn theo `status` trước, sau đó theo `id` giảm dần
+        const sortedAppointments = filteredByExpert.sort((a, b) => {
+          if (statusPriority[a.status] !== statusPriority[b.status]) {
+            return statusPriority[a.status] - statusPriority[b.status]; // Sắp xếp theo status
+          }
+          return b.id - a.id; // Nếu cùng status, sắp xếp theo id giảm dần
+        });
+  
+        console.log("Lịch hẹn đã sắp xếp:", sortedAppointments);
+        setAppointments(sortedAppointments);
+        setFilteredAppointments(sortedAppointments);
       })
       .catch((error) => console.error("Lỗi khi tải lịch hẹn:", error));
-  }, []); // Chạy lần đầu tiên khi component mount
-
+  }, []);
+  
 // Xử lý bộ lọc khi có sự thay đổi
 useEffect(() => {
   let filtered = appointments;
@@ -91,7 +108,7 @@ useEffect(() => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Danh sách lịch hẹn</h2>
-
+  
       {/* Bộ lọc */}
       <div className={styles.filters}>
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
@@ -103,9 +120,9 @@ useEffect(() => {
           <option value="FINISHED">Hoàn thành</option>
           <option value="CANCELLED">Đã hủy</option>
         </select>
-
+  
         <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} />
-
+  
         <input
           type="text"
           placeholder="Tìm khách hàng..."
@@ -113,73 +130,86 @@ useEffect(() => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+  
+      {/* Bảng danh sách lịch hẹn */}
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Ngày</th>
+            <th>Giờ</th>
+            <th>Trạng thái</th>
+            <th>Khách hàng</th>
+            <th>Dịch vụ</th>
+            <th>Giá tiền</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+  {displayedAppointments.map((appointment) => (
+    <tr key={appointment.id}>
+      <td>{appointment.id}</td>
+      <td>{appointment.slotExpert.date}</td>
+      <td>{appointment.slotExpert.slot.startTime} - {appointment.slotExpert.slot.endTime}</td>
+      <td>{appointment.status}</td>
+      <td>{appointment.user?.name} ({appointment.user?.email})</td>
+      <td>
+        {appointment.services.length > 0 ? (
+          <ul className={styles.serviceList}>
+            {appointment.services.map(service => (
+              <li key={service.id}>{service.name} ({service.duration} phút)</li>
+            ))}
+          </ul>
+        ) : "Không có dịch vụ"}
+      </td>
+      <td>
+        {appointment.services.length > 0 ? (
+          appointment.services.reduce((total, service) => total + service.price, 0).toLocaleString() + " VND"
+        ) : "0 VND"}
+      </td>
+      <td>
+        {appointment.status === "PENDING" && (
+          <>
+            <button className={styles.acceptButton} onClick={() => updateStatus(appointment.id, "PENDING_PAYMENT")}>Chấp nhận</button>
+            <button className={styles.rejectButton} onClick={() => updateStatus(appointment.id, "CANCELLED")}>Từ chối</button>
+          </>
+        )}
 
-      {/* Danh sách lịch hẹn */}
-      <ul className={styles.list}>
-        {displayedAppointments.map((appointment) => (
-          <li key={appointment.id} className={styles.listItem}>
-            <p>
-              <strong>ID:</strong> {appointment.id} |
-              <strong> Ngày:</strong> {appointment.slotExpert.date} |
-              <strong> Giờ:</strong> {appointment.slotExpert.slot.startTime} - {appointment.slotExpert.slot.endTime} |
-              <strong> Trạng thái:</strong> {appointment.status}
-            </p>
-            <p><strong>Khách hàng:</strong> {appointment.user?.name} ({appointment.user?.email})</p>
+        {appointment.status === "AWAIT" && (
+          <>
+            <button className={styles.startButton} onClick={() => updateStatus(appointment.id, "PROCESSING")}>Bắt đầu tư vấn</button>
+            
+            {/* Ô nhập link Google Meet */}
+            <div className={styles.meetContainer}>
+              <input
+                type="text"
+                placeholder="Nhập link Google Meet"
+                className={styles.meetInput}
+                value={appointment.meetLink || ""}
+                onChange={(e) => {
+                  const newLink = e.target.value;
+                  setAppointments((prev) =>
+                    prev.map((appt) =>
+                      appt.id === appointment.id ? { ...appt, meetLink: newLink } : appt
+                    )
+                  );
+                }}
+              />
+              <button className={styles.saveButton} onClick={() => saveMeetLink(appointment.id, appointment.meetLink)}>💾 Lưu</button>
+            </div>
+          </>
+        )}
 
-            {/* Dịch vụ */}
-            <p><strong>Dịch vụ:</strong></p>
-            <ul>
-              {appointment.services.length > 0 ? (
-                appointment.services.map(service => (
-                  <li key={service.id}>
-                    {service.name} - {service.price.toLocaleString()} VND ({service.duration} phút)
-                  </li>
-                ))
-              ) : (
-                <li>Không có dịch vụ</li>
-              )}
-            </ul>
+        {appointment.status === "PROCESSING" && (
+          <button className={styles.finishButton} onClick={() => updateStatus(appointment.id, "FINISHED")}>Hoàn tất tư vấn</button>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-            {/* Các nút thao tác */}
-            {appointment.status === "PENDING" && (
-              <>
-                <button className={styles.acceptButton} onClick={() => updateStatus(appointment.id, "PENDING_PAYMENT")}>Chấp nhận</button>
-                <button className={styles.rejectButton} onClick={() => updateStatus(appointment.id, "CANCELLED")}>Từ chối</button>
-              </>
-            )}
-
-            {appointment.status === "AWAIT" && (
-              <>
-                <button className={styles.startButton} onClick={() => updateStatus(appointment.id, "PROCESSING")}>Bắt đầu tư vấn</button>
-                
-                {/* Ô nhập link Google Meet */}
-                <div className={styles.meetContainer}>
-                  <input
-                    type="text"
-                    placeholder="Nhập link Google Meet"
-                    className={styles.meetInput}
-                    value={appointment.meetLink || ""}
-                    onChange={(e) => {
-                      const newLink = e.target.value;
-                      setAppointments((prev) =>
-                        prev.map((appt) =>
-                          appt.id === appointment.id ? { ...appt, meetLink: newLink } : appt
-                        )
-                      );
-                    }}
-                  />
-                  <button className={styles.saveButton} onClick={() => saveMeetLink(appointment.id, appointment.meetLink)}>💾 Lưu Link</button>
-                </div>
-              </>
-            )}
-
-            {appointment.status === "PROCESSING" && (
-              <button className={styles.finishButton} onClick={() => updateStatus(appointment.id, "FINISHED")}>Hoàn tất tư vấn</button>
-            )}
-          </li>
-        ))}
-      </ul>
-
+      </table>
+  
       {/* Phân trang */}
       <div className={styles.pagination}>
         <button onClick={prevPage} disabled={currentPage === 1}>⬅️ Trang trước</button>
@@ -188,6 +218,5 @@ useEffect(() => {
       </div>
     </div>
   );
-};
-
+}  
 export default ExpertAppointment;
