@@ -24,8 +24,9 @@ const ExpertAppointment = () => {
         // Xếp hạng mức độ ưu tiên của status
         const statusPriority = {
           "PENDING": 1,  // Ưu tiên cao nhất
-          "PENDING_PAYMENT": 2,
-          "PROCESSING": 3,
+          "PENDING_PAYMENT": 3,
+          "AWAIT": 2,
+          "PROCESSING": 2,
           "FINISHED": 4,
           "CANCELLED": 5  // Ưu tiên thấp nhất
         };
