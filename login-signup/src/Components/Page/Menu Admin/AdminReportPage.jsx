@@ -37,7 +37,7 @@ const AdminReportPage = () => {
           (booking) => booking.status === "FINISHED"
         );
         
-
+        const commissionRate = 0.2; // Hoa hồng 20%
         // Nhóm dữ liệu theo expertId và tính toán số lượng & tổng thu nhập
         const report = finishedBookings.reduce((acc, booking) => {
           if (!booking.slotExpert || !booking.slotExpert.expert) {
@@ -55,13 +55,14 @@ const AdminReportPage = () => {
               expertEmail: expert.email,
               totalBookings: 0,
               totalIncome: 0,
+              netIncome: 0, // Thêm biến tính số tiền thực nhận
             };
           }
         
           acc[expertId].totalBookings += 1;
           const servicePrice = booking.services?.[0]?.price || 0; // ✅ Lấy price từ services
           acc[expertId].totalIncome += servicePrice;
-          
+          acc[expertId].netIncome += servicePrice * (1 - commissionRate); // Trừ hoa hồng
           return acc;
         }, {});
         
@@ -97,6 +98,7 @@ const AdminReportPage = () => {
             <th>Email</th>
             <th>Số lượng booking</th>
             <th>Tổng thu nhập</th>
+            <th>Thanh toán cho chuyên gia</th> {/* Cột mới */}
           </tr>
         </thead>
         <tbody>
@@ -111,6 +113,12 @@ const AdminReportPage = () => {
                   currency: "VND",
                 })}
               </td>
+              <td>
+        {expert.netIncome.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })}
+      </td> {/* Hiển thị số tiền thực nhận */}
             </tr>
           ))}
         </tbody>
