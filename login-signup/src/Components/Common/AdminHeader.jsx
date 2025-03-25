@@ -32,7 +32,7 @@ export const AdminHeader = ({ isLoggedIn, setIsLoggedIn }) => {
                     <Link to="/admin-slots" className={styles.navLink}>Quản lý tạo slot</Link>
                     <Link to="/admin-servicepackage" className={styles.navLink}>Quản lý gói dịch vụ</Link>
                     <Link to="/admin-reports" className={styles.navLink}>Báo cáo thu nhập</Link>
-                  
+                    <Link to="/admin-blogs" className={styles.navLink}>Quản lý Blogs</Link>
 
                     {/* User Menu */}
                     {isLoggedIn && (
