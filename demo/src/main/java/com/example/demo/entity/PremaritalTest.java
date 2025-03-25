@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,10 @@ public class PremaritalTest {
     @ElementCollection
     private List<String> answers;  // Danh sách chuyên môn cần cải thiện
     private LocalDateTime testDate;  // Thời gian bài kiểm tra được thực hiện
+
+    @OneToMany(mappedBy = "premaritalTest", cascade = CascadeType.ALL)
+    @JsonManagedReference  // Đánh dấu để Jackson tuần tự hóa mối quan hệ này
+    private List<Diagnos> diagnosResults;  // Mỗi bài kiểm tra có thể có nhiều kết quả chẩn đoán
 
     // Getters and Setters
     public Long getId() {
@@ -48,5 +53,12 @@ public class PremaritalTest {
 
     public void setTestDate(LocalDateTime testDate) {
         this.testDate = testDate;
+    }
+    public List<Diagnos> getDiagnosResults() {
+        return diagnosResults;
+    }
+
+    public void setDiagnosResults(List<Diagnos> diagnosResults) {
+        this.diagnosResults = diagnosResults;
     }
 }

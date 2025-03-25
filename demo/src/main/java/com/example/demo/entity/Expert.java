@@ -23,6 +23,7 @@ public class Expert extends User {
 
     private String specialty;
     private String avatar;
+    private boolean approved = false;
 
     @ElementCollection
     @NotEmpty(message = "Certificates cannot be empty")
@@ -36,4 +37,5 @@ public class Expert extends User {
     @OneToMany(mappedBy = "expert")
     @JsonIgnore
     List<Feedback> feedbacks = new ArrayList<>();
+
 }

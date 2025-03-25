@@ -22,5 +22,5 @@ public class BlogRequest {
     private Long authorId; // ID của tác giả
 
     @NotNull(message = "Image is required")
-    private MultipartFile image; // Ảnh tải lên dưới dạng MultipartFile
+    private String image;
 }

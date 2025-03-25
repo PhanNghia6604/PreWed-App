@@ -57,6 +57,7 @@ public class ExpertService {
         expert.setAvatar(request.getAvatar());
         expert.setCertificates(request.getCertificates());
         expert.setRoleEnum(RoleEnum.EXPERT);
+        expert.setApproved(false);
 
         return userRepository.save(expert);
     }
@@ -142,7 +143,37 @@ public class ExpertService {
             throw new RuntimeException("Expert not found with id: " + id);
         }
     }
+    @Transactional
+    public boolean approveExpert(Long id) {
+        Optional<Expert> expertOpt = expertRepository.findById(id);
+        if (expertOpt.isPresent()) {
+            Expert expert = expertOpt.get();
+            expert.setApproved(true);
+            expertRepository.save(expert);
+            return true;
+        }
+        return false;
+    }
+    public List<ExpertResponse> getPendingExperts() {
+        List<Expert> pendingExperts = expertRepository.findByApprovedFalse();
+        List<ExpertResponse> responses = new ArrayList<>();
 
+        for (Expert expert : pendingExperts) {
+            ExpertResponse response = new ExpertResponse();
+            response.setUsername(expert.getUsername());
+            response.setEmail(expert.getEmail());
+            response.setName(expert.getName());
+            response.setPhone(expert.getPhone());
+            response.setAddress(expert.getAddress());
+            response.setSpecialty(expert.getSpecialty());
+            response.setAvatar(expert.getAvatar());
+            response.setCertificates(expert.getCertificates());
+            response.setApproved(expert.isApproved());
+            responses.add(response);
+        }
+
+        return responses;
+    }
 
     @Transactional
     public Expert updateExpert(ExpertRequest request) {
@@ -187,6 +218,7 @@ public class ExpertService {
         } else {
             throw new RuntimeException("Expert not found");
         }
+
     }
 
 

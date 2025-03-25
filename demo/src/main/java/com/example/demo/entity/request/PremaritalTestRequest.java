@@ -1,6 +1,6 @@
 package com.example.demo.entity.request;
 
-import com.example.demo.entity.Answer;
+import com.example.demo.entity.DTO.Answer;
 
 import java.util.List;
 

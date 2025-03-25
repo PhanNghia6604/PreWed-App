@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
@@ -16,6 +17,10 @@ public class Diagnos {
     private List<String> categoriesToImprove; // Các chuyên môn cần cải thiện
 
     private String diagnosisResult; // Kết quả chẩn đoán
+    @ManyToOne
+    @JoinColumn(name = "premarital_test_id")
+    @JsonBackReference  // Đánh dấu để Jackson không tuần tự hóa trường này
+    private PremaritalTest premaritalTest;  // Mỗi kết quả chẩn đoán thuộc về một bài kiểm tra
 
     // Getters và Setters
     public Long getId() {
@@ -40,5 +45,13 @@ public class Diagnos {
 
     public void setDiagnosisResult(String diagnosisResult) {
         this.diagnosisResult = diagnosisResult;
+    }
+
+    public PremaritalTest getPremaritalTest() {
+        return premaritalTest;
+    }
+
+    public void setPremaritalTest(PremaritalTest premaritalTest) {
+        this.premaritalTest = premaritalTest;
     }
 }

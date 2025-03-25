@@ -35,6 +35,7 @@ public class ExpertRequest {
 
     private String avatar;     // Ảnh đại diện
 
+
     @NotEmpty(message = "Certificates cannot be empty")
     private List<String> certificates;  // Danh sách chứng chỉ
 
