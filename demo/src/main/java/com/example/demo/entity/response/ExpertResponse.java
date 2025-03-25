@@ -18,5 +18,7 @@ public class ExpertResponse {
     private String specialty; // Chuyên ngành
     private String avatar;    // Avatar
     private List<String> certificates; // Chứng chỉ
+    private boolean approved ;
+
 
 }

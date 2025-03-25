@@ -29,10 +29,9 @@ public class BlogAPI {
     @PostMapping
     @Secured("ROLE_ADMIN")
     @Operation(summary = "Tạo blog mới", description = "Tạo blog mới với tiêu đề, nội dung và ảnh",
-            requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data",
+            requestBody = @RequestBody(content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = BlogRequest.class))))
     public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogRequest request) {
-
         // Gọi phương thức tạo blog trong service
         BlogResponse blogResponse = blogService.createBlog(request);
         return ResponseEntity.ok(blogResponse);
@@ -54,9 +53,10 @@ public class BlogAPI {
 
     @PutMapping("/{id}")
     @Secured("ROLE_ADMIN")
-    @Operation(summary = "Cập nhật blog", description = "Cập nhật tiêu đề, nội dung của blog")
+    @Operation(summary = "Cập nhật blog", description = "Cập nhật tiêu đề, nội dung của blog và ảnh nếu có")
     public ResponseEntity<BlogResponse> updateBlog(@PathVariable Long id, @RequestBody BlogRequest request) {
-        return ResponseEntity.ok(blogService.updateBlog(id, request.getTitle(), request.getContent(), request.getImage()));
+        BlogResponse blogResponse = blogService.updateBlog(id, request.getTitle(), request.getContent(), request.getImage());
+        return ResponseEntity.ok(blogResponse);
     }
 
     @DeleteMapping("/{id}")

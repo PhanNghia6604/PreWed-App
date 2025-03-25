@@ -27,18 +27,14 @@ public class BlogService {
     @Autowired
     private UserRepository userRepository;
 
-    // Đường dẫn thư mục lưu trữ ảnh
-    private static final String UPLOAD_DIR = "C:/uploads/";
-    // Lưu trữ ảnh trong thư mục uploads tại thư mục gốc của dự án
+
 
 
     /**
      * Tạo blog mới
      */
     public BlogResponse createBlog(BlogRequest request) {
-        System.out.println("Nhận request: " + request); // 🟢 In ra để kiểm tra request có đến không
-
-        // Tìm tác giả từ ID
+        String base64Image = request.getImage(); // Chuỗi Base64
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new RuntimeException("Author not found!"));
 
@@ -49,16 +45,12 @@ public class BlogService {
         blog.setAuthor(author);
         blog.setCreatedAt(LocalDateTime.now());
         blog.setDeleted(false);
+        blog.setImagePath(base64Image);  // Lưu đường dẫn ảnh vào blog
 
-        // Xử lý ảnh tải lên nếu có
-        if (request.getImage() != null && !request.getImage().isEmpty()) {
-            String imagePath = saveImage(request.getImage());  // Lưu ảnh và lấy đường dẫn
-            blog.setImagePath(imagePath);  // Lưu đường dẫn ảnh vào blog
-        }
 
         // Lưu vào database
         Blog savedBlog = blogRepository.save(blog);
-        System.out.println("Blog đã lưu: " + savedBlog); // 🟢 Kiểm tra log khi blog được lưu
+
 
         // Trả về thông tin blog đã lưu
         return new BlogResponse(
@@ -71,29 +63,7 @@ public class BlogService {
         );
     }
 
-    /**
-     * Lưu ảnh vào thư mục và trả về đường dẫn ảnh
-     */
-    // Sửa lại đường dẫn trả về thành URL truy cập từ frontend
-    private String saveImage(MultipartFile image) {
-        try {
-            Path path = Paths.get(UPLOAD_DIR + image.getOriginalFilename());
-            Files.createDirectories(path.getParent());  // Tạo thư mục nếu chưa có
-            image.transferTo(path.toFile());
 
-            // Chuyển đường dẫn file thành URL truy cập
-            String url = "http://localhost:8080/uploads/" + image.getOriginalFilename();
-            return url;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not save the image.");
-        }
-    }
-
-
-    /**
-     * Lấy danh sách tất cả blog chưa bị xóa
-     */
     public List<BlogResponse> getAllBlogs() {
         List<Blog> blogs = blogRepository.findByIsDeletedFalse();
 
@@ -122,31 +92,33 @@ public class BlogService {
     /**
      * Cập nhật blog theo ID
      */
-    public BlogResponse updateBlog(Long id, String title, String content, MultipartFile image) {
+    public BlogResponse updateBlog(Long id, String title, String content, String imageBase64) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
+        // Cập nhật tiêu đề và nội dung
         blog.setTitle(title);
         blog.setContent(content);
 
         // Kiểm tra và cập nhật ảnh nếu có
-        if (image != null && !image.isEmpty()) {
-            String imagePath = saveImage(image);
-            blog.setImagePath(imagePath);  // Cập nhật đường dẫn ảnh
+        if (imageBase64 != null && !imageBase64.isEmpty()) {
+            blog.setImagePath(imageBase64);  // Cập nhật chuỗi Base64 của ảnh
         }
 
+        // Lưu blog đã cập nhật vào cơ sở dữ liệu
         Blog updatedBlog = blogRepository.save(blog);
 
-        // Trả về BlogResponse với thông tin cập nhật
+        // Trả về BlogResponse với thông tin đã cập nhật
         return new BlogResponse(
                 updatedBlog.getId(),
                 updatedBlog.getTitle(),
                 updatedBlog.getContent(),
                 updatedBlog.getAuthor().getName(),
                 updatedBlog.getCreatedAt(),
-                updatedBlog.getImagePath()  // Trả về đường dẫn ảnh
+                updatedBlog.getImagePath()  // Trả về chuỗi Base64 của ảnh
         );
     }
+
 
     /**
      * Xóa blog (xóa mềm, không xóa vĩnh viễn)

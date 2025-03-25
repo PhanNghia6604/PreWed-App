@@ -7,6 +7,7 @@ public class PremaritalTestResponse {
     private Long userId;
     private List<String> categoriesToImprove;
     private LocalDateTime testDate;
+    private List<DiagnosResponse> diagnosResponses;
 
     public PremaritalTestResponse(Long userId, List<String> categoriesToImprove, LocalDateTime testDate) {
         this.userId = userId;
@@ -37,4 +38,13 @@ public class PremaritalTestResponse {
     public void setTestDate(LocalDateTime testDate) {
         this.testDate = testDate;
     }
+
+    public List<DiagnosResponse> getDiagnosResponses() {
+        return diagnosResponses;
+    }
+
+    public void setDiagnosResponses(List<DiagnosResponse> diagnosResponses) {
+        this.diagnosResponses = diagnosResponses;
+    }
 }
+

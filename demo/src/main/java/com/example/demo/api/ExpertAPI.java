@@ -29,6 +29,16 @@ public class ExpertAPI {
         Expert expert = expertService.createExpert(request);
         return ResponseEntity.ok(expert);
     }
+    @PutMapping("/approve/{id}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<String> approveExpert(@PathVariable Long id) {
+        boolean result = expertService.approveExpert(id);
+        if (result) {
+            return ResponseEntity.ok("Expert approved successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Expert not found");
+        }
+    }
 
     @GetMapping("/profile/{id}")
     public ResponseEntity<ExpertResponse> getExpertProfile(@PathVariable Long id) {
@@ -40,6 +50,9 @@ public class ExpertAPI {
         ExpertResponse response = expertService.getExpertProfile(id);
         if (response == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Không tìm thấy expert
+        }
+        if (!response.isApproved()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Expert chưa được admin duyệt
         }
         return ResponseEntity.ok(response); // Trả về thông tin profile của Expert
     }
@@ -83,6 +96,13 @@ public class ExpertAPI {
 
         return response;
     }
+    @GetMapping("/pending")
+    @Secured("ROLE_ADMIN") // hoặc "ROLE_MANAGER" nếu em dùng MANAGER
+    public ResponseEntity<List<ExpertResponse>> getPendingExperts() {
+        List<ExpertResponse> pendingExperts = expertService.getPendingExperts();
+        return ResponseEntity.ok(pendingExperts);
+    }
+
 
 
 }
