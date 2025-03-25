@@ -69,10 +69,32 @@ export const MyBookings = () => {
   // 🔹 Hàm sắp xếp: Đưa `CANCELLED` và `FINISHED` xuống cuối
   const sortBookings = (list) => {
     return [...list].sort((a, b) => {
-      const order = { CANCELLED: 1, FINISHED: 1 }; // Trạng thái cần đẩy xuống cuối
-      return (order[a.status] || 0) - (order[b.status] || 0);
+      const order = { 
+        PENDING: 0, 
+        PENDING_PAYMENT: 1, 
+        PROCESSING: 2, 
+        FINISHED: 3, 
+        CANCELLED: 4 
+      };
+  
+      // Sắp xếp theo trạng thái ưu tiên
+      const statusOrder = order[a.status] - order[b.status];
+  
+      // Nếu trạng thái giống nhau, ưu tiên lịch sớm hơn
+      if (statusOrder === 0) {
+        const dateA = new Date(a.appointmentDate).getTime();
+        const dateB = new Date(b.appointmentDate).getTime();
+        
+        if (dateA !== dateB) {
+          return dateA - dateB; // Sớm hơn lên trước
+        }
+      }
+  
+      // Nếu cùng trạng thái và cùng ngày, ưu tiên ID mới nhất
+      return b.id - a.id;
     });
   };
+  
 
   // Xử lý hủy lịch hẹn
   const handleCancelBooking = (id) => {
@@ -115,6 +137,8 @@ export const MyBookings = () => {
       alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
     }
   };
+
+  // key reviewedBookings được lưu vào localStorage để dùng đóng form đánh giá
   const [reviewedBookings, setReviewedBookings] = useState(() => {
     return JSON.parse(localStorage.getItem("reviewedBookings")) || {};
   });
@@ -139,7 +163,7 @@ export const MyBookings = () => {
   return (
     <div className={style.container}>
       <h2>Lịch đặt của tôi</h2>
-
+  
       {/* 🔹 Bộ lọc trạng thái */}
       <div className={style.filterContainer}>
         <label htmlFor="statusFilter">Lọc theo trạng thái:</label>
@@ -158,64 +182,103 @@ export const MyBookings = () => {
           <option value="CANCELLED">Đã hủy</option>
         </select>
       </div>
-
+  
       {currentBookings.length === 0 ? (
         <p>Không có lịch hẹn phù hợp.</p>
       ) : (
-        <ul className={style.bookingList}>
-          {currentBookings.map((b) => {
-            const expert = b.slotExpert.expert;
-            const meetLink = localStorage.getItem(`meetLink-${b.id}`);
-            return (
-              <li key={b.id} className={style.bookingItem}>
-                <img src={expert.avatar} alt={expert.name} className={style.expertAvatar} />
-                <div className={style.bookingInfo}>
-                  <strong>{expert.name}</strong>
-                  <p>📅 Ngày: {b.slotExpert.date}</p>
-                  <p>⏰ Giờ: {b.slotExpert.slot.startTime} - {b.slotExpert.slot.endTime}</p>
-                  {b.services.length > 0 && (
-      <p>💼 Dịch vụ: {b.services[0].name} - 💰 {b.services[0].price.toLocaleString()} VND</p>
-    )}
-                 
-                  <p>📌 Trạng thái: <strong>{b.status}</strong></p>
+        <table className={style.bookingTable}>
+          <thead>
+            <tr>
+              <th>Chuyên gia</th>
+              <th>Ngày</th>
+              <th>Giờ</th>
+              <th>Dịch vụ</th>
+              <th>Giá tiền</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentBookings.map((b) => {
+              const expert = b.slotExpert.expert;
+              const meetLink = localStorage.getItem(`meetLink-${b.id}`);
+              return (
+                <tr key={b.id}>
+                 <td className={style.expertColumn}>
+  <img
+    src={expert.avatar && expert.avatar.includes("/") ? expert.avatar : `/images/experts/${expert.avatar}`}
+    alt={expert.name}
+    className={style.expertAvatar}
+    onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
+  />
+  <span>{expert.name}</span>
+</td>
 
-                  {b.status === "PENDING" && <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>}
-                  {b.status === "PENDING_PAYMENT" && <button className={style.payButton} onClick={() => handlePayment(b.id)}>💳 Thanh toán</button>}
-                  {b.status === "AWAIT" && <p className={style.awaitText}>⏳ Bạn đã thanh toán. Vui lòng đợi đến giờ tư vấn!</p>}
-                  {b.status === "PROCESSING" && meetLink && <p>🔗 Link tư vấn: <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`} target="_blank" rel="noopener noreferrer" className={style.link}>{meetLink}</a></p>}
-                  {b.status === "FINISHED" && (
-  reviewedBookings[b.id] ? (
-    <p className={style.reviewedText}>✅ Đã đánh giá</p>
-  ) : (
-    <button 
-      className={style.feedbackButton} 
-      onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}
-    >
-      ✍️ Đánh giá chuyên gia
-    </button>
-  ))}
-                  {b.status === "CANCELLED" && <p className={style.cancelledText}>❌ Lịch hẹn đã bị hủy.</p>}
-                  {["PENDING", "PENDING_PAYMENT"].includes(b.status) && <button className={style.cancelButton} onClick={() => handleCancelBooking(b.id)}>❌ Hủy lịch</button>}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                  <td>{b.slotExpert.date}</td>
+                  <td>{b.slotExpert.slot.startTime} - {b.slotExpert.slot.endTime}</td>
+                  <td>
+  {b.services.length > 0 ? b.services[0].name : 'Không có'}
+</td>
+<td>
+  {b.services.length > 0 ? `${b.services[0].price.toLocaleString()} VND` : 'Không có'}
+</td>
+                  <td><strong>{b.status}</strong></td>
+                  <td>
+                    {b.status === "PENDING" && <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>}
+                    {b.status === "PENDING_PAYMENT" && (
+                      <button className={style.payButton} onClick={() => handlePayment(b.id)}>
+                        💳 Thanh toán
+                      </button>
+                    )}
+                    {b.status === "AWAIT" && <p className={style.awaitText}>⏳ Bạn đã thanh toán. Vui lòng đợi đến giờ tư vấn!</p>}
+                    {b.status === "PROCESSING" && meetLink && (
+                      <p>🔗 <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`} 
+                             target="_blank" 
+                             rel="noopener noreferrer" 
+                             className={style.link}>
+                          Link tư vấn
+                        </a>
+                      </p>
+                    )}
+                    {b.status === "FINISHED" && (
+                      reviewedBookings[b.id] ? (
+                        <p className={style.reviewedText}>✅ Đã đánh giá</p>
+                      ) : (
+                        <button 
+                          className={style.feedbackButton} 
+                          onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}
+                        >
+                           ✩ Đánh giá chuyên gia
+                        </button>
+                      )
+                    )}
+                    {b.status === "CANCELLED" && <p className={style.cancelledText}>❌ Lịch hẹn đã bị hủy.</p>}
+                    {["PENDING", "PENDING_PAYMENT"].includes(b.status) && (
+                      <button className={style.cancelButton} onClick={() => handleCancelBooking(b.id)}>
+                        ❌ Hủy lịch
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       )}
-
+  
       {/* 🔹 Phân trang */}
       {totalPages > 1 && (
-  <div className={style.pagination}>
-    <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-      ◀ Trước
-    </button>
-    <span>Trang {currentPage} / {totalPages}</span>
-    <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-      Sau ▶
-    </button>
-  </div>
-)}
-</div>
-  )
+        <div className={style.pagination}>
+          <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+            ◀ Trước
+          </button>
+          <span>Trang {currentPage} / {totalPages}</span>
+          <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+            Sau ▶
+          </button>
+        </div>
+      )}
+    </div>
+  );
+  
 }
-

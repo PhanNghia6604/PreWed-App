@@ -1,181 +1,194 @@
 .container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .title {
-    text-align: center;
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .listItem {
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #f8f8f8;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .select {
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 200px;
-  }
-  
-  /* Nút Chấp nhận */
-  .acceptButton {
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .acceptButton:hover {
-    background-color: #45a049;
-  }
-  
-  /* Nút Từ chối */
-  .rejectButton {
-    background-color: #FF4D4D;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .rejectButton:hover {
-    background-color: #D63434;
-  }
-  
-  /* Nút Bắt đầu tư vấn */
-  .startButton {
-    background-color: #2196F3;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .startButton:hover {
-    background-color: #1E87E2;
-  }
-  
-  /* Nút Hoàn tất tư vấn */
-  .finishButton {
-    background-color: #FF9800;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .finishButton:hover {
-    background-color: #E68900;
-  }
-  
-  /* Phần thông tin khách hàng & dịch vụ */
-  .details {
-    background: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .details p {
-    margin: 5px 0;
-    font-size: 14px;  
-    
-  }
-  
-  .serviceList {
-    margin-left: 15px;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .serviceList li {
-    margin-bottom: 5px;
-  }
-  
-  .buttonGroup {
-    display: flex;
-    gap: 10px;
-  }
-  .container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .title {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
+  max-width: 1400px; /* Tăng độ rộng tối đa */
+  margin: auto;
+  width: 100%;
+  padding: 40px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  text-align: center;
+  color: #000; /* Đảm bảo màu chữ là đen */
+  font-size: 28px; /* Tăng kích thước chữ */
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  gap: 10px; /* Giảm khoảng cách */
+  margin-bottom: 20px;
+  flex-wrap: nowrap; /* Đảm bảo nằm trên cùng một hàng */
+}
+
+.filters select,
+.filters input {
+  padding: 8px;
+  font-size: 16px;
+  width: 350px; /* Tăng độ rộng */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.filters input[type="date"],
+.filters input[type="text"] {
+  width: 300px; /* Tăng độ rộng */
+}
+@media (max-width: 768px) {
   .filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .filters select,
-  .filters input {
-    padding: 5px;
-    font-size: 16px;
-  }
-  
-  .list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .listItem {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    color:#333;
-  }
-  
-  .pagination {
-    display: flex;
+    flex-wrap: wrap; /* Nếu màn hình nhỏ, tự động xuống dòng */
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
   }
-  
-  .pagination button {
-    padding: 5px 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .pagination button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
+}
+
+/* Bảng danh sách */
+.table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  table-layout: fixed; /* Cố định layout để cột không bị co dãn lung tung */
+}
+
+/* Định dạng hàng */
+.table th, .table td {
+  padding: 25px; /* Giảm padding */
+  border: 1px solid #ddd;
+  text-align: left;
+  color: #000;
+  /* word-wrap: break-word; /* Cho phép chữ xuống dòng */
+  /* white-space: normal; */
+  font-size: 13px;
+}
+
+/* Tiêu đề bảng */
+.table th {
+  background: #f0f0f0;
+  font-weight: bold;
+}
+
+/* Hàng chẵn có màu nền khác để dễ nhìn */
+.table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* Cố định chiều rộng từng cột để bảng kéo dài hơn */
+.table th:nth-child(1), .table td:nth-child(1) { width: 6%; }  /* ID */
+.table th:nth-child(2), .table td:nth-child(2) { width: 14%; } /* Ngày */
+.table th:nth-child(3), .table td:nth-child(3) { width: 14%; } /* Giờ */
+.table th:nth-child(4), .table td:nth-child(4) { width: 14%; } /* Trạng thái */
+.table th:nth-child(5), .table td:nth-child(5) { width: 16%; } /* Khách hàng */
+.table th:nth-child(6), .table td:nth-child(6) { width: 16%; } /* Dịch vụ */
+.table th:nth-child(7), .table td:nth-child(7) { width: 12%; } /* Giá tiền */
+.table th:nth-child(8), .table td:nth-child(8) { width: 18%; } /* Hành động */
+
+/* Danh sách dịch vụ */
+.serviceList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.serviceList li {
+  color: #000;
+  font-size: 16px;
+  line-height: 1.6;
+}
+/* Nhóm nút */
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+}
+
+/* Style chung cho các nút */
+button {
+  font-size: 16px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Nút Chấp nhận */
+.acceptButton {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.acceptButton:hover {
+  background-color: #45a049;
+}
+
+/* Nút Từ chối */
+.rejectButton {
+  background-color: #FF4D4D;
+  color: white;
+}
+
+.rejectButton:hover {
+  background-color: #D63434;
+}
+
+/* Nút Bắt đầu tư vấn */
+.startButton {
+  background-color: #2196F3;
+  color: white;
+}
+
+.startButton:hover {
+  background-color: #1E87E2;
+}
+
+/* Nút Hoàn tất tư vấn */
+.finishButton {
+  background-color: #FF9800;
+  color: white;
+}
+
+.finishButton:hover {
+  background-color: #E68900;
+}
+
+/* Ô nhập link Google Meet */
+.meetInput {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Nút Lưu Link */
+.saveButton {
+  background-color: #673AB7;
+  color: white;
+}
+
+.saveButton:hover {
+  background-color: #5A2E96;
+}
+
+/* Phân trang */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 10px 15px;
+  font-size: 16px;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

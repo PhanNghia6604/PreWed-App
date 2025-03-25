@@ -5,13 +5,13 @@ const ExpertDashboard = () => {
   const [newExpertBookings, setNewExpertBookings] = useState(0);
   const [newCustomerPayments, setNewCustomerPayments] = useState(0);
   const [feedbackList, setFeedbackList] = useState([]);
-const [totalFeedbacks, setTotalFeedbacks] = useState(0);
-const [currentPage, setCurrentPage] = useState(1);
-const feedbacksPerPage = 5; // Số feedback mỗi trang
+  const [totalFeedbacks, setTotalFeedbacks] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const feedbacksPerPage = 5; // Số feedback mỗi trang
 
-useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
-
+    const expertId = localStorage.getItem("expertId"); // Lấy expertId từ localStorage
     // 📌 Gọi API lấy danh sách booking
     fetch(`/api/booking`, {
       headers: {
@@ -24,15 +24,18 @@ useEffect(() => {
         console.log("📌 Booking API response:", data);
 
         if (Array.isArray(data)) {
-          // 🔍 Đếm số lịch hẹn mới (trạng thái PENDING)
-          const pendingBookings = data.filter(
+          // 🔍 Lọc các booking liên quan đến chuyên gia hiện tại (dựa trên expertId)
+          const expertBookings = data.filter(
+            (booking) => booking.slotExpert.expert.id.toString() === expertId
+          );
+          const pendingBookings = expertBookings.filter(
             (booking) => booking.status === "PENDING"
           ).length;
-
           // 💰 Đếm số lịch đã thanh toán (trạng thái PENDING_PAYMENT)
-          const pendingPayments = data.filter(
+          const pendingPayments = expertBookings.filter(
             (booking) => booking.status === "PENDING_PAYMENT"
           ).length;
+
 
           // ⏫ Cập nhật state
           setNewExpertBookings(pendingBookings);
@@ -68,20 +71,20 @@ useEffect(() => {
       })
       .catch((error) => console.error("❌ Lỗi khi tải feedback:", error));
   }, []);
-  
-  
-  
-    // 📌 Tính toán index cho phân trang
-    const indexOfLastFeedback = currentPage * feedbacksPerPage;
-    const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
-    const currentFeedbacks = feedbackList.slice(indexOfFirstFeedback, indexOfLastFeedback);
-  
-    // 📌 Chuyển trang
-    const totalPages = Math.ceil(feedbackList.length / feedbacksPerPage);
-    const nextPage = () => setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
-    const prevPage = () => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
-  
-  
+
+
+
+  // 📌 Tính toán index cho phân trang
+  const indexOfLastFeedback = currentPage * feedbacksPerPage;
+  const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
+  const currentFeedbacks = feedbackList.slice(indexOfFirstFeedback, indexOfLastFeedback);
+
+  // 📌 Chuyển trang
+  const totalPages = Math.ceil(feedbackList.length / feedbacksPerPage);
+  const nextPage = () => setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+  const prevPage = () => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+
+
   return (
     <div className={styles.container}>
       <h1>📊 Dashboard Chuyên Gia</h1>
@@ -100,9 +103,9 @@ useEffect(() => {
         </div>
       )}
 
-     {/* ⭐ Danh sách feedback từ khách hàng */}
-     
-     {feedbackList.length > 0 && (
+      {/* ⭐ Danh sách feedback từ khách hàng */}
+
+      {feedbackList.length > 0 && (
         <div className={styles.feedbackSection}>
           <h2>⭐ Đánh giá từ khách hàng</h2>
           <ul className={styles.feedbackList}>

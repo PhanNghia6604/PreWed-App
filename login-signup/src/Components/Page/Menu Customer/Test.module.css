@@ -1,82 +1,103 @@
 /* Test.module.css */
 
 .container {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px; /* Tăng chiều rộng để thoáng hơn */
+  margin: 60px auto; /* Tăng margin để nổi bật giữa trang */
+  padding: 30px; /* Thêm padding cho không gian nội dung */
+  background: linear-gradient(135deg, #ffffff, #f9f9f9); /* Gradient nhẹ nhàng */
+  border-radius: 12px; /* Bo tròn hơn */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Đổ bóng mềm mại hơn */
   text-align: center;
 }
 
 .title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 16px;
+  font-size: 24px; /* Tăng kích thước chữ */
+  font-weight: 700; /* Đậm hơn một chút */
+  color: #2c3e50; /* Màu tối hơn, chuyên nghiệp hơn */
+  margin-bottom: 20px; /* Tăng khoảng cách */
+  letter-spacing: 0.5px; /* Thêm khoảng cách chữ cho tinh tế */
 }
 
 .testSection {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px; /* Tăng khoảng cách giữa các phần */
 }
 
 .questionBox {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
+  padding: 15px; /* Tăng padding */
+  border-bottom: 1px solid #e0e0e0; /* Màu viền nhạt hơn */
+  background: #fdfdfd; /* Nền nhẹ để nổi bật */
+  border-radius: 6px; /* Bo tròn nhẹ */
+  transition: background 0.2s ease; /* Hiệu ứng mượt mà */
+}
+
+.questionBox:hover {
+  background: #f7f7f7; /* Hiệu ứng hover nhẹ */
 }
 
 .questionText {
-  font-size: 14px;
-  color: #444;
-  margin-bottom: 8px;
+  font-size: 16px; /* Tăng kích thước chữ cho dễ đọc */
+  color: #34495e; /* Màu chữ tối hơn, dễ nhìn */
+  margin-bottom: 12px; /* Tăng khoảng cách */
+  line-height: 1.5; /* Cải thiện độ cao dòng */
 }
 
 .options {
   display: flex;
   justify-content: center;
-  gap: 60px; /* Tăng khoảng cách giữa hai lựa chọn */
-  padding: 8px 20px; /* Tăng khoảng cách giữa các lựa chọn */
-  
+  gap: 80px; /* Tăng khoảng cách giữa các lựa chọn */
+  padding: 10px 25px; /* Điều chỉnh padding */
 }
 
 .option {
-  font-size: 14px;
-  color: #555;
+  font-size: 15px; /* Tăng nhẹ kích thước chữ */
+  color: #4a4a4a; /* Màu chữ trung tính */
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px; /* Tăng khoảng cách giữa radio và text */
+  transition: color 0.3s ease; /* Hiệu ứng chuyển màu */
+}
+
+.option:hover {
+  color: #007bff; /* Đổi màu khi hover */
 }
 
 input[type="radio"] {
-  accent-color: #007bff;
+  accent-color: #007bff; /* Màu chủ đạo */
+  width: 18px; /* Tăng kích thước radio button */
+  height: 18px;
+  cursor: pointer;
 }
 
 .submitBtn {
-  margin-top: 20px;
-  padding: 10px 16px;
-  background: none;
-  border: 2px solid #007bff;
-  color: #007bff;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 6px;
+  margin-top: 25px; /* Tăng khoảng cách */
+  padding: 12px 24px; /* Tăng kích thước nút */
+  background: linear-gradient(90deg, #007bff, #0056b3); /* Gradient cho nút */
+  border: none; /* Bỏ viền */
+  color: #fff; /* Màu chữ trắng */
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px; /* Bo tròn hơn */
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3); /* Thêm bóng nhẹ */
 }
 
 .submitBtn:hover {
-  background: #007bff;
-  color: white;
+  background: linear-gradient(90deg, #0056b3, #003d82); /* Gradient tối hơn khi hover */
+  transform: translateY(-2px); /* Nâng nhẹ nút khi hover */
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4); /* Tăng bóng */
 }
+
 .categoryHeader {
   text-align: center;
-  background-color: #f5f5f5;
-  padding: 10px;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 20px 0;
-  border-radius: 5px;
+  background: linear-gradient(135deg, #f5f5f5, #ececec); /* Gradient nhẹ */
+  padding: 12px; /* Tăng padding */
+  font-size: 22px; /* Tăng kích thước chữ */
+  font-weight: 700;
+  color: #2c3e50; /* Màu chữ tối hơn */
+  margin: 25px 0; /* Tăng khoảng cách */
+  border-radius: 8px; /* Bo tròn hơn */
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05); /* Bóng nhẹ */
 }

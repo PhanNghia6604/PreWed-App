@@ -42,6 +42,8 @@ import HistoryTest from './Menu Customer/HistoryTest';
 import UserManagement from './Menu Admin/UserManagement';
 import WaitingPayment from './Menu Customer/WaitingPayment';
 import AdminReportPage from './Menu Admin/AdminReportPage';
+import AdminBlogManagement from './Menu Admin/AdminBlogManagment';
+import AdminBlogDetail from './Menu Admin/AdminBlogDetail';
 
 
 
@@ -108,6 +110,8 @@ export const Page = () => {
           <Route exact path="/admin-slots" element={<SlotManagement />} />
           <Route exact path="/admin-users" element={<UserManagement />} />
           <Route exact path="/admin-reports" element={<AdminReportPage/>} />
+          <Route path="/admin-blogs" element={<AdminBlogManagement/>}/>
+          <Route  path="/admin/blogs/:id"  element={<AdminBlogDetail/>}/>
           <Route exact path="/feedback" element={<FeedbackPage />} />
         </Routes>
 

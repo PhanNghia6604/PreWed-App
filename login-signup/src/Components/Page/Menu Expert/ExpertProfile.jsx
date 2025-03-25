@@ -26,6 +26,7 @@ const ExpertProfile = () => {
                 if (!response.ok) throw new Error("Không thể tải thông tin chuyên gia.");
     
                 const data = await response.json();
+                console.log("Dữ liệu chuyên gia:", data);  // 🛠 Kiểm tra dữ liệu API trả về
                 setExpertData(data);
             } catch (err) {
                 setError(err.message);
@@ -52,11 +53,14 @@ const ExpertProfile = () => {
     // Xử lý tải ảnh đại diện
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            // Giả sử bạn có một URL cố định để lưu ảnh trên server
-            const imageUrl = `/uploads/${file.name}`; // Chỉ lấy tên file
-            setExpertData({ ...expertData, avatar: imageUrl });
-        }
+        if (!file) return;
+    
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setExpertData({ ...expertData, avatar: reader.result }); // Lưu Base64 vào state
+        };
+        reader.onerror = (error) => console.error("Lỗi khi đọc file:", error);
     };
     
 
@@ -79,37 +83,27 @@ const ExpertProfile = () => {
                 alert("Vui lòng điền đầy đủ thông tin!");
                 return;
             }
-    
-            // Log dữ liệu gửi lên BE
-            console.log("🔹 Expert ID:", expertId);
-            console.log("🔹 Token:", token);
             console.log("🔹 Dữ liệu gửi lên API:", expertData);
+            // Log dữ liệu gửi lên BE
+            // console.log("🔹 Expert ID:", expertId);
+            // console.log("🔹 Token:", token);
+            // console.log("🔹 Dữ liệu gửi lên API:", expertData);
     
-            const response = await fetch(`/api/expert/expert/${expertId}`, {
+            const response = await fetch("/api/expert/expert/update", {
                 method: "PUT",
                 headers: {
-                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`, // Nếu API yêu cầu token
                 },
                 body: JSON.stringify(expertData),
             });
+            const result = await response.text(); // Lấy phản hồi chi tiết từ server
+            if (!response.ok) throw new Error("Không thể cập nhật thông tin.");
     
-            // Log phản hồi từ server
-            console.log("🔹 Response status:", response.status);
-    
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("🔺 Lỗi từ API:", errorText);
-                throw new Error("Không thể cập nhật thông tin.");
-            }
-    
-            const result = await response.json();
-            console.log("🔹 Phản hồi từ API:", result);
-    
-            alert("Cập nhật thông tin thành công!");
+            alert("Cập nhật thành công!");
             setIsEditing(false);
+            
         } catch (err) {
-            console.error("🔺 Lỗi trong handleSave:", err.message);
             alert(err.message);
         }
     };
@@ -132,7 +126,12 @@ const ExpertProfile = () => {
                 <label>Ảnh đại diện:</label>
 <div className={styles["avatar-container"]}>
     {expertData.avatar ? (
-        <img src={expertData.avatar} alt="Avatar" className={styles.avatar} />
+       <img 
+       src={expertData.avatar} 
+       alt="Avatar" 
+       className={styles.avatar} 
+       onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }} // Nếu lỗi, hiển thị ảnh mặc định
+   />
     ) : (
         <div className={styles["avatar-placeholder"]}>Chưa có ảnh</div>
     )}

@@ -141,40 +141,44 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
     }
   };
 
-  const fetchAvailableSlots = async () => {
+ const fetchAvailableSlots = async () => {
     try {
-      const token = localStorage.getItem("token");
-  
-      const response = await fetch("/api/slots", {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-  
-      // In ra response để kiểm tra chi tiết phản hồi từ API
-      console.log("📌 API Response:", response);
-  
-      if (!response.ok) {
-        const errorText = await response.text(); // Lấy thông tin lỗi nếu có
-        throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
-      }
-  
-      const data = await response.json();
-      console.log("📌 Lịch trống nhận được:", data);
-      
-    
-      
-      // Nếu API trả về mảng rỗng, báo lỗi lịch trống
-      if (data.length === 0) {
-        throw new Error("Không có lịch trống nào!");
-      }
-  
-      setAvailableSlots(data);
+        const token = localStorage.getItem("token");
+        const response = await fetch("/api/slots", {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}` },
+        });
+
+        console.log("📌 API Response:", response);
+
+        if (!response.ok) {
+            // Thử lấy phản hồi dạng text vì không phải JSON
+            const errorText = await response.text();
+            console.log("📨 Phản hồi từ server (raw text):", errorText);
+
+            if (errorText.includes("Selected staff is not available for the chosen slot")) {
+                throw new Error("Slot này đã có người đặt, vui lòng chọn slot khác!");
+            } else {
+                throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
+            }
+        }
+
+        const data = await response.json();
+        console.log("📌 Lịch trống nhận được:", data);
+
+        if (data.length === 0) {
+            throw new Error("Không có lịch trống nào!");
+        }
+
+        setAvailableSlots(data);
     } catch (error) {
-      console.error("❌ Lỗi khi tải lịch trống:", error);
+        console.error("❌ Lỗi khi tải lịch trống:", error);
+        alert(error.message); // Hiển thị lỗi trên giao diện
     }
-  };
+};
+
+
+
 
   
   
@@ -186,82 +190,138 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
       fetchAvailableSlots(expert.id, pkg.id); // Gọi API slots với chuyên gia & gói dịch vụ
     }
   };
-  const handleBooking = async () => {
-    if (!selectedSlot) {
+  const getUserBookings = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        if (!userId) {
+            console.error("Không tìm thấy userId!");
+            return [];
+        }
+
+        const response = await fetch("/api/booking", {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+            throw new Error("Không thể lấy lịch đặt của người dùng.");
+        }
+
+        return await response.json(); // Trả về toàn bộ lịch đặt
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách lịch đặt:", error);
+        return [];
+    }
+};
+
+  
+  
+const handleBooking = async () => {
+  if (!selectedSlot) {
       alert("Vui lòng chọn một khung giờ trước khi đặt lịch!");
       return;
-    }
-  
-    const expert = experts.find((e) => e.name === decodeURIComponent(name));
-    if (!expert) {
+  }
+
+  const expert = experts.find((e) => e.name === decodeURIComponent(name));
+  if (!expert) {
       alert("Không tìm thấy chuyên gia!");
       return;
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const slotStartTime = new Date(today + "T" + selectedSlot.startTime);
+  const slotEndTime = new Date(today + "T" + selectedSlot.endTime);
+
+  // 📌 1. Lấy toàn bộ lịch đặt của user
+  const userBookings = await getUserBookings();
+
+  // 📌 2. Kiểm tra trùng lịch
+  let conflictWithSameExpert = false;
+  let conflictWithOtherExpert = null;
+  const isTimeOverlap = (start1, end1, start2, end2) => {
+    return (
+        (start1 >= start2 && start1 < end2) || // Bắt đầu trong khoảng đã đặt
+        (end1 > start2 && end1 <= end2) || // Kết thúc trong khoảng đã đặt
+        (start1 <= start2 && end1 >= end2) // Trùng hoàn toàn khoảng thời gian
+    );
+};
+
+userBookings.forEach((booking) => {
+    const bookedStartTime = new Date(booking.slotStartTime).getTime();
+    const bookedEndTime = new Date(booking.slotEndTime).getTime();
+
+    if (isTimeOverlap(slotStartTime.getTime(), slotEndTime.getTime(), bookedStartTime, bookedEndTime)) {
+        if (booking.expertId === expert.id) {
+            conflictWithSameExpert = true;
+        } else {
+            conflictWithOtherExpert = booking.expertName;
+        }
     }
-  
-    // Giả sử bookingDate là ngày hôm nay, nếu không có thông tin ngày riêng trong slot
-    const today = new Date().toISOString().split("T")[0]; // Lấy ngày hôm nay theo định dạng YYYY-MM-DD
-    const slotDateTime = new Date(today + "T" + selectedSlot.startTime);
-  
-    // Kiểm tra nếu khung giờ được chọn đã qua
-    if (slotDateTime < new Date()) {
-      alert("Khung giờ đã qua, vui lòng chọn khung giờ hợp lệ!");
+  });
+
+  // 📌 3. Hiển thị thông báo phù hợp
+  if (conflictWithSameExpert) {
+      alert("Bạn đã có lịch hẹn với chuyên gia này trong khoảng thời gian này!");
       return;
-    }
-  
-    console.log("🔍 Kiểm tra dữ liệu trước khi gửi:");
-    console.log("Expert ID:", expert.id);
-    console.log("Slot ID:", selectedSlot.id);
-    console.log("Thời gian:", selectedSlot.startTime, "-", selectedSlot.endTime);
-  
-    // Kiểm tra ID hợp lệ
-    if (!expert.id || !selectedSlot.id) {
-      console.error("❌ Lỗi: expertId hoặc slotId không hợp lệ!");
-      alert("Có lỗi xảy ra, vui lòng thử lại!");
+  }
+
+  if (conflictWithOtherExpert) {
+      alert(`Bạn đã đặt lịch vào khung giờ này với chuyên gia ${conflictWithOtherExpert}!`);
       return;
-    }
-  
-    const bookingData = {
+  }
+
+  // 📌 4. Nếu không trùng, tiếp tục gửi request đặt lịch
+  const bookingData = {
       expertId: expert.id,
       slotId: selectedSlot.id,
-      bookingDate: today, // Sử dụng ngày hôm nay
+      bookingDate: today,
       serviceIds: selectedPackage?.id ? [selectedPackage.id] : [],
-    };
-  
-    console.log("📦 Payload gửi lên API:", bookingData);
-  
-    try {
+  };
+
+  try {
       const token = localStorage.getItem("token");
       const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(bookingData),
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify(bookingData),
       });
-  
+
       const responseText = await response.text();
-      console.log("📨 Phản hồi từ server (raw text):", responseText);
-  
-      try {
-        const data = JSON.parse(responseText);
-        console.log("📨 Phản hồi từ server (JSON):", data);
-  
-        if (response.ok) {
-          navigate("/my-booking");
-          alert("Đặt lịch thành công!");
+      console.log("Server Response:", responseText); // Debug API trả về gì
+      
+      let data;
+try {
+    data = await response.json(); 
+} catch (e) {
+    data = { message: responseText }; // Nếu không parse được, giữ nguyên text
+}
+
+
+      if (response.ok) {
+        navigate("/my-booking");
+        alert("Đặt lịch thành công!");
+    } else {
+        console.error("Lỗi từ API:", data);
+        
+        if (data.message.includes("not available")) {
+            alert("Bạn đã có 1 lịch hẹn với chuyên gia khác rồi, vui lòng đặt lại khung giờ khác giúp chúng tôi!");
         } else {
-          alert(`Lỗi: ${data.message || "Không thể đặt lịch"}`);
+            alert(`Lỗi: ${data.message || "Không thể đặt lịch!"}`);
         }
-      } catch (jsonError) {
-        console.error("❌ Lỗi khi parse JSON:", jsonError);
-        alert("Phản hồi từ server không hợp lệ!");
-      }
-    } catch (error) {
-      console.error("❌ Lỗi khi gửi yêu cầu đặt lịch:", error);
-      alert("Đã có lỗi xảy ra, vui lòng thử lại!");
     }
-  };
+    
+    
+  } catch (error) {
+      console.error("Lỗi khi gửi yêu cầu đặt lịch:", error);
+      alert("Đã có lỗi xảy ra, vui lòng thử lại!");
+  }
+};
+  
   
   
   

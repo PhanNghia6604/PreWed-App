@@ -11,6 +11,7 @@ export const Register = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(""); // New state for success message
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -34,23 +35,31 @@ export const Register = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name,username, email, password, phone, address }),
+        body: JSON.stringify({ name, username, email, password, phone, address }),
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Error response:', errorText);
         throw new Error(errorText || 'Registration failed');
       }
-  
+
       const data = await response.json();
       console.log("Registration successful:", data);
-      navigate("/login");
+
+      // Set success message
+      setSuccess("Registration successful! Redirecting to login...");
+
+      // Redirect after a short delay to show the success message
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000); // Redirect after 2 seconds
     } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message || "Registration failed. Please try again.");
     }
   };
+
   return (
     <section className={styles.register}>
       <div className={styles.container}>

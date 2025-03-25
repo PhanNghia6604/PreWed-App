@@ -44,10 +44,10 @@ const WaitingPayment = () => {
   }, [navigate]);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Đang xử lý thanh toán...</h2>
-      {loading ? <p>Vui lòng chờ...</p> : <p>{status}</p>}
-    </div>
+    <div style={{ textAlign: "center", marginTop: "50px", backgroundColor: "#ffffff", color: "#000000", padding: "20px", borderRadius: "8px" }}>
+    <h2>Đang xử lý thanh toán...</h2>
+    {loading ? <p>Vui lòng chờ...</p> : <p>{status}</p>}
+  </div>
   );
 };
 
