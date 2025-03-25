@@ -68,6 +68,7 @@ public class ExpertService {
 
             // Chuyển đổi từ Expert entity sang ExpertResponse DTO
             ExpertResponse response = new ExpertResponse();
+            response.setId(expertEntity.getId());
             response.setUsername(expertEntity.getUsername());
             response.setEmail(expertEntity.getEmail());
             response.setName(expertEntity.getName());
@@ -76,6 +77,8 @@ public class ExpertService {
             response.setSpecialty(expertEntity.getSpecialty());
             response.setAvatar(expertEntity.getAvatar());
             response.setCertificates(expertEntity.getCertificates());
+            response.setApproved(expertEntity.isApproved());
+
 
             return response;
         } else {
@@ -88,6 +91,7 @@ public class ExpertService {
 
         for (Expert expert : experts) {
             ExpertResponse response = new ExpertResponse();
+            response.setId(expert.getId());
             response.setUsername(expert.getUsername());
             response.setEmail(expert.getEmail());
             response.setName(expert.getName());
@@ -96,7 +100,7 @@ public class ExpertService {
             response.setSpecialty(expert.getSpecialty());
             response.setAvatar(expert.getAvatar());
             response.setCertificates(expert.getCertificates());
-
+            response.setApproved(expert.isApproved());
 
             responseList.add(response);
         }
@@ -137,6 +141,8 @@ public class ExpertService {
             if (request.getPassword() != null && !request.getPassword().isEmpty()) {
                 expert.setPassword(passwordEncoder.encode(request.getPassword()));
             }
+            expert.setApproved(true);
+
 
             return expertRepository.save(expert);
         } else {
@@ -160,6 +166,7 @@ public class ExpertService {
 
         for (Expert expert : pendingExperts) {
             ExpertResponse response = new ExpertResponse();
+            response.setId(expert.getId());
             response.setUsername(expert.getUsername());
             response.setEmail(expert.getEmail());
             response.setName(expert.getName());

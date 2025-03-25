@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpertResponse {
-
+    public long id;
     private String username;  // Tên tài khoản đăng nhập
     private String email;     // Email
     private String name;      // Tên đầy đủ của Expert

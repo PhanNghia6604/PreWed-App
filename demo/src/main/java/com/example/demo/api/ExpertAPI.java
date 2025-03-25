@@ -67,6 +67,7 @@ public class ExpertAPI {
 
         // Chuyển đổi Expert thành ExpertResponse và trả về
         ExpertResponse response = new ExpertResponse();
+        response.setId(updatedExpert.getId());
         response.setUsername(updatedExpert.getUsername());
         response.setEmail(updatedExpert.getEmail());
         response.setName(updatedExpert.getName());
@@ -75,7 +76,7 @@ public class ExpertAPI {
         response.setSpecialty(updatedExpert.getSpecialty());
         response.setAvatar(updatedExpert.getAvatar());
         response.setCertificates(updatedExpert.getCertificates());
-
+        response.setApproved(true);
         return response;
     }
 
