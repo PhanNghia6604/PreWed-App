@@ -44,6 +44,8 @@ import WaitingPayment from './Menu Customer/WaitingPayment';
 import AdminReportPage from './Menu Admin/AdminReportPage';
 import AdminBlogManagement from './Menu Admin/AdminBlogManagment';
 import AdminBlogDetail from './Menu Admin/AdminBlogDetail';
+import CustomerManagement from './Menu Admin/CustomerMagnament';
+import ExpertManagement from './Menu Admin/ExpertManagment';
 
 
 
@@ -112,6 +114,8 @@ export const Page = () => {
           <Route exact path="/admin-reports" element={<AdminReportPage/>} />
           <Route path="/admin-blogs" element={<AdminBlogManagement/>}/>
           <Route  path="/admin/blogs/:id"  element={<AdminBlogDetail/>}/>
+          <Route path="/admin-customers" element={<CustomerManagement/>}/>
+          <Route path="/admin-experts" element={<ExpertManagement/>}/>
           <Route exact path="/feedback" element={<FeedbackPage />} />
         </Routes>
 
