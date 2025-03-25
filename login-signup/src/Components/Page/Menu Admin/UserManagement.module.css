@@ -1,12 +1,12 @@
-.createButton {
-    background-color: #1976d2;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .createButton:hover {
-    background-color: black;
-  }
-  
+.container {
+  padding: 120px;
+  text-align: center;
+}
+
+.buttonGroup {
+  margin-bottom: 20px;
+}
+
+.button {
+  margin-right: 10px;
+}
