@@ -81,7 +81,7 @@ const Profile = () => {
                 const parsedUser = JSON.parse(storedUser);
                 const userId = parsedUser.userId;
 
-                const response = await fetch(`http://localhost:8080/api/${userId}`, {
+                const response = await fetch(`/api/${userId}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",

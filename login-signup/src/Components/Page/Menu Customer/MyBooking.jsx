@@ -12,50 +12,51 @@ export const MyBookings = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const userId = storedUser ? JSON.parse(storedUser).userId : null;
-    
+    // const token = localStorage.getItem("token"); 
+
     if (!userId) {
       console.error("❌ Không tìm thấy userId trong localStorage!");
       return;
     }
     console.log("✅ User ID hiện tại:", userId);
-    
-  
-    
-  
+
+
+
+
     fetch("/api/booking", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => response.json())
       .then((data) => {
         console.log("📌 Dữ liệu API trả về:", data);
-    
+
         if (!Array.isArray(data)) {
           console.error("❌ API không trả về mảng dữ liệu hợp lệ!", data);
           return;
         }
-    
+
         console.log("✅ User ID hiện tại:", userId);
-    
+
         // 🔹 Kiểm tra từng phần tử trước khi lọc
         data.forEach((booking, index) => {
           console.log(`📌 Booking ${index}:`, booking);
         });
-    
+
         // 🔹 Lọc danh sách chỉ lấy của user hiện tại
         const filteredData = data.filter(
           (booking) => booking?.user?.id === userId
         );
-    
+
         console.log("✅ Danh sách booking của user hiện tại:", filteredData);
-    
+
         setBookings(filteredData);
         setFilteredBookings(sortBookings(filteredData));
       })
       .catch((error) => console.error("❌ Lỗi lấy danh sách lịch hẹn:", error));
-    
+
   }, []);
-  
-  
+
+
 
   // Lọc theo trạng thái
   useEffect(() => {
@@ -69,32 +70,32 @@ export const MyBookings = () => {
   // 🔹 Hàm sắp xếp: Đưa `CANCELLED` và `FINISHED` xuống cuối
   const sortBookings = (list) => {
     return [...list].sort((a, b) => {
-      const order = { 
-        PENDING: 0, 
-        PENDING_PAYMENT: 1, 
-        PROCESSING: 2, 
-        FINISHED: 3, 
-        CANCELLED: 4 
+      const order = {
+        PENDING: 0,
+        PENDING_PAYMENT: 1,
+        PROCESSING: 2,
+        FINISHED: 3,
+        CANCELLED: 4
       };
-  
+
       // Sắp xếp theo trạng thái ưu tiên
       const statusOrder = order[a.status] - order[b.status];
-  
+
       // Nếu trạng thái giống nhau, ưu tiên lịch sớm hơn
       if (statusOrder === 0) {
         const dateA = new Date(a.appointmentDate).getTime();
         const dateB = new Date(b.appointmentDate).getTime();
-        
+
         if (dateA !== dateB) {
           return dateA - dateB; // Sớm hơn lên trước
         }
       }
-  
+
       // Nếu cùng trạng thái và cùng ngày, ưu tiên ID mới nhất
       return b.id - a.id;
     });
   };
-  
+
 
   // Xử lý hủy lịch hẹn
   const handleCancelBooking = (id) => {
@@ -142,7 +143,7 @@ export const MyBookings = () => {
   const [reviewedBookings, setReviewedBookings] = useState(() => {
     return JSON.parse(localStorage.getItem("reviewedBookings")) || {};
   });
-  
+
   useEffect(() => {
     const storedReviews = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
     setReviewedBookings(storedReviews);
@@ -163,7 +164,7 @@ export const MyBookings = () => {
   return (
     <div className={style.container}>
       <h2>Lịch đặt của tôi</h2>
-  
+
       {/* 🔹 Bộ lọc trạng thái */}
       <div className={style.filterContainer}>
         <label htmlFor="statusFilter">Lọc theo trạng thái:</label>
@@ -182,7 +183,7 @@ export const MyBookings = () => {
           <option value="CANCELLED">Đã hủy</option>
         </select>
       </div>
-  
+
       {currentBookings.length === 0 ? (
         <p>Không có lịch hẹn phù hợp.</p>
       ) : (
@@ -204,24 +205,24 @@ export const MyBookings = () => {
               const meetLink = localStorage.getItem(`meetLink-${b.id}`);
               return (
                 <tr key={b.id}>
-                 <td className={style.expertColumn}>
-  <img
-    src={expert.avatar && expert.avatar.includes("/") ? expert.avatar : `/images/experts/${expert.avatar}`}
-    alt={expert.name}
-    className={style.expertAvatar}
-    onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
-  />
-  <span>{expert.name}</span>
-</td>
+                  <td className={style.expertColumn}>
+                    <img
+                      src={expert.avatar && expert.avatar.includes("/") ? expert.avatar : `/images/experts/${expert.avatar}`}
+                      alt={expert.name}
+                      className={style.expertAvatar}
+                      onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
+                    />
+                    <span>{expert.name}</span>
+                  </td>
 
                   <td>{b.slotExpert.date}</td>
                   <td>{b.slotExpert.slot.startTime} - {b.slotExpert.slot.endTime}</td>
                   <td>
-  {b.services.length > 0 ? b.services[0].name : 'Không có'}
-</td>
-<td>
-  {b.services.length > 0 ? `${b.services[0].price.toLocaleString()} VND` : 'Không có'}
-</td>
+                    {b.services.length > 0 ? b.services[0].name : 'Không có'}
+                  </td>
+                  <td>
+                    {b.services.length > 0 ? `${b.services[0].price.toLocaleString()} VND` : 'Không có'}
+                  </td>
                   <td><strong>{b.status}</strong></td>
                   <td>
                     {b.status === "PENDING" && <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>}
@@ -232,23 +233,23 @@ export const MyBookings = () => {
                     )}
                     {b.status === "AWAIT" && <p className={style.awaitText}>⏳ Bạn đã thanh toán. Vui lòng đợi đến giờ tư vấn!</p>}
                     {b.status === "PROCESSING" && meetLink && (
-                      <p>🔗 <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`} 
-                             target="_blank" 
-                             rel="noopener noreferrer" 
-                             className={style.link}>
-                          Link tư vấn
-                        </a>
+                      <p>🔗 <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={style.link}>
+                        Link tư vấn
+                      </a>
                       </p>
                     )}
                     {b.status === "FINISHED" && (
                       reviewedBookings[b.id] ? (
                         <p className={style.reviewedText}>✅ Đã đánh giá</p>
                       ) : (
-                        <button 
-                          className={style.feedbackButton} 
+                        <button
+                          className={style.feedbackButton}
                           onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}
                         >
-                           ✩ Đánh giá chuyên gia
+                          ✩ Đánh giá chuyên gia
                         </button>
                       )
                     )}
@@ -265,7 +266,7 @@ export const MyBookings = () => {
           </tbody>
         </table>
       )}
-  
+
       {/* 🔹 Phân trang */}
       {totalPages > 1 && (
         <div className={style.pagination}>
@@ -280,5 +281,5 @@ export const MyBookings = () => {
       )}
     </div>
   );
-  
+
 }

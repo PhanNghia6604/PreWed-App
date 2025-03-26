@@ -41,11 +41,12 @@ const SlotManagement = () => {
       const response = await fetch("/api/slots", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
+         "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newSlot),
       });
+      console.log("Token:", token);
   
       if (!response.ok) throw new Error("Không thể tạo slot");
   
