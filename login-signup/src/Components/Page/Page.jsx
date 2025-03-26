@@ -46,6 +46,7 @@ import AdminBlogManagement from './Menu Admin/AdminBlogManagment';
 import AdminBlogDetail from './Menu Admin/AdminBlogDetail';
 import CustomerManagement from './Menu Admin/CustomerMagnament';
 import ExpertManagement from './Menu Admin/ExpertManagment';
+import PendingExperts from './Menu Admin/PendingExpert';
 
 
 
@@ -116,6 +117,7 @@ export const Page = () => {
           <Route  path="/admin/blogs/:id"  element={<AdminBlogDetail/>}/>
           <Route path="/admin-customers" element={<CustomerManagement/>}/>
           <Route path="/admin-experts" element={<ExpertManagement/>}/>
+          <Route path="/admin-accept" element={<PendingExperts/>}/>
           <Route exact path="/feedback" element={<FeedbackPage />} />
         </Routes>
 

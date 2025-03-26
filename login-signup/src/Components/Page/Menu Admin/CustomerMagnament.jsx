@@ -4,6 +4,8 @@ import {
   Paper, Avatar, Button, Dialog, DialogTitle, DialogContent,
   DialogActions, TextField
 } from "@mui/material";
+import styles from "./CustomerManagement.module.css";
+
 import { Link } from "react-router-dom";
 
 const CustomerManagement = () => {
@@ -65,15 +67,12 @@ const CustomerManagement = () => {
   };
 
   return (
-    <div style={{ padding: "120px" }}>
-      <h2>Quản lý Khách hàng</h2>
-      <Link to="/admin-users">
-        <Button variant="outlined" style={{ marginBottom: "20px" }}>Quay lại</Button>
-      </Link>
-      
-      <TableContainer component={Paper}>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Quản lý Khách hàng</h2>
+
+      <TableContainer component={Paper} className={styles.tableContainer}>
         <Table>
-          <TableHead>
+          <TableHead className={styles.tableHead}>
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Tên</TableCell>
@@ -86,7 +85,7 @@ const CustomerManagement = () => {
           </TableHead>
           <TableBody>
             {customers.map((customer) => (
-              <TableRow key={customer.id}>
+              <TableRow key={customer.id} className={styles.tableRow}>
                 <TableCell>{customer.id}</TableCell>
                 <TableCell>{customer.name}</TableCell>
                 <TableCell>{customer.username}</TableCell>
@@ -94,7 +93,11 @@ const CustomerManagement = () => {
                 <TableCell>{customer.phone}</TableCell>
                 <TableCell>{customer.email}</TableCell>
                 <TableCell>
-                  <Button variant="outlined" color="primary" onClick={() => handleEdit(customer)}>
+                  <Button 
+                    variant="outlined" 
+                    className={styles.editButton}
+                    onClick={() => handleEdit(customer)}
+                  >
                     Chỉnh sửa
                   </Button>
                 </TableCell>
@@ -123,6 +126,13 @@ const CustomerManagement = () => {
           <Button onClick={handleSave} color="primary">Lưu</Button>
         </DialogActions>
       </Dialog>
+
+      {/* Nút quay lại */}
+      <div className={styles.backButtonContainer}>
+        <Link to="/admin-users">
+          <Button variant="outlined" className={styles.backButton}>Quay lại</Button>
+        </Link>
+      </div>
     </div>
   );
 };

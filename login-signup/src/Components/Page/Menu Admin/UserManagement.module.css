@@ -1,12 +1,42 @@
 .container {
   padding: 120px;
   text-align: center;
+  margin-top: 100px;
+}
+
+.title {
+  color: white;
+  font-size: 26px; /* Tăng cỡ chữ tiêu đề */
+  font-weight: bold;
+  margin-bottom: 25px;
 }
 
 .buttonGroup {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  font-size: 40px; /* Tăng kích thước chữ */
+}
+
+.buttonGroup a {
+  width: auto; /* Để nút mở rộng theo nội dung */
+  min-width: 300px; /* Tăng kích thước tối thiểu */
 }
 
 .button {
-  margin-right: 10px;
+  padding: 16px 24px; /* Tăng padding giúp nút cao hơn */
+  font-size: 40px; /* Tăng kích thước chữ */
+  font-weight: bold;
+  background-color: #1976d2 !important;
+  color: white !important;
+  border-radius: 10px !important;
+  text-transform: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button:hover {
+  background-color: #1565c0 !important;
 }

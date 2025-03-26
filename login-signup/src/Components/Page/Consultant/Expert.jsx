@@ -65,7 +65,8 @@ export const ExpertsList = () => {
         feedbacksData.forEach((fb) => {
           console.log(`Feedback ID: ${fb.id}, Expert ID: ${fb.expert?.id}, Rating: ${fb.rating}`);
         });
-  
+          // Lọc chuyên gia chỉ lấy những người đã được phê duyệt (approved: true)
+      const approvedExperts = expertsData.filter(expert => expert.approved);
         const feedbackMap = new Map();
 
   
@@ -81,13 +82,12 @@ export const ExpertsList = () => {
         
         console.log("Feedback Map:", feedbackMap);
   
-        const updatedExperts = expertsData.map((expert) => {
+        const updatedExperts = approvedExperts.map((expert) => {
           const ratings = feedbackMap.get(expert.id) || [];
           const avgRating =
             ratings.length > 0 ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1) : 0;
   
-            console.log(`Expert: ${expert.name}, Ratings: ${ratings}, Avg Rating: ${avgRating}`);
-
+          console.log(`Expert: ${expert.name}, Ratings: ${ratings}, Avg Rating: ${avgRating}`);
   
           return { ...expert, rating: parseFloat(avgRating) };
         });
