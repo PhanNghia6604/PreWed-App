@@ -2,6 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.entity.User;
 import com.example.demo.entity.request.AuthenticationRequest;
+import com.example.demo.entity.request.LoginGoogleRequest;
 import com.example.demo.entity.request.UserRequest;
 import com.example.demo.entity.response.UserResponse;
 import com.example.demo.service.UserService;
@@ -23,6 +24,12 @@ public class UserAPI {
     @PostMapping("login")
     public ResponseEntity login(@RequestBody AuthenticationRequest authenticationRequest){
         UserResponse userResponse =userService.login(authenticationRequest);
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @PostMapping("logingoogle")
+    public ResponseEntity loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest){
+        UserResponse userResponse =userService.loginGoogle(loginGoogleRequest);
         return ResponseEntity.ok(userResponse);
     }
 
@@ -50,7 +57,7 @@ public class UserAPI {
     }
 
     @PutMapping("{id}")
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_CUSTOMER", "ROLE_ADMIN"})
     public ResponseEntity updateUser(@PathVariable long id, @RequestBody UserRequest userRequest){
         User user=userService.update(id, userRequest);
         return ResponseEntity.ok(user);

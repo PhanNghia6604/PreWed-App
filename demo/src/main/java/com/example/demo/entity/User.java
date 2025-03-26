@@ -28,6 +28,7 @@ public class User implements UserDetails {
     public String phone;
     @NotBlank(message = "Address cannot be blank")
     public String address;
+    @Column(unique = true)
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email do not match email pattern!")
     public String email;
 
