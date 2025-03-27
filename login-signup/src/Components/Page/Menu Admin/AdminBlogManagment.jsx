@@ -6,7 +6,7 @@ const AdminBlogManagement = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [newBlog, setNewBlog] = useState({ title: "", content: "", authorId: "", image: null });
+  const [newBlog, setNewBlog] = useState({ title: "", content: "", authorId: "", image: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const AdminBlogManagement = () => {
         />
         <input
           className={styles.fileInput}
-          type="text"
+          
           placeholder="Nhập URL hình ảnh..."
           onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })}
           required
