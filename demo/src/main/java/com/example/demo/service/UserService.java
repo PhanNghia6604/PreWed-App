@@ -141,9 +141,7 @@ public class UserService implements UserDetailsService {
     public User getUserById(long id) {
         return userRepository.findUserById(id);
     }
-<<<<<<< HEAD
-}
-=======
+
 
     public UserResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
 
@@ -191,4 +189,4 @@ public class UserService implements UserDetailsService {
         return null;
     }
 }
->>>>>>> origin/main
+
