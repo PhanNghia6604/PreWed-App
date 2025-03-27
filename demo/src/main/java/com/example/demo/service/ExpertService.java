@@ -7,7 +7,13 @@ import com.example.demo.entity.response.ExpertResponse;
 import com.example.demo.enums.RoleEnum;
 import com.example.demo.repository.ExpertRepository;
 import com.example.demo.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,11 +28,13 @@ public class ExpertService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ExpertRepository expertRepository;
+    private final JavaMailSender mailSender;
 
-    public ExpertService(UserRepository userRepository, PasswordEncoder passwordEncoder, ExpertRepository expertRepository) {
+    public ExpertService(UserRepository userRepository, PasswordEncoder passwordEncoder, ExpertRepository expertRepository , JavaMailSender mailSender) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.expertRepository = expertRepository;
+        this.mailSender = mailSender;
     }
 
     @Transactional
@@ -149,17 +157,74 @@ public class ExpertService {
             throw new RuntimeException("Expert not found with id: " + id);
         }
     }
-    @Transactional
+
+
+
+
+    // Phê duyệt Expert
+    // Phê duyệt Expert
     public boolean approveExpert(Long id) {
-        Optional<Expert> expertOpt = expertRepository.findById(id);
-        if (expertOpt.isPresent()) {
-            Expert expert = expertOpt.get();
-            expert.setApproved(true);
-            expertRepository.save(expert);
-            return true;
+        // Tìm Expert theo ID
+        Expert expert = expertRepository.findById(id).orElseThrow(() -> new RuntimeException("Expert not found"));
+
+        // Cập nhật trạng thái phê duyệt
+        expert.setApproved(true);
+        expertRepository.save(expert);
+
+        // Gửi email thông báo khi phê duyệt
+        try {
+            sendApprovalEmail(expert.getEmail(), true); // Gửi email cho expert
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false; // Nếu có lỗi gửi email thì trả về false
         }
-        return false;
+
+        return true; // Trả về true nếu phê duyệt thành công và email được gửi
     }
+
+    // Reject Expert
+    // Từ chối Expert
+    public boolean rejectExpert(Long id) {
+        // Tìm Expert theo ID
+        Expert expert = expertRepository.findById(id).orElseThrow(() -> new RuntimeException("Expert not found"));
+
+        // Cập nhật trạng thái từ chối
+        expert.setApproved(false);
+        expertRepository.save(expert);
+
+        // Gửi email thông báo khi từ chối
+        try {
+            sendApprovalEmail(expert.getEmail(), false); // Gửi email cho expert
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false; // Nếu có lỗi gửi email thì trả về false
+        }
+
+        return true; // Trả về true nếu từ chối thành công và email được gửi
+    }
+
+        // Phương thức gửi email thông báo phê duyệt hoặc từ chối
+        private void sendApprovalEmail(String recipientEmail, boolean isApproved) throws MessagingException {
+            // Tạo đối tượng MimeMessage
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            // Địa chỉ email người gửi
+            helper.setFrom("gbaogia111@gmail.com");  // Thay thế bằng địa chỉ email của bạn
+            helper.setTo(recipientEmail); // Địa chỉ email của expert
+            helper.setSubject(isApproved ? "Your Expert Application is Approved" : "Your Expert Application is Rejected");
+
+            // Nội dung email
+            String text = isApproved
+                    ? "Congratulations! Your application has been approved."
+                    : "Sorry, your application has been rejected.";
+            helper.setText(text); // Cập nhật nội dung email
+
+            // Gửi email
+            mailSender.send(message);
+        }
+
+
     public List<ExpertResponse> getPendingExperts() {
         List<Expert> pendingExperts = expertRepository.findByApprovedFalse();
         List<ExpertResponse> responses = new ArrayList<>();
