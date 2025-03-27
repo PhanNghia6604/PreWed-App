@@ -60,6 +60,31 @@ const PendingExperts = () => {
             })
             .catch((error) => console.error("Lỗi khi phê duyệt:", error));
     };
+    const rejectExpert = (id) => {
+        const token = localStorage.getItem("token");
+    
+        if (!token) {
+            alert("Bạn chưa đăng nhập hoặc token không tồn tại!");
+            return;
+        }
+    
+        fetch(`/api/expert/reject/${id}`, {
+            method: "PUT",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => {
+                if (res.ok) {
+                    alert("Từ chối thành công!");
+                    setPendingExperts((prev) => prev.filter((expert) => expert.id !== id));
+                } else {
+                    alert("Có lỗi xảy ra khi từ chối.");
+                }
+            })
+            .catch((error) => console.error("Lỗi khi từ chối:", error));
+    };
 
     if (loading) return <p>Đang tải danh sách...</p>;
 
@@ -107,7 +132,7 @@ const PendingExperts = () => {
                                         <button className={styles.approveBtn} onClick={() => approveExpert(expert.id)}>
                                             Duyệt
                                         </button>
-                                        <button className={styles.rejectBtn}>Từ chối</button>
+                                        <button className={styles.rejectBtn} onClick={() => rejectExpert(expert.id)}>Từ chối</button>
                                     </td>
                                 </tr>
                             ))}
