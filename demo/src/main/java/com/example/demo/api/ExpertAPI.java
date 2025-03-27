@@ -40,6 +40,17 @@ public class ExpertAPI {
         }
     }
 
+    @PutMapping("/reject/{id}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<String> rejectExpert(@PathVariable Long id) {
+        boolean result = expertService.rejectExpert(id);
+        if (result) {
+            return ResponseEntity.ok("Expert rejected successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Expert not found or already approved");
+        }
+    }
+
     @GetMapping("/profile/{id}")
     public ResponseEntity<ExpertResponse> getExpertProfile(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
