@@ -3,11 +3,15 @@ package com.example.demo.service;
 import com.example.demo.entity.ServicePackage;
 import com.example.demo.entity.User;
 import com.example.demo.entity.request.AuthenticationRequest;
+import com.example.demo.entity.request.LoginGoogleRequest;
 import com.example.demo.entity.request.UserRequest;
 import com.example.demo.entity.response.UserResponse;
 import com.example.demo.enums.RoleEnum;
 import com.example.demo.exception.exceptions.NotFoundException;
 import com.example.demo.repository.UserRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,11 +134,61 @@ public class UserService implements UserDetailsService {
         user.setPhone(userRequest.getPhone());
         user.setAddress(userRequest.getAddress());
         user.setUsername(userRequest.getUsername());
-        user.setPassword(userRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         return userRepository.save(user);
     }
 
     public User getUserById(long id) {
         return userRepository.findUserById(id);
     }
+<<<<<<< HEAD
 }
+=======
+
+    public UserResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
+
+        try{
+            FirebaseToken decodeToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
+            String email = decodeToken.getEmail();
+            User user = userRepository.findByEmail(email);
+
+            // neu login gg tk email nay chua duoc dk thi dk
+            if(user == null){
+                user = new User();
+                user.setName(decodeToken.getName());
+                user.setEmail(email);
+                user.setPassword(passwordEncoder.encode("123456789"));
+                user.setAddress("HCM");
+                user.setUsername(email);
+                user.setRoleEnum(RoleEnum.CUSTOMER);
+                user = userRepository.save(user);
+            }
+
+            final var authenticationToken = new UsernamePasswordAuthenticationToken(
+                    user.getUsername(),
+                    "123456789"
+            );
+
+            // authenticate
+            final var authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+            // set auth to context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = tokenService.generateToken(authentication);
+            UserResponse userResponse = new UserResponse();
+            userResponse.setUsername(user.getUsername());
+            userResponse.setEmail(user.getEmail());
+            userResponse.setId(user.getId());
+            userResponse.setFullName(user.getName());
+            userResponse.setPhone(user.getPhone());
+            userResponse.setAddress(user.getAddress());
+            userResponse.setRoleEnum(user.getRoleEnum());
+            userResponse.setToken(token);
+            return userResponse;
+        }catch (FirebaseAuthException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+>>>>>>> origin/main

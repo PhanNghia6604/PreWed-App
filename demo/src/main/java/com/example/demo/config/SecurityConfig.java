@@ -40,6 +40,7 @@ public class SecurityConfig {
      */
     public static final List<String> PUBLIC_APIS = List.of(
             "/api/login",
+            "/api/logingoogle",
             "/api/get",
             "/api/register",
             "/api/{id}",
@@ -60,6 +61,7 @@ public class SecurityConfig {
             "/api-docs/**",
             "/api-docs",
             "/swagger-ui/swagger-ui.css"
+
     );
 
     @Bean
