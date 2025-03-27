@@ -69,7 +69,7 @@ const AdminBlogManagement = () => {
       });
       const data = await response.json();
       setBlogs([...blogs, data]);
-      setNewBlog({ title: "", content: "", authorId: "", image: null });
+      setNewBlog({ title: "", content: "", authorId: "", image:"" });
     } catch (err) {
       alert("Tạo blog thất bại");
     }
@@ -80,7 +80,7 @@ const AdminBlogManagement = () => {
       <h2 className={styles.title}>Quản lý Blog</h2>
       {loading && <p>Đang tải...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      
+
       <form className={styles.form} onSubmit={handleCreateBlog} style={{ marginTop: "50px" }}>
         <input
           className={styles.input}
@@ -107,13 +107,14 @@ const AdminBlogManagement = () => {
         />
         <input
           className={styles.fileInput}
-          type="file"
-          onChange={(e) => setNewBlog({ ...newBlog, image: e.target.files[0] })}
+          type="text"
+          placeholder="Nhập URL hình ảnh..."
+          onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })}
           required
         />
         <button className={styles.button} type="submit">Tạo Blog</button>
       </form>
-      
+
       <table className={styles.table} style={{ marginTop: "50px" }}>
         <thead>
           <tr>

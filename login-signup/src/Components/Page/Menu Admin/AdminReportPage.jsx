@@ -10,7 +10,7 @@ const AdminReportPage = () => {
     
     const fetchReportData = async () => {
       try {
-        const token = localStorage.getItem("token"); // Lấy token từ localStorage
+        const token = localStorage.getItem("token"); 
         const response = await fetch("/api/booking", {
           method: "GET",
           headers: {
@@ -32,13 +32,13 @@ const AdminReportPage = () => {
         const bookings = await response.json();
 
           console.log("Dữ liệu API trả về:", bookings); 
-        // Lọc chỉ lấy booking có status "finished"
+      
         const finishedBookings = bookings.filter(
           (booking) => booking.status === "FINISHED"
         );
         
-        const commissionRate = 0.2; // Hoa hồng 20%
-        // Nhóm dữ liệu theo expertId và tính toán số lượng & tổng thu nhập
+        const commissionRate = 0.2;
+       
         const report = finishedBookings.reduce((acc, booking) => {
           if (!booking.slotExpert || !booking.slotExpert.expert) {
             console.warn("Dữ liệu không hợp lệ:", booking);

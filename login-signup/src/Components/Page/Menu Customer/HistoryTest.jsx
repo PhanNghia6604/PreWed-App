@@ -85,7 +85,7 @@ const HistoryTest = () => {
 
         {/* 📝 Bảng lịch sử */}
         <table className={styles.historyTable}>
-  <thead>
+  <thead >
     <tr>
       <th>#</th>
       <th>Ngày làm bài</th>
