@@ -32,4 +32,10 @@ public class SlotAPI {
         List<Slot> slots = slotService.getSlot();
         return ResponseEntity.ok(slots);
     }
+    @DeleteMapping("{id}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity deleteSlot(@PathVariable long id){
+        Slot slot = slotService.deleteSlotById(id);
+        return ResponseEntity.ok(slot);
+    }
 }

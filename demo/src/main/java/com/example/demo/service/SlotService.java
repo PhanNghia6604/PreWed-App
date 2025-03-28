@@ -33,6 +33,12 @@ public class SlotService {
     }
 
     public List<Slot> getSlot() {
-        return slotRepository.findAll();
+        return slotRepository.findSlotsByIsDeletedFalse();
+    }
+
+    public Slot deleteSlotById(long id) {
+        Slot slot = slotRepository.findSlotById(id);
+        slot.setDeleted(true);
+        return slotRepository.save(slot);
     }
 }
