@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Certificate;
 import com.example.demo.entity.Expert;
 import com.example.demo.entity.User;
+import com.example.demo.entity.request.CertificateRequest;
 import com.example.demo.entity.request.ExpertRequest;
 import com.example.demo.entity.response.ExpertResponse;
+import com.example.demo.enums.CategoryEnum;
 import com.example.demo.enums.RoleEnum;
 import com.example.demo.repository.ExpertRepository;
 import com.example.demo.repository.UserRepository;
@@ -36,14 +39,27 @@ public class ExpertService {
         this.expertRepository = expertRepository;
         this.mailSender = mailSender;
     }
-
+    // Helper method to validate specialty category
+    private boolean isValidCategoryEnum(CategoryEnum specialty) {
+        // Kiểm tra specialty có phải là một CategoryEnum hợp lệ không
+        try {
+            CategoryEnum.valueOf(specialty.name());
+            return true;  // Return true if valid
+        } catch (IllegalArgumentException e) {
+            return false;  // Return false if the specialty is not valid
+        }
+    }
     @Transactional
     public Expert createExpert(ExpertRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username is already taken");
         }
+        // Kiểm tra specialty hợp lệ
+        if (request.getSpecialty() == null || !isValidCategoryEnum(request.getSpecialty())) {
+            throw new RuntimeException("Invalid specialty category");
+        }
 
-        // Kiểm tra nếu các trường bắt buộc không bị trống
+        // Kiểm tra các trường bắt buộc không bị trống
         if (request.getName() == null || request.getName().isEmpty()) {
             throw new RuntimeException("Name cannot be blank");
         }
@@ -63,12 +79,21 @@ public class ExpertService {
         expert.setAddress(request.getAddress());
         expert.setSpecialty(request.getSpecialty());
         expert.setAvatar(request.getAvatar());
-        expert.setCertificates(request.getCertificates());
         expert.setRoleEnum(RoleEnum.EXPERT);
         expert.setApproved(false);
 
-        return userRepository.save(expert);
+        // Chuyển đổi từ CertificateRequest sang Certificate
+        List<Certificate> certificates = new ArrayList<>();
+        for (CertificateRequest certRequest : request.getCertificates()) {
+            Certificate certificate = new Certificate(certRequest.getCertificateUrl(), certRequest.getCertificateName(), expert);  // Liên kết chứng chỉ với chuyên gia
+            certificates.add(certificate);  // Thêm chứng chỉ vào danh sách
+        }
+
+        expert.setCertificates(certificates);  // Set danh sách chứng chỉ vào expert
+
+        return userRepository.save(expert);  // Lưu expert vào cơ sở dữ liệu
     }
+
     public ExpertResponse getExpertProfile(Long id) {
         Optional<Expert> expert = expertRepository.findById(id);
         if (expert.isPresent()) {
@@ -135,14 +160,20 @@ public class ExpertService {
             if (request.getEmail() != null && !request.getEmail().isEmpty()) {
                 expert.setEmail(request.getEmail());
             }
-            if (request.getSpecialty() != null && !request.getSpecialty().isEmpty()) {
-                expert.setSpecialty(request.getSpecialty());
+            if (request.getSpecialty() != null && isValidCategoryEnum(request.getSpecialty())) {
+                expert.setSpecialty(request.getSpecialty());  // Set specialty to CategoryEnum
             }
             if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
                 expert.setAvatar(request.getAvatar());
             }
             if (request.getCertificates() != null && !request.getCertificates().isEmpty()) {
-                expert.setCertificates(request.getCertificates());
+                List<Certificate> certificates = new ArrayList<>();
+                for (CertificateRequest certRequest : request.getCertificates()) {
+                    // Tạo mới Certificate từ CertificateRequest
+                    Certificate certificate = new Certificate(certRequest.getCertificateUrl(), certRequest.getCertificateName(), expert);
+                    certificates.add(certificate);
+                }
+                expert.setCertificates(certificates);  // Gán danh sách chứng chỉ vào Expert
             }
 
             // Cập nhật mật khẩu nếu có thay đổi
@@ -271,14 +302,21 @@ public class ExpertService {
             if (request.getEmail() != null && !request.getEmail().isEmpty()) {
                 expert.setEmail(request.getEmail());
             }
-            if (request.getSpecialty() != null && !request.getSpecialty().isEmpty()) {
-                expert.setSpecialty(request.getSpecialty());
+            if (request.getSpecialty() != null && isValidCategoryEnum(request.getSpecialty())) {
+                expert.setSpecialty(request.getSpecialty());  // Set specialty to CategoryEnum
             }
             if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
                 expert.setAvatar(request.getAvatar());
             }
+            // Chuyển đổi từ CertificateRequest sang Certificate trước khi gán vào Expert
             if (request.getCertificates() != null && !request.getCertificates().isEmpty()) {
-                expert.setCertificates(request.getCertificates());
+                List<Certificate> certificates = new ArrayList<>();
+                for (CertificateRequest certRequest : request.getCertificates()) {
+                    // Chuyển CertificateRequest thành Certificate và liên kết với Expert
+                    Certificate certificate = new Certificate(certRequest.getCertificateUrl(), certRequest.getCertificateName(), expert);
+                    certificates.add(certificate);  // Thêm vào danh sách chứng chỉ
+                }
+                expert.setCertificates(certificates);  // Gán danh sách chứng chỉ vào Expert
             }
 
             // Cập nhật mật khẩu nếu có thay đổi
