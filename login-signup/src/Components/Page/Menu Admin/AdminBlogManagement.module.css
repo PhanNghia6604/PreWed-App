@@ -1,53 +1,60 @@
+/* Định dạng tổng thể */
 .container {
-  width: 80%;
   max-width: 1200px;
   margin: auto;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
-
-.title {
-  margin-bottom: 20px;
-  color: white;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 500px;
-  margin: 0 auto;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 40px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.input,
-.textarea,
-.fileInput {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form tạo blog */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.input, .textarea, .fileInput {
   width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   font-size: 16px;
+}
+
+.textarea {
+  min-height: 100px;
 }
 
 .button {
   background-color: #007bff;
   color: white;
-  border: none;
   padding: 10px;
-  cursor: pointer;
-  border-radius: 5px;
+  border: none;
+  border-radius: 2px;
   font-size: 16px;
-  transition: 0.3s;
+  cursor: pointer;
+  
 }
 
 .button:hover {
   background-color: #0056b3;
 }
 
+/* Bảng quản lý blog */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -55,9 +62,9 @@
 }
 
 .table th, .table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
 .table th {
@@ -65,40 +72,38 @@
   color: white;
 }
 
-.table td img {
-  max-width: 80px;
-  max-height: 80px;
+.image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
   border-radius: 5px;
 }
 
 .actions {
   display: flex;
-  justify-content: center;
   gap: 10px;
 }
 
 .deleteButton {
-  background-color: #dc3545;
+  background-color: #007bff;
+
 }
 
 .restoreButton {
-  background-color: #28a745;
+  background-color: #007bff;
+  
 }
 
-.deleteButton, .restoreButton {
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 14px;
-  transition: 0.3s;
+.detailButton {
+  background-color: #007bff;
+ 
 }
 
-.deleteButton:hover {
-  background-color: #c82333;
+.button:hover {
+  opacity: 0.8;
 }
 
-.restoreButton:hover {
-  background-color: #218838;
+input, textarea, select {
+  background-color: white !important;
+  color: black !important;
 }

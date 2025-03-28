@@ -65,21 +65,21 @@ public class BlogAPI {
     }
 
     @GetMapping
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @Secured({"ROLE_ADMIN", "ROLE_CUSTOMER"})
     @Operation(summary = "Lấy danh sách blog", description = "Lấy tất cả blog chưa bị xóa")
     public ResponseEntity<List<BlogResponse>> getAllBlogs() {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
 
     @GetMapping("/{id}")
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @Secured({"ROLE_CUSTOMER"})
     @Operation(summary = "Lấy chi tiết blog", description = "Lấy blog theo ID")
     public ResponseEntity<BlogResponse> getBlogById(@PathVariable Long id) {
         return ResponseEntity.ok(blogService.getBlogById(id));
     }
 
     @GetMapping("/author/{authorId}")
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @Secured({"ROLE_ADMIN"})
     @Operation(summary = "Lấy blog của tác giả", description = "Lấy tất cả blog của một tác giả")
     public ResponseEntity<List<BlogResponse>> getBlogsByAuthor(@PathVariable Long authorId) {
         return ResponseEntity.ok(blogService.getBlogsByAuthorId(authorId));

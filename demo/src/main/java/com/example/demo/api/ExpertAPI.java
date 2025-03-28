@@ -26,8 +26,12 @@ public class ExpertAPI {
 
     @PostMapping("/register")
     public ResponseEntity<Expert> registerExpert(@Valid @RequestBody ExpertRequest request) {
-        Expert expert = expertService.createExpert(request);
-        return ResponseEntity.ok(expert);
+        try {
+            Expert expert = expertService.createExpert(request);
+            return ResponseEntity.ok(expert);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Trả về lỗi nếu specialty không hợp lệ
+        }
     }
     @PutMapping("/approve/{id}")
     @Secured("ROLE_ADMIN")
@@ -74,21 +78,27 @@ public class ExpertAPI {
 
     @PutMapping("/expert/{id}")
     public ExpertResponse updateExpert(@PathVariable Long id, @RequestBody ExpertRequest request) {
-        Expert updatedExpert = expertService.updateExpertbyID(id, request);
+        try {
+            Expert updatedExpert = expertService.updateExpertbyID(id, request);
 
-        // Chuyển đổi Expert thành ExpertResponse và trả về
-        ExpertResponse response = new ExpertResponse();
-        response.setId(updatedExpert.getId());
-        response.setUsername(updatedExpert.getUsername());
-        response.setEmail(updatedExpert.getEmail());
-        response.setName(updatedExpert.getName());
-        response.setPhone(updatedExpert.getPhone());
-        response.setAddress(updatedExpert.getAddress());
-        response.setSpecialty(updatedExpert.getSpecialty());
-        response.setAvatar(updatedExpert.getAvatar());
-        response.setCertificates(updatedExpert.getCertificates());
-        response.setApproved(true);
-        return response;
+            // Chuyển đổi Expert thành ExpertResponse và trả về
+            ExpertResponse response = new ExpertResponse();
+            response.setId(updatedExpert.getId());
+            response.setUsername(updatedExpert.getUsername());
+            response.setEmail(updatedExpert.getEmail());
+            response.setName(updatedExpert.getName());
+            response.setPhone(updatedExpert.getPhone());
+            response.setAddress(updatedExpert.getAddress());
+            response.setSpecialty(updatedExpert.getSpecialty());
+            response.setAvatar(updatedExpert.getAvatar());
+            response.setCertificates(updatedExpert.getCertificates());
+            response.setApproved(updatedExpert.isApproved());
+
+
+            return response;
+        } catch (RuntimeException e) {
+            return new ExpertResponse();  // Trả về lỗi nếu specialty không hợp lệ hoặc có lỗi khác
+        }
     }
 
     @PutMapping("/expert/update")

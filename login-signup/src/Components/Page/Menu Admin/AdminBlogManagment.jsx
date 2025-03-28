@@ -6,7 +6,7 @@ const AdminBlogManagement = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [newBlog, setNewBlog] = useState({ title: "", content: "", authorId: "", image: null });
+  const [newBlog, setNewBlog] = useState({ title: "", content: "", authorId: "", image: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,25 +55,37 @@ const AdminBlogManagement = () => {
 
   const handleCreateBlog = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", newBlog.title);
-    formData.append("content", newBlog.content);
-    formData.append("authorId", parseInt(newBlog.authorId, 10));
-    formData.append("image", newBlog.image);
+
+    const blogData = {
+      title: newBlog.title,
+      content: newBlog.content,
+      authorId: parseInt(newBlog.authorId, 10),
+      image: newBlog.image,
+    };
 
     try {
       const response = await fetch("/api/blogs", {
         method: "POST",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(blogData),
       });
+
+      if (!response.ok) {
+        throw new Error("Lỗi khi tạo blog");
+      }
+
       const data = await response.json();
       setBlogs([...blogs, data]);
-      setNewBlog({ title: "", content: "", authorId: "", image:"" });
+      setNewBlog({ title: "", content: "", authorId: "", image: "" });
     } catch (err) {
-      alert("Tạo blog thất bại");
+      alert("Tạo blog thất bại: " + err.message);
     }
   };
+
+
 
   return (
     <div className={styles.container} style={{ paddingTop: "150px" }}>
@@ -107,11 +119,11 @@ const AdminBlogManagement = () => {
         />
         <input
           className={styles.fileInput}
-          type="text"
           placeholder="Nhập URL hình ảnh..."
           onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })}
           required
         />
+
         <button className={styles.button} type="submit">Tạo Blog</button>
       </form>
 

@@ -1,5 +1,6 @@
 package com.example.demo.entity.request;
 
+import com.example.demo.enums.CategoryEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ public class ExpertRequest {
     @NotBlank(message = "Username cannot be blank")
     private String username;  // Tên tài khoản đăng nhập
 
+
     @NotBlank(message = "Password cannot be blank")
     private String password;  // Mật khẩu đăng nhập
 
@@ -31,13 +33,12 @@ public class ExpertRequest {
     @NotBlank(message = "Address cannot be blank")
     private String address;   // Địa chỉ (plan to inherit from User)
 
-    private String specialty;  // Chuyên môn
+    private CategoryEnum specialty;  // Chuyên môn
 
     private String avatar;     // Ảnh đại diện
 
 
     @NotEmpty(message = "Certificates cannot be empty")
-    private List<String> certificates;  // Danh sách chứng chỉ
-
+    private List<CertificateRequest> certificates;  // Danh sách chứng chỉ
 
 }

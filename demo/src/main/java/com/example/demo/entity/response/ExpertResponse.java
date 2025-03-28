@@ -1,5 +1,7 @@
 package com.example.demo.entity.response;
 
+import com.example.demo.entity.Certificate;
+import com.example.demo.enums.CategoryEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,9 +17,10 @@ public class ExpertResponse {
     private String name;      // Tên đầy đủ của Expert
     private String phone;     // Số điện thoại
     private String address;   // Địa chỉ
-    private String specialty; // Chuyên ngành
+    private CategoryEnum specialty; // Chuyên ngành
     private String avatar;    // Avatar
-    private List<String> certificates; // Chứng chỉ
+    private List<Certificate> certificates; // Chứng chỉ
+
     private boolean approved ;
 
 
