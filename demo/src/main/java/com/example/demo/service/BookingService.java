@@ -12,6 +12,7 @@ import com.example.demo.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,7 +41,9 @@ public class BookingService {
         Slot slot = slotRepository.findById(bookingRequest.getSlotId()).orElseThrow(() -> new NotFoundException("Slot not found"));
         //code here
 
-
+        if (bookingRequest.getBookingDate().isBefore(LocalDate.now())) {
+            throw new BookingException("Booking date cannot be in the past");
+        }
 
 
         //ng quen booking nen chon luon staff
@@ -98,6 +101,57 @@ public class BookingService {
     public Booking updateStatus(BookingEnum status, long id) {
         Booking booking = bookingRepository.findBookingById(id);
         booking.setStatus(status);
+        return bookingRepository.save(booking);
+    }
+
+    public Booking updateBooking(Long id, BookingRequest bookingRequest) {
+        User expert = null;
+        Slot slot = slotRepository.findById(bookingRequest.getSlotId()).orElseThrow(() -> new NotFoundException("Slot not found"));
+        //code here
+
+        if (bookingRequest.getBookingDate().isBefore(LocalDate.now())) {
+            throw new BookingException("Booking date cannot be in the past");
+        }
+
+
+        //ng quen booking nen chon luon staff
+        if (bookingRequest.getExpertId() != null){
+            expert = expertRepository.findById(bookingRequest.getExpertId()).orElseThrow(() -> new NotFoundException("Expert not found"));
+
+            //check xem slot nay, staff nay, ngay nay da duoc booking hay chua
+            SlotExpert checkExpert = slotExpertRepository.findBySlotIdAndExpertIdAndDate(bookingRequest.getSlotId(), bookingRequest.getExpertId(), bookingRequest.getBookingDate());
+            if(checkExpert != null && SlotStatus.BOOKED.equals(checkExpert.getStatus())){
+                throw new BookingException("Selected staff is not available for the chosen slot on the given data");
+            }
+        }else{
+            //ng la book
+            List<User> experts = expertRepository.findAllByRoleEnum(RoleEnum.EXPERT);
+            for (User account: experts){
+                //check xem slot nay, staff nay, ngay nay da duoc booking hay chua
+                SlotExpert checkExpert = slotExpertRepository.findBySlotIdAndExpertIdAndDate(bookingRequest.getSlotId(), account.getId() , bookingRequest.getBookingDate());
+                if(checkExpert == null || !SlotStatus.BOOKED.equals(checkExpert.getStatus())){
+                    expert = account;
+                    break;
+                }
+            }
+            //neu khong co staff nao ranh thi bao loi
+            if(expert == null){
+                throw new BookingException("No available staff for the selected slot");
+            }
+        }
+        Booking booking = bookingRepository.findBookingById(id);
+        SlotExpert slotExpert = new SlotExpert();
+        booking.setServices(serviceRepository.findByIdIn(bookingRequest.getServiceIds()));
+        booking.setSlotExpert(slotExpert);
+
+        slotExpert.setSlot(slot);
+        slotExpert.setExpert(expert);
+        slotExpert.getBookings().add(booking);
+        slotExpert.setDate(bookingRequest.getBookingDate());
+        slotExpert.setStatus(SlotStatus.BOOKED);
+
+        slotExpertRepository.save(slotExpert);
+
         return bookingRepository.save(booking);
     }
 }

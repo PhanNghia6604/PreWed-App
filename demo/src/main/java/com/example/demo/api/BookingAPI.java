@@ -19,14 +19,14 @@ public class BookingAPI {
 
     @PostMapping
     @Secured("ROLE_CUSTOMER")
-    public ResponseEntity createBooking(@RequestBody BookingRequest bookingRequest)  {
+    public ResponseEntity createBooking(@RequestBody BookingRequest bookingRequest) {
         Booking booking = bookingService.createBooking(bookingRequest);
         return ResponseEntity.ok(booking);
     }
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity getBooking(){
+    public ResponseEntity getBooking() {
         return ResponseEntity.ok(bookingService.getBooking());
     }
 
@@ -35,5 +35,13 @@ public class BookingAPI {
     public ResponseEntity updateStatus(@RequestParam BookingEnum status, @PathVariable long id) {
         Booking booking = bookingService.updateStatus(status, id);
         return ResponseEntity.ok(booking);
+    }
+
+    @PutMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity updateBooking(@PathVariable Long id, @RequestBody BookingRequest bookingRequest) {
+        Booking booking = bookingService.updateBooking(id, bookingRequest);
+        return ResponseEntity.ok(booking);
+
     }
 }
