@@ -94,6 +94,7 @@ public class ExpertAPI {
             response.setCertificates(updatedExpert.getCertificates());
             response.setApproved(updatedExpert.isApproved());
 
+
             return response;
         } catch (RuntimeException e) {
             return new ExpertResponse();  // Trả về lỗi nếu specialty không hợp lệ hoặc có lỗi khác

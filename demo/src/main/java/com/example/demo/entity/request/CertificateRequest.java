@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class CertificateRequest {
     private String certificateUrl;   // URL của chứng chỉ
     private String certificateName;  // Tên chứng chỉ mà người dùng nhập
+
 }
 

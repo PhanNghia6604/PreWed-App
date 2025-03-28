@@ -13,4 +13,5 @@ public interface ExpertRepository extends JpaRepository<Expert, Long> {
     Optional<Expert> findByUsername(String username);
     List<Expert> findByApprovedFalse(); // Thêm truy vấn này
 
+
 }

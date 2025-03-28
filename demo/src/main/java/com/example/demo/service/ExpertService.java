@@ -316,6 +316,7 @@ public class ExpertService {
                     Certificate certificate = new Certificate(certRequest.getCertificateUrl(), certRequest.getCertificateName(), expert);
                     certificates.add(certificate);  // Thêm vào danh sách chứng chỉ
                 }
+
                 expert.setCertificates(certificates);  // Gán danh sách chứng chỉ vào Expert
             }
 

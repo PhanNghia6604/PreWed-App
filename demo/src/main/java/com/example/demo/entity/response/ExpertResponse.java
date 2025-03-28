@@ -20,6 +20,7 @@ public class ExpertResponse {
     private CategoryEnum specialty; // Chuyên ngành
     private String avatar;    // Avatar
     private List<Certificate> certificates; // Chứng chỉ
+
     private boolean approved ;
 
 
