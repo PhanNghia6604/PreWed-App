@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Heading } from "../../Common/Heading";
 import style from "../Consultant/Expert.module.css";
+const specialtyMap = {
+  TAMLY: "Tâm lý",
+  TAICHINH: "Tài chính",
+  GIADINH: "Gia đình",
+  SUCKHOE: "Sức khỏe",
+  GIAOTIEP: "Giao tiếp",
+  TONGIAO: "Tôn giáo",
+};
 
 export const ExpertsList = () => {
   const [list, setList] = useState([]);
@@ -198,7 +206,8 @@ export const ExpertsList = () => {
 />
                   </div>
                   <h3 class={style.expertName}>{expert.name}</h3>
-                  <p className={style.specialty}>{expert.specialty}</p>
+                  <p className={style.specialty}>{specialtyMap[expert.specialty] || expert.specialty}</p>
+
                   {/* <p className={style.rating}>
   ⭐ {expert.rating > 0 ? expert.rating : "Chưa có đánh giá"}
 </p> */}

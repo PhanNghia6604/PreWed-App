@@ -3,6 +3,15 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { Link } from "react-router-dom";
 import style from "./ExpertManagement.module.css";
 
+const specialtyMap = {
+  TAMLY: "Tâm lý",
+  TAICHINH: "Tài chính",
+  GIADINH: "Gia đình",
+  SUCKHOE: "Sức khỏe",
+  GIAOTIEP: "Giao tiếp",
+  TONGIAO: "Tôn giáo",
+};
+
 const ExpertManagement = () => {
   const [experts, setExperts] = useState([]);
   const [open, setOpen] = useState(false);
@@ -48,6 +57,15 @@ const ExpertManagement = () => {
       return;
     }
 
+    // Lấy danh sách chứng chỉ hiện tại từ backend để so sánh
+    const originalExpert = experts.find(ex => ex.id === selectedExpert.id);
+    const originalCertificates = originalExpert ? originalExpert.certificates : [];
+
+    // Nếu certificates không thay đổi, giữ nguyên danh sách cũ
+    const updatedCertificates = selectedExpert.certificates?.length
+      ? Array.from(new Set(selectedExpert.certificates))
+      : originalCertificates;
+
     try {
       const response = await fetch(`/api/expert/expert/${selectedExpert.id}`, {
         method: "PUT",
@@ -63,10 +81,11 @@ const ExpertManagement = () => {
           address: selectedExpert.address,
           specialty: selectedExpert.specialty || "",
           avatar: selectedExpert.avatar || "",
-          certificates: selectedExpert.certificates || [],
+          certificates: updatedCertificates, // Đảm bảo không bị duplicate
         }),
       });
-
+      const responseData = await response.json();
+      console.log("Dữ liệu trả về từ API:", responseData);
       if (response.status === 401) {
         alert("Token hết hạn hoặc bạn không có quyền cập nhật!");
       } else if (response.ok) {
@@ -81,6 +100,8 @@ const ExpertManagement = () => {
       console.error("Lỗi khi cập nhật:", error);
     }
   };
+
+
 
   return (
     <div className={style.container}>
@@ -98,6 +119,7 @@ const ExpertManagement = () => {
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Chuyên môn</TableCell>
+              <TableCell>Chứng chỉ</TableCell>
               <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
@@ -113,7 +135,20 @@ const ExpertManagement = () => {
                 <TableCell>{expert.address}</TableCell>
                 <TableCell>{expert.username}</TableCell>
                 <TableCell>{expert.email}</TableCell>
-                <TableCell>{expert.specialty}</TableCell>
+                <TableCell>{specialtyMap[expert.specialty] || "Không xác định"}</TableCell>
+                <TableCell>
+                  <ul>
+                    {Array.from(new Set(expert.certificates.map(cert => cert.certificateUrl)))
+                      .map((url, index) => {
+                        const cert = expert.certificates.find(cert => cert.certificateUrl === url);
+                        return (
+                          <li key={index}>
+                            <a href={cert.certificateUrl} target="_blank">{cert.certificateName}</a>
+                          </li>
+                        );
+                      })}
+                  </ul>
+                </TableCell>
                 <TableCell className={style.actionButtons}>
                   <Button
                     variant="contained"
@@ -124,6 +159,7 @@ const ExpertManagement = () => {
                   </Button>
                 </TableCell>
               </TableRow>
+
             ))}
           </TableBody>
         </Table>
@@ -198,20 +234,21 @@ const ExpertManagement = () => {
                 onChange={handleChange}
                 className={style.inputField}
               />
-              <TextField
+              {/* <TextField
                 margin="dense"
                 label="Chứng chỉ (cách nhau bằng dấu phẩy)"
                 name="certificates"
                 fullWidth
                 value={selectedExpert.certificates?.join(", ") || ""}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const uniqueCertificates = Array.from(new Set(e.target.value.split(",").map((c) => c.trim())));
                   setSelectedExpert({
                     ...selectedExpert,
-                    certificates: e.target.value.split(",").map((c) => c.trim()),
-                  })
-                }
+                    certificates: uniqueCertificates,
+                  });
+                }}
                 className={style.inputField}
-              />
+              /> */}
             </>
           )}
         </DialogContent>
