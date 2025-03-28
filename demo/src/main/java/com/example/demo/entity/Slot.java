@@ -23,6 +23,7 @@ public class Slot {
 
     LocalTime startTime;
     LocalTime endTime;
+    boolean isDeleted = false;
     @OneToMany(mappedBy = "slot")
     @JsonIgnore
     List<SlotExpert> slotExperts = new ArrayList<>();
