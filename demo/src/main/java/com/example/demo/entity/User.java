@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,8 @@ import java.util.List;
 
 
 @Entity
+@Data
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +42,9 @@ public class User implements UserDetails {
     public boolean isDeleted = false;
     @Enumerated(value = EnumType.STRING)
     public RoleEnum roleEnum;
+    public double rate = 0.2;
+    public double totalEarnings = 0.0;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -156,7 +164,23 @@ public class User implements UserDetails {
         this.roleEnum = roleEnum;
     }
 
-    public User(long id, String name, String password, String phone, String address, String email, String username, boolean isDeleted, RoleEnum roleEnum) {
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
+
+    public double getTotalEarnings() {
+        return totalEarnings;
+    }
+
+    public void setTotalEarnings(double totalEarnings) {
+        this.totalEarnings = totalEarnings;
+    }
+
+    public User(long id, String name, String password, String phone, String address, String email, String username, boolean isDeleted, RoleEnum roleEnum, double rate, double totalEarnings) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -166,6 +190,7 @@ public class User implements UserDetails {
         this.username = username;
         this.isDeleted = isDeleted;
         this.roleEnum = roleEnum;
+        this.rate = rate;
+        this.totalEarnings = totalEarnings;
     }
-
 }

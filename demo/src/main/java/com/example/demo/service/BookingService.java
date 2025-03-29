@@ -36,6 +36,34 @@ public class BookingService {
     @Autowired
     UserUtils userUtils;
 
+    private void calculateAndSaveExpertPayment(Booking booking) {
+        SlotExpert slotExpert = booking.getSlotExpert();
+        User expert = slotExpert.getExpert();
+
+        if (expert == null) {
+            throw new NotFoundException("Expert not found for this booking");
+        }
+
+        // Calculate total service price
+        double totalServicePrice = booking.getServices().stream()
+                .mapToDouble(ServicePackage::getPrice)
+                .sum();
+
+        // Calculate expert's payment based on their rate
+        double expertRate = expert.getRate();
+        double expertPayment = totalServicePrice * expertRate ;
+
+        // Update expert’s total earnings
+        expert.setTotalEarnings(expert.getTotalEarnings() + expertPayment);
+
+        // Save updated expert earnings
+        expertRepository.save(expert);
+
+        // Save calculated payment in booking for reference
+        booking.setExpertPayment(expertPayment);
+        bookingRepository.save(booking);
+    }
+
     public Booking createBooking(BookingRequest bookingRequest)  {
         User expert = null;
         Slot slot = slotRepository.findById(bookingRequest.getSlotId()).orElseThrow(() -> new NotFoundException("Slot not found"));
@@ -100,6 +128,14 @@ public class BookingService {
 
     public Booking updateStatus(BookingEnum status, long id) {
         Booking booking = bookingRepository.findBookingById(id);
+        if (booking == null) {
+            throw new NotFoundException("Booking not found");
+        }
+
+        // Condition: Payment calculation only when status changes to AWAIT
+        if (status == BookingEnum.AWAIT && booking.getStatus() != BookingEnum.AWAIT) {
+            calculateAndSaveExpertPayment(booking);
+        }
         booking.setStatus(status);
         return bookingRepository.save(booking);
     }

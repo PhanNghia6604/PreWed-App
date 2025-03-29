@@ -38,4 +38,5 @@ public class Booking {
     BookingEnum status;
 
     LocalDateTime createAt;
+    double expertPayment = 0;
 }
