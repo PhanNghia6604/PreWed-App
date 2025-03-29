@@ -72,7 +72,6 @@ public class BlogAPI {
     }
 
     @GetMapping("/{id}")
-    @Secured({"ROLE_CUSTOMER"})
     @Operation(summary = "Lấy chi tiết blog", description = "Lấy blog theo ID")
     public ResponseEntity<BlogResponse> getBlogById(@PathVariable Long id) {
         return ResponseEntity.ok(blogService.getBlogById(id));
