@@ -47,6 +47,7 @@ import AdminBlogDetail from './Menu Admin/AdminBlogDetail';
 import CustomerManagement from './Menu Admin/CustomerMagnament';
 import ExpertManagement from './Menu Admin/ExpertManagment';
 import PendingExperts from './Menu Admin/PendingExpert';
+import RescheduleBooking from './Menu Customer/RescheduleBooking';
 
 
 
@@ -100,7 +101,8 @@ export const Page = () => {
           <Route exact path="/profile" element={<Profile />} />
           <Route path="/history-test" element={<HistoryTest/>}/>
           <Route exact path="/my-booking" element={<MyBookings />} />
-          <Route exactpath="/booking-payment/:bookingId" element={<BookingPayment />} />
+          <Route path="/reschedule/:bookingId" element={<RescheduleBooking/>}/>
+          <Route exact path="/booking-payment/:bookingId" element={<BookingPayment />} />
           <Route path="/waiting-payment" element={<WaitingPayment/>}/>
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/test" element={<Test />} />

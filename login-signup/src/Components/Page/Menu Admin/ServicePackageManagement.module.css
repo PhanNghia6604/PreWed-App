@@ -87,8 +87,8 @@ body {
 }
 
 .table th {
-  background: #1976d2;
-  color: #fff;
+  background: #fffdfd;
+  color: #000000;
 }
 
 .table tbody tr:nth-child(even) {
@@ -123,29 +123,10 @@ body {
 
 /* ❌ Delete Button */
 .deleteButton:hover {
-  background: #f8d7da; /* Nhẹ nhàng khi hover */
+  background: #f8d7da; 
 }
 
-/* ======================== */
-/* ➕ Create Button */
-/* ======================== */
 
-.createButton {
-  border: 1px solid black;
-  background: none;
-  color: black;
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.createButton:hover {
-  background: #f5f5f5;
-}
-
-/* 🖊️ Nút Sửa */
 .editButton {
   border: 1px solid black !important;
   background: none !important;
@@ -161,7 +142,7 @@ body {
   background: #1976d2 !important;
 }
 
-/* ❌ Nút Xóa */
+
 .deleteButton {
   border: 1px solid black !important;
   background: none !important;

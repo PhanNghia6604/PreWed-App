@@ -231,7 +231,14 @@ export const MyBookings = () => {
                         💳 Thanh toán
                       </button>
                     )}
-                    {b.status === "AWAIT" && <p className={style.awaitText}>⏳ Bạn đã thanh toán. Vui lòng đợi đến giờ tư vấn!</p>}
+                    {b.status === "AWAIT" && (
+                      <div className={style.awaitContainer}>
+                        <p className={style.awaitText}>⏳ Bạn đã thanh toán. Vui lòng đợi đến giờ tư vấn!</p>
+                        <button className={style.rescheduleButton} onClick={() => navigate(`/reschedule/${b.id}`)}>
+                          🔄 Thay đổi lịch
+                        </button>
+                      </div>
+                    )}
                     {b.status === "PROCESSING" && meetLink && (
                       <p>🔗 <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
                         target="_blank"

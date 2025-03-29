@@ -1,10 +1,34 @@
 .button {
-    background-color: #818181; /* Màu mặc định */
-    color: white;
-    transition: background-color 0.3s ease;
-  }
-  
-  .button:hover {
-    background-color: black; /* Đổi màu thành đen khi hover */
-  }
-  
+  background-color: transparent !important; /* Làm trong suốt nền */
+  color: #1976d2 !important; /* Màu chữ xanh */
+  border: none !important; /* Loại bỏ khung viền */
+  box-shadow: none !important; /* Loại bỏ bóng */
+  text-transform: none; /* Giữ nguyên chữ */
+  font-weight: bold; /* Chữ đậm hơn một chút */
+  transition: color 0.3s ease-in-out; /* Hiệu ứng màu mượt mà */
+  font-size: 14px; /* Thu nhỏ chữ */
+  padding: 4px 8px !important; /* Giảm khoảng cách trong nút */
+  min-width: auto !important; /* Không giới hạn chiều rộng tối thiểu */
+}
+
+.button:hover {
+  color: #1565c0 !important; /* Đổi màu chữ khi hover */
+  background-color: rgba(0, 0, 0, 0.05) !important; /* Một chút nền mờ khi hover */
+}
+
+
+.title{
+
+  color: #000000;
+}
+
+.container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: #000;
+}

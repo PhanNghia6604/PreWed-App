@@ -17,6 +17,24 @@ body {
   color: #000;
 }
 
+.button {
+  background-color: transparent !important; /* Làm trong suốt nền */
+  color: #1976d2 !important; /* Màu chữ xanh */
+  border: none !important; /* Loại bỏ khung viền */
+  box-shadow: none !important; /* Loại bỏ bóng */
+  text-transform: none; /* Giữ nguyên chữ */
+  font-weight: bold; /* Chữ đậm hơn một chút */
+  transition: color 0.3s ease-in-out; /* Hiệu ứng màu mượt mà */
+  font-size: 14px; /* Thu nhỏ chữ */
+  padding: 4px 8px !important; /* Giảm khoảng cách trong nút */
+  min-width: auto !important; /* Không giới hạn chiều rộng tối thiểu */
+}
+
+.button:hover {
+  color: #1565c0 !important; /* Đổi màu chữ khi hover */
+  background-color: rgba(0, 0, 0, 0.05) !important; /* Một chút nền mờ khi hover */
+}
+
 .title {
   text-align: center;
   font-size: 1.6rem;
@@ -33,7 +51,7 @@ body {
 .input, .textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #1976d2;
+  border: 1px solid #818181;
   border-radius: 6px;
   font-size: 1rem;
   background: #f5f5f5;

@@ -7,7 +7,14 @@ import { useNavigate } from "react-router-dom";
 import styles from "./ExpertDetail.module.css";
 
 const getRandomExperience = () => Math.floor(Math.random() * 10) + 1;
-
+const specialtyMap = {
+  TAMLY: "Tâm lý",
+  TAICHINH: "Tài chính",
+  GIADINH: "Gia đình",
+  SUCKHOE: "Sức khỏe",
+  GIAOTIEP: "Giao tiếp",
+  TONGIAO: "Tôn giáo",
+}
 const ExpertDetail = () => {
   const { name } = useParams();
   
@@ -107,12 +114,11 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
   useEffect(() => {
     const expert = experts.find((e) => e.name === decodeURIComponent(name));
     if (expert) {
-      // Tạo key duy nhất cho từng chuyên gia
       const experienceKey = `experience_${expert.id}`;
       const storedExperience = localStorage.getItem(experienceKey);
   
-      if (storedExperience) {
-        setExperience(parseInt(storedExperience, 10)); // Lấy từ localStorage
+      if (storedExperience !== null) {
+        setExperience(parseInt(storedExperience, 10)); // Dùng giá trị đã lưu
       } else {
         const newExperience = getRandomExperience();
         localStorage.setItem(experienceKey, newExperience); // Lưu vào localStorage
@@ -120,7 +126,6 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
       }
     }
   }, [experts, name]);
-  
   
   const fetchServicePackages = async () => {
     const token = localStorage.getItem("token"); 
@@ -346,45 +351,56 @@ try {
     <div className={styles.container}>
 
 
-      <div className={styles.card}>
-        <div className={styles.avatarContainer}>
-          <img
-            src={expert.avatar || "/images/experts/default-avatar.png"}
-            alt={expert.name}
-            className={styles.avatar}
-            onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
-          />
-        </div>
-        <h2>{expert.name}</h2>
-        <p><strong>Kinh nghiệm:</strong> {experience !== null ? `${experience} năm` : "Đang cập nhật..."}</p>
-        <p><strong>Chuyên môn:</strong> {expert.specialty}</p>
-        {/* <p><strong>Đánh giá:</strong> ⭐ {rating !== null ? rating : "Chưa có đánh giá"} / 5</p> */}
-        {expert.specialty && (
-          <p className={styles.description}>
-            <strong>Mô tả chuyên môn:</strong> {expertDescriptions[expert.specialty] || "Chưa có mô tả"}
-          </p>
-        )}
-        {expert.certificates && expert.certificates.length > 0 && (
-          <div className={styles.certifications}>
-            <h3>Chứng chỉ:</h3>
-            <ul>
-              {expert.certificates.map((cert, index) => (
-                <li key={index}>{cert}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-       <div className={styles.buttonContainer}>
-  <button className={styles.bookButton} onClick={handleGoBack}>
-  ← Quay lại danh sách chuyên gia
-  </button>
-  <button className={styles.backButton} onClick={fetchServicePackages}>
-    Đặt lịch hẹn
-  </button>
-</div>
+<div className={styles.card}>
+  <div className={styles.avatarContainer}>
+    <img
+      src={expert.avatar || "/images/experts/default-avatar.png"}
+      alt={expert.name}
+      className={styles.avatar}
+      onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
+    />
+  </div>
+  <h2>{expert.name}</h2>
+  <p>
+  <strong>Kinh nghiệm:</strong>{" "}
+  {experience !== null ? `${experience} năm` : "Đang cập nhật..."}
+</p>
+  <p>
+    <strong>Chuyên môn:</strong> {specialtyMap[expert.specialty] || "Chưa cập nhật"}
+  </p>
 
-      </div>
+  {specialtyMap[expert.specialty] && (
+  <p className={styles.description}>
+    <strong>Mô tả chuyên môn:</strong>{" "}
+    {expertDescriptions[specialtyMap[expert.specialty]] || "Chưa có mô tả"}
+  </p>
+)}
 
+  {expert.certificates && expert.certificates.length > 0 && (
+    <div className={styles.certifications}>
+      <h3>Chứng chỉ:</h3>
+      <ul>
+        {expert.certificates.map((cert) => (
+          <li key={cert.id}>
+            {cert.certificateName} -{" "}
+            <a href={cert.certificateUrl} target="_blank" rel="noopener noreferrer">
+              Xem chứng chỉ
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  <div className={styles.buttonContainer}>
+    <button className={styles.bookButton} onClick={handleGoBack}>
+      ← Quay lại danh sách chuyên gia
+    </button>
+    <button className={styles.backButton} onClick={fetchServicePackages}>
+      Đặt lịch hẹn
+    </button>
+  </div>
+</div>;
 
       {isModalOpen && (
         <div className={styles.modalOverlay}>

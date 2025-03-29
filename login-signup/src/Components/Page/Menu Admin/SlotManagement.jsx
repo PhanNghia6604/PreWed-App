@@ -20,53 +20,82 @@ const SlotManagement = () => {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (!response.ok) throw new Error("Không thể lấy danh sách slot");
-  
+
       const data = await response.json();
       setSlots(data);
     } catch (error) {
       console.error("Lỗi khi lấy slot: ", error);
     }
   };
-  
+
   const handleCreateSlot = async () => {
     try {
       const token = localStorage.getItem("token"); // 🔹 Lấy token từ localStorage
-  
+
       if (!token) {
         throw new Error("Token không tồn tại, vui lòng đăng nhập lại.");
       }
-  
+
       const response = await fetch("/api/slots", {
         method: "POST",
         headers: {
-         "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newSlot),
       });
       console.log("Token:", token);
-  
+
       if (!response.ok) throw new Error("Không thể tạo slot");
-  
+
       fetchSlots();
       setOpen(false);
     } catch (error) {
       console.error("Lỗi khi tạo slot: ", error);
     }
   };
-  
+
+  const handleDeleteSlot = async (slotId) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa slot này?")) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Vui lòng đăng nhập lại!");
+
+      const response = await fetch(`/api/slots/${slotId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Không thể xóa slot");
+      }
+
+      alert("Slot đã được xóa thành công!");
+      fetchSlots();
+    } catch (error) {
+      alert("Lỗi: " + error.message);
+    }
+  };
+
+
 
   return (
-    <div style={{ padding: "100px" }}>
-      <h2>Quản lý Slot Đặt Lịch</h2>
-      
+    <div className={styles.container}
+     style={{ padding: "100px" }}>
+      <h2 className={styles.title}>Quản lý Slot Đặt Lịch</h2>
+
       {/* Nút tạo slot */}
-      <Button 
-        variant="contained" 
+      <Button
+        variant="contained"
         className={styles.button} // Thêm class CSS
-        onClick={() => setOpen(true)} 
+        onClick={() => setOpen(true)}
         style={{ marginBottom: "15px" }}
       >
         + Tạo Slot
@@ -89,14 +118,26 @@ const SlotManagement = () => {
                   <TableCell>{slot.id}</TableCell>
                   <TableCell>{slot.startTime}</TableCell>
                   <TableCell>{slot.endTime}</TableCell>
+                  <TableCell>
+                    <Button
+
+                      variant="contained"
+                      className={styles.button}
+                      color="error"
+                      onClick={() => handleDeleteSlot(slot.id)}
+                    >
+                      Xóa
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} align="center">Không có dữ liệu</TableCell>
+                <TableCell colSpan={4} align="center">Không có dữ liệu</TableCell>
               </TableRow>
             )}
           </TableBody>
+
         </Table>
       </TableContainer>
 

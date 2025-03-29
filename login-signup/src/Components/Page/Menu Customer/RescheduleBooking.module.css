@@ -1,0 +1,121 @@
+.reschedule-container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .reschedule-container h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .reschedule-container p {
+    color: #555;
+    margin-bottom: 25px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    font-size: 15px;
+  }
+  
+  .reschedule-container label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #495057;
+    text-align: left;
+    font-size: 15px;
+  }
+  
+  .reschedule-select {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .reschedule-select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .reschedule-button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+  }
+  
+  .button {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-align: center;
+  }
+  
+  .reschedule-back-button {
+    background-color: #f1f3f5;
+    color: #495057;
+    border: 1px solid #dee2e6;
+  }
+  
+  .reschedule-back-button:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+  }
+  
+  .reschedule-back-button:disabled {
+    background-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+  }
+  
+  .reschedule-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .reschedule-button:hover {
+    background-color: #3e8e41;
+  }
+  
+  .reschedule-button:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+  }
+  
+  .error {
+    color: #dc3545;
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .reschedule-disabled-slot {
+    color: #adb5bd !important;
+    background-color: #f8f9fa !important;
+  }
+  
+  option:not(.reschedule-disabled-slot) {
+    color: #212529;
+    background-color: white;
+  }
