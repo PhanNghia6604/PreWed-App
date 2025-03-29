@@ -228,6 +228,10 @@ const handleBooking = async () => {
       alert("Vui lòng chọn một khung giờ trước khi đặt lịch!");
       return;
   }
+  if (!selectedPackage) {
+      alert("Vui lòng chọn một gói tư vấn trước khi đặt lịch!");
+      return;
+  }
 
   const expert = experts.find((e) => e.name === decodeURIComponent(name));
   if (!expert) {
@@ -236,57 +240,63 @@ const handleBooking = async () => {
   }
 
   const today = new Date().toISOString().split("T")[0];
-  const slotStartTime = new Date(today + "T" + selectedSlot.startTime);
-  const slotEndTime = new Date(today + "T" + selectedSlot.endTime);
-
-  // 📌 1. Lấy toàn bộ lịch đặt của user
-  const userBookings = await getUserBookings();
-
-  // 📌 2. Kiểm tra trùng lịch
-  let conflictWithSameExpert = false;
-  let conflictWithOtherExpert = null;
-  const isTimeOverlap = (start1, end1, start2, end2) => {
-    return (
-        (start1 >= start2 && start1 < end2) || // Bắt đầu trong khoảng đã đặt
-        (end1 > start2 && end1 <= end2) || // Kết thúc trong khoảng đã đặt
-        (start1 <= start2 && end1 >= end2) // Trùng hoàn toàn khoảng thời gian
-    );
-};
-
-userBookings.forEach((booking) => {
-    const bookedStartTime = new Date(booking.slotStartTime).getTime();
-    const bookedEndTime = new Date(booking.slotEndTime).getTime();
-
-    if (isTimeOverlap(slotStartTime.getTime(), slotEndTime.getTime(), bookedStartTime, bookedEndTime)) {
-        if (booking.expertId === expert.id) {
-            conflictWithSameExpert = true;
-        } else {
-            conflictWithOtherExpert = booking.expertName;
-        }
-    }
-  });
-
-  // 📌 3. Hiển thị thông báo phù hợp
-  if (conflictWithSameExpert) {
-      alert("Bạn đã có lịch hẹn với chuyên gia này trong khoảng thời gian này!");
-      return;
-  }
-
-  if (conflictWithOtherExpert) {
-      alert(`Bạn đã đặt lịch vào khung giờ này với chuyên gia ${conflictWithOtherExpert}!`);
-      return;
-  }
-
-  // 📌 4. Nếu không trùng, tiếp tục gửi request đặt lịch
-  const bookingData = {
-      expertId: expert.id,
-      slotId: selectedSlot.id,
-      bookingDate: today,
-      serviceIds: selectedPackage?.id ? [selectedPackage.id] : [],
-  };
+  const slotStartTime = new Date(`${today}T${selectedSlot.startTime}`).getTime();
+  const slotEndTime = new Date(`${today}T${selectedSlot.endTime}`).getTime();
 
   try {
+      const userBookings = (await getUserBookings()).filter(
+          (booking) => ["PENDING", "PENDING_PAYMENT", "PROCESSING"].includes(booking.status)
+      );
+
+      console.log("Lịch hẹn của user:", userBookings);
+
+      let conflictingExpert = null;
+
+      const isTimeOverlap = (start1, end1, start2, end2) => {
+          return start1 && end1 && start2 && end2 && start1 < end2 && end1 > start2;
+      };
+
+      for (const booking of userBookings) {
+        if (!booking.slotExpert || !booking.slotExpert.slot) {
+            console.error("Lỗi: Không có slot hợp lệ!", booking);
+            continue; // Bỏ qua lịch bị lỗi
+        }
+    
+        const bookedStartTime = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.startTime}`).getTime();
+        const bookedEndTime = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.endTime}`).getTime();
+    
+        console.log(`🔍 Kiểm tra lịch: ${booking.slotExpert.expert.name} (${booking.slotExpert.date} ${booking.slotExpert.slot.startTime} - ${booking.slotExpert.slot.endTime})`);
+    
+        if (isTimeOverlap(slotStartTime, slotEndTime, bookedStartTime, bookedEndTime)) {
+            if (booking.slotExpert.expert.id === expert.id) {
+                alert("Bạn đã có lịch với chuyên gia này trong khoảng thời gian này!");
+                return;
+            } else {
+                alert(`Bạn đã đặt lịch với chuyên gia ${booking.slotExpert.expert.name} vào khung giờ này! Không thể đặt thêm.`);
+                return;
+            }
+        }
+    }
+    
+
+      if (conflictingExpert) {
+          alert(`Bạn đã đặt lịch vào khung giờ này với chuyên gia ${conflictingExpert}!`);
+          return;
+      }
+
+      const bookingData = {
+          expertId: expert.id,
+          slotId: selectedSlot.id,
+          bookingDate: today,
+          serviceIds: selectedPackage.id ? [selectedPackage.id] : [],
+      };
+
       const token = localStorage.getItem("token");
+      if (!token) {
+          alert("Bạn chưa đăng nhập!");
+          return;
+      }
+
       const response = await fetch("/api/booking", {
           method: "POST",
           headers: {
@@ -297,38 +307,25 @@ userBookings.forEach((booking) => {
       });
 
       const responseText = await response.text();
-      console.log("Server Response:", responseText); // Debug API trả về gì
-      
       let data;
-try {
-    data = await response.json(); 
-} catch (e) {
-    data = { message: responseText }; // Nếu không parse được, giữ nguyên text
-}
-
+      try {
+          data = JSON.parse(responseText);
+      } catch (e) {
+          data = { message: responseText };
+      }
 
       if (response.ok) {
-        navigate("/my-booking");
-        alert("Đặt lịch thành công!");
-    } else {
-        console.error("Lỗi từ API:", data);
-        
-        if (data.message.includes("not available")) {
-            alert("Bạn đã có 1 lịch hẹn với chuyên gia khác rồi, vui lòng đặt lại khung giờ khác giúp chúng tôi!");
-        } else {
-            alert(`Lỗi: ${data.message || "Không thể đặt lịch!"}`);
-        }
-    }
-    
-    
+          alert("Đặt lịch thành công!");
+          navigate("/my-booking");
+      } else {
+          alert(`Lỗi: ${data.message || "Không thể đặt lịch!"}`);
+      }
   } catch (error) {
-      console.error("Lỗi khi gửi yêu cầu đặt lịch:", error);
+      console.error("Lỗi khi xử lý đặt lịch:", error);
       alert("Đã có lỗi xảy ra, vui lòng thử lại!");
   }
 };
-  
-  
-  
+
   
 
   

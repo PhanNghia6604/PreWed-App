@@ -119,3 +119,21 @@
     color: #212529;
     background-color: white;
   }
+  .slot-status-list {
+    margin-top: 10px;
+    padding: 0;
+    list-style: none;
+    color: #333;
+  }
+  
+  .slot-status-item {
+    font-size: 14px;
+    padding: 5px 0;
+  }
+  
+  .status-text {
+    color: red;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+  
