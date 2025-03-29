@@ -13,7 +13,7 @@ export const AdminLogin = ({ setIsLoggedIn, setUserRole }) => {
     setError("");
 
     try {
-      const response = await fetch("/api/login", { 
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,6 +73,25 @@ export const AdminLogin = ({ setIsLoggedIn, setUserRole }) => {
           </div>
           <button type="submit" className={styles.btn}>Login</button>
         </form>
+        <button
+          type="button"
+          onClick={() => navigate("/login")}
+          style={{
+            backgroundColor: "transparent",
+            color: "#ffcc00",
+            border: "none",
+            fontSize: "12px",
+            fontWeight: "normal",
+            textTransform: "none",
+            cursor: "pointer",
+            padding: "5px 10px"
+          }}
+        >
+          Quay lại
+        </button>
+
+
+
       </div>
     </section>
   );

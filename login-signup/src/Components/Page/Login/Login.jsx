@@ -7,7 +7,7 @@ import styles from "./Login.module.css";
 
 export const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
-  
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -100,6 +100,25 @@ export const Login = ({ setIsLoggedIn }) => {
               Don't have an account? <span onClick={() => navigate("/register")}>Register</span>
             </div>
           </form>
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            style={{
+              backgroundColor: "transparent",
+              color: "#ffcc00",
+              border: "none",
+              fontSize: "12px",
+              fontWeight: "normal",
+              textTransform: "none",
+              cursor: "pointer",
+              padding: "5px 10px"
+            }}
+          >
+            Quay lại
+          </button>
+
+
+
         </div>
       </div>
     </section>
