@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heading } from "../../Common/Heading";
-import styles from "./Blog.module.css"; // Import CSS module
+import styles from "./Blog.module.css"; 
 
 export const Blog = () => {
   const [blogs, setBlogs] = useState([]);
