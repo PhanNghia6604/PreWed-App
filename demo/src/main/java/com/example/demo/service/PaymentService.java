@@ -25,6 +25,9 @@ public class PaymentService {
     @Autowired
     VnPayProperties properties;
 
+    @Autowired
+    BookingService bookingService; // Inject BookingService
+
     @Transactional
     public String createPaymentUrl(@NotNull PaymentRequest dto) {
         log.info("Payment Service [CREATE]: create payment url processing...");
@@ -64,6 +67,7 @@ public class PaymentService {
         if (response.isSuccess()) {
             // case SUCCESS - update status to PROCESSING & minus item in store
             booking.setStatus(BookingEnum.AWAIT);
+            bookingService.calculateAndSaveExpertPayment(booking); // Calculate and save expert payment
 
         } else {
             // case FAIL - update status to CANCELLED

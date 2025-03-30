@@ -36,7 +36,7 @@ public class BookingService {
     @Autowired
     UserUtils userUtils;
 
-    private void calculateAndSaveExpertPayment(Booking booking) {
+    public void calculateAndSaveExpertPayment(Booking booking) {
         SlotExpert slotExpert = booking.getSlotExpert();
         User expert = slotExpert.getExpert();
 
