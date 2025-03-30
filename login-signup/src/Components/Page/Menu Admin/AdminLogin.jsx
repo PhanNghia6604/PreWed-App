@@ -13,7 +13,7 @@ export const AdminLogin = ({ setIsLoggedIn, setUserRole }) => {
     setError("");
 
     try {
-      const response = await fetch("/api/login", { 
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,16 +25,16 @@ export const AdminLogin = ({ setIsLoggedIn, setUserRole }) => {
       console.log("Dữ liệu nhận từ API:", data);
 
       if (response.ok) {
-        // 🔹 Lưu token và thông tin admin vào localStorage
+       
         localStorage.setItem("token", data.token);
         localStorage.setItem("userRole", "admin");
-        localStorage.setItem("adminId", data.id); // Lưu ID admin vào localStorage
+        localStorage.setItem("adminId", data.id); 
 
-        // 🔹 Cập nhật state
+      
         setIsLoggedIn(true);
         setUserRole("admin");
 
-        // 🔹 Chuyển hướng đến Admin Dashboard
+       
         navigate("/admin-dashboard");
       } else {
         setError(data.message || "Đăng nhập thất bại!");
@@ -73,6 +73,25 @@ export const AdminLogin = ({ setIsLoggedIn, setUserRole }) => {
           </div>
           <button type="submit" className={styles.btn}>Login</button>
         </form>
+        <button
+          type="button"
+          onClick={() => navigate("/login")}
+          style={{
+            backgroundColor: "transparent",
+            color: "#ffcc00",
+            border: "none",
+            fontSize: "12px",
+            fontWeight: "normal",
+            textTransform: "none",
+            cursor: "pointer",
+            padding: "5px 10px"
+          }}
+        >
+          Back
+        </button>
+
+
+
       </div>
     </section>
   );

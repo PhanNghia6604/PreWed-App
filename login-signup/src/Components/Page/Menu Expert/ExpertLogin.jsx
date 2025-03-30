@@ -87,6 +87,22 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
               <span onClick={() => navigate("/expert-register")}>Register</span>
             </div>
           </form>
+          <button
+          type="button"
+          onClick={() => navigate("/login")}
+          style={{
+            backgroundColor: "transparent",
+            color: "#ffcc00",
+            border: "none",
+            fontSize: "12px",
+            fontWeight: "normal",
+            textTransform: "none",
+            cursor: "pointer",
+            padding: "5px 10px"
+          }}
+        >
+          Back
+        </button>
         </div>
       </div>
     </section>

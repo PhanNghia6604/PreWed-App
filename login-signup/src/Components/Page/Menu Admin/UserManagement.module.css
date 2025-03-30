@@ -22,7 +22,7 @@
 }
 
 .buttonGroup a {
-  width: auto; /* Để nút mở rộng theo nội dung */
-  min-width: 300px; /* Tăng kích thước tối thiểu */
+  width: auto; 
+  min-width: 300px; 
 }
 

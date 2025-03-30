@@ -34,8 +34,8 @@
     padding: 12px;
     font-size: 16px;
     font-weight: bold;
-    border: 2px solid #ffffff; /* Viền trắng */
-    border-radius: 8px;
+    border: 1px solid #000000; /* Viền trắng */
+    border-radius: 3px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -46,7 +46,6 @@
 
 /* Hover effect */
 .button:hover {
-    background: #bbbbbb; /* Khi hover vào, nền chuyển thành xám */
-    color: #1e1f1f; /* Màu chữ tối hơn để dễ nhìn */
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1); /* Khi hover vào, nền chuyển thành xám */
+    color: #ffffff; /* Màu chữ tối hơn để dễ nhìn */
 }
