@@ -37,6 +37,9 @@ public class BookingService {
     UserUtils userUtils;
 
     public void calculateAndSaveExpertPayment(Booking booking) {
+        if (booking.getExpertPayment() > 0) {  // ✅ Prevents re-calculation
+            return;
+        }
         SlotExpert slotExpert = booking.getSlotExpert();
         User expert = slotExpert.getExpert();
 
