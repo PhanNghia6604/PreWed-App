@@ -128,16 +128,20 @@ export const MyBookings = () => {
         },
         body: JSON.stringify({ bookingId }),
       });
-
+  
       if (!response.ok) throw new Error("Lỗi tạo yêu cầu thanh toán!");
-
-      const paymentUrl = await response.text(); // Lấy URL trực tiếp từ API
+  
+      const paymentUrl = await response.text(); // Lấy URL thanh toán từ API
       window.location.href = paymentUrl; // Chuyển hướng đến VNPay
+  
+      // 🟢 Nếu thanh toán thành công (có thể kiểm tra trong callback sau khi quay lại từ VNPay)
+      updateBookingStatus(bookingId, "AWAIT");
     } catch (error) {
       console.error("Lỗi thanh toán:", error);
       alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
     }
   };
+  
 
   // key reviewedBookings được lưu vào localStorage để dùng đóng form đánh giá
   const [reviewedBookings, setReviewedBookings] = useState(() => {
@@ -148,6 +152,35 @@ export const MyBookings = () => {
     const storedReviews = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
     setReviewedBookings(storedReviews);
   }, []);
+  const updateBookingStatus = async (bookingId, newStatus) => {
+    try {
+      const response = await fetch(`/api/booking/${bookingId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Cập nhật trạng thái thất bại");
+      }
+  
+      const updatedBooking = await response.json();
+      console.log("✅ Trạng thái lịch hẹn đã cập nhật:", updatedBooking);
+  
+      // Cập nhật danh sách bookings để giao diện hiển thị thay đổi
+      setBookings((prev) =>
+        prev.map((b) => (b.id === bookingId ? updatedBooking : b))
+      );
+    } catch (error) {
+      console.error("❌ Lỗi khi cập nhật trạng thái:", error);
+      alert("Không thể cập nhật trạng thái, vui lòng thử lại!");
+    }
+  };
+  
+  
 
   // Phân trang
   const indexOfLastItem = currentPage * itemsPerPage;
