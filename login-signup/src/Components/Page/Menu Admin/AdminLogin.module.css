@@ -35,7 +35,7 @@
 }
 
 .input-box label {
-    color: var(--primaryColor);
+    color: var(--primaryColor) !important;
     font-weight: 500;
     display: block;
     margin-bottom: 5px;
@@ -47,7 +47,7 @@
     border: none;
     border-radius: 5px;
     font-size: 16px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1) !important;
     color: var(--white);
     outline: none;
     transition: 0.3s;

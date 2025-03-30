@@ -46,7 +46,6 @@
 
 /* Hover effect */
 .button:hover {
-    background: #bbbbbb; /* Khi hover vào, nền chuyển thành xám */
-    color: #1e1f1f; /* Màu chữ tối hơn để dễ nhìn */
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1); /* Khi hover vào, nền chuyển thành xám */
+    color: #ffffff; /* Màu chữ tối hơn để dễ nhìn */
 }

@@ -35,33 +35,34 @@
   }
   
   .input-box label {
-    color: var(--primaryColor);
+    color: var(--primaryColor) !important;
     font-weight: 500;
     display: block;
     margin-bottom: 5px;
-    color: #ffcc00;
+    padding-bottom: 5px;
+   
   }
   
   .input-box input {
     width: 100%;
-    padding: 12px;
+    padding: 15px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--white);
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--white) !important;
     outline: none;
     transition: 0.3s;
   }
   
   .input-box input:focus {
     background: rgba(255, 255, 255, 0.2);
-    border-bottom: 2px solid var(--primaryColor);
+    border-bottom: 1px solid var(--primaryColor);
   }
   
   .forgot-password {
     text-align: right;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
   }
   
   .forgot-password span {
@@ -112,7 +113,7 @@
     color: #ffcc00;
   }
   
-  /* Hiệu ứng động khi tải trang */
+  
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -129,14 +130,14 @@
   }
   
 
-  .error-box {
+  .error-text {
     
-    color: red;
-    padding: 10px;
+    color: rgb(254, 60, 60);
+      
   
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 15px;
+    text-align: start;
+    
+    margin-bottom: 5px;
  
   }
   

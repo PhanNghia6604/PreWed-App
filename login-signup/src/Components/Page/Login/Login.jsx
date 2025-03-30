@@ -114,7 +114,7 @@ export const Login = ({ setIsLoggedIn }) => {
               padding: "5px 10px"
             }}
           >
-            Quay lại
+             Back 
           </button>
 
 
