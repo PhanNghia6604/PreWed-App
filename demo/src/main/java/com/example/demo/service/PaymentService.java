@@ -67,6 +67,7 @@ public class PaymentService {
         if (response.isSuccess()) {
             // case SUCCESS - update status to PROCESSING & minus item in store
             booking.setStatus(BookingEnum.AWAIT);
+            // Condition: Payment calculation only when status changes to AWAIT
             bookingService.calculateAndSaveExpertPayment(booking); // Calculate and save expert payment
 
         } else {

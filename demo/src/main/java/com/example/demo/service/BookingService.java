@@ -132,10 +132,6 @@ public class BookingService {
             throw new NotFoundException("Booking not found");
         }
 
-        // Condition: Payment calculation only when status changes to AWAIT
-        if (status == BookingEnum.AWAIT && booking.getStatus() != BookingEnum.AWAIT) {
-            calculateAndSaveExpertPayment(booking);
-        }
         booking.setStatus(status);
         return bookingRepository.save(booking);
     }
