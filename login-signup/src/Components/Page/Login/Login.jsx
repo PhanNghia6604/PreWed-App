@@ -15,7 +15,9 @@ export const Login = ({ setIsLoggedIn }) => {
     },
     validationSchema: Yup.object({
       username: Yup.string().required("User Name is required"),
-      password: Yup.string().required("Password is required"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Password is required"),
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
@@ -24,13 +26,13 @@ export const Login = ({ setIsLoggedIn }) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values),
         });
-
+  
         if (!response.ok) {
           const errorData = await response.json();
           setErrors({ server: errorData.message || "Login failed." });
           return;
         }
-
+  
         const data = await response.json();
         if (data.token) {
           localStorage.setItem("token", data.token);
@@ -54,6 +56,7 @@ export const Login = ({ setIsLoggedIn }) => {
       }
     },
   });
+  
 
   return (
     <section className={styles.login}>

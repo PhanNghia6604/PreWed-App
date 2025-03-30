@@ -1,97 +1,96 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import styles from "./AdminLogin.module.css";
 
 export const AdminLogin = ({ setIsLoggedIn, setUserRole }) => {
-  const [username, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().required("User Name is required"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Password is required"),
+    }),
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        });
 
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+        if (!response.ok) {
+          const errorData = await response.json();
+          setErrors({ server: errorData.message || "Login failed." });
+          return;
+        }
 
-      const data = await response.json();
-      console.log("Dữ liệu nhận từ API:", data);
+        const data = await response.json();
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("adminId", data.id);
+          localStorage.setItem("userRole", "admin");
 
-      if (response.ok) {
-       
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userRole", "admin");
-        localStorage.setItem("adminId", data.id); 
-
-      
-        setIsLoggedIn(true);
-        setUserRole("admin");
-
-       
-        navigate("/admin-dashboard");
-      } else {
-        setError(data.message || "Đăng nhập thất bại!");
+          setIsLoggedIn(true);
+          setUserRole("admin");
+          navigate("/admin-dashboard");
+        }
+      } catch (error) {
+        setErrors({ server: "Invalid username or password" });
+      } finally {
+        setSubmitting(false);
       }
-    } catch (error) {
-      setError("Lỗi kết nối! Vui lòng thử lại.");
-      console.error("Login error:", error);
-    }
-  };
+    },
+  });
 
   return (
     <section className={styles["admin-login"]}>
       <div className={styles.container}>
         <h2>Admin Login</h2>
-        {error && <div className={styles["error-box"]}>{error}</div>}
-        <form onSubmit={handleLogin} className={styles["admin-login-form"]}>
+        {formik.errors.server && <div className={styles["error-text"]}>{formik.errors.server}</div>}
+        <form onSubmit={formik.handleSubmit} className={styles["admin-login-form"]}>
           <div className={styles["input-box"]}>
             <label>Username</label>
             <input
               type="text"
-              placeholder="Username"
-              required
-              value={username}
-              onChange={(e) => setUserName(e.target.value)}
+              name="username"
+              placeholder="Enter your username"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.username}
             />
+            {formik.touched.username && formik.errors.username && (
+              <div className={styles["error-text"]}>{formik.errors.username}</div>
+            )}
           </div>
           <div className={styles["input-box"]}>
             <label>Password</label>
             <input
               type="password"
-              placeholder="Password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              placeholder="Enter your password"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
             />
+            {formik.touched.password && formik.errors.password && (
+              <div className={styles["error-text"]}>{formik.errors.password}</div>
+            )}
           </div>
-          <button type="submit" className={styles.btn}>Login</button>
+          <button type="submit" className={styles.btn} disabled={formik.isSubmitting}>
+            {formik.isSubmitting ? "Logging in..." : "Login"}
+          </button>
         </form>
-        <button
-          type="button"
-          onClick={() => navigate("/login")}
-          style={{
-            backgroundColor: "transparent",
-            color: "#ffcc00",
-            border: "none",
-            fontSize: "12px",
-            fontWeight: "normal",
-            textTransform: "none",
-            cursor: "pointer",
-            padding: "5px 10px"
-          }}
-        >
-          Back
-        </button>
-
-
-
+        <div className={styles["register-link"]}>
+          <span onClick={() => navigate("/login")}>Back</span>
+        </div>
       </div>
     </section>
   );

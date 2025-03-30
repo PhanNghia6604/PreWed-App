@@ -1,74 +1,72 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./AdminRegister.module.css"; // Import đúng cách
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import styles from "./AdminRegister.module.css";
 
 export const AdminRegister = () => {
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
     const navigate = useNavigate();
-    const [message, setMessage] = useState("");
 
+    const formik = useFormik({
+        initialValues: {
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+        },
+        validationSchema: Yup.object({
+            username: Yup.string().required("Username is required"),
+            email: Yup.string().email("Invalid email format").required("Email is required"),
+            password: Yup.string()
+                .min(8, "Password must be at least 8 characters")
+                .required("Password is required"),
+            confirmPassword: Yup.string()
+                .oneOf([Yup.ref("password"), null], "Passwords do not match")
+                .required("Confirm Password is required"),
+        }),
+        onSubmit: (values, { setSubmitting, setErrors, setStatus }) => {
+            setErrors({});
+            setStatus("");
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+            const existingUsers = JSON.parse(localStorage.getItem("adminUsers")) || [];
 
-    const handleRegister = (event) => {
-        event.preventDefault();
-        setError("");
-        setSuccess("");
-    
-        if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match!");
-            return;
-        }
-    
-        // Lưu thông tin vào localStorage
-        const existingUsers = JSON.parse(localStorage.getItem("adminUsers")) || [];
-        
-        // Kiểm tra xem email đã tồn tại chưa
-        if (existingUsers.some(user => user.email === formData.email)) {
-            setError("Email already registered!");
-            return;
-        }
-    
-        const newUser = {
-            username: formData.username,
-            email: formData.email,
-            password: formData.password,
-        };
-    
-        existingUsers.push(newUser);
-        localStorage.setItem("adminUsers", JSON.stringify(existingUsers));
-    
-        setSuccess("Registration successful! Redirecting to login...");
-        setMessage("Đăng ký thành công ");
-        setTimeout(() => navigate("/admin-login"), 2000);
-    };
+            if (existingUsers.some(user => user.email === values.email)) {
+                setErrors({ email: "Email already registered!" });
+                setSubmitting(false);
+                return;
+            }
+
+            const newUser = {
+                username: values.username,
+                email: values.email,
+                password: values.password,
+            };
+
+            existingUsers.push(newUser);
+            localStorage.setItem("adminUsers", JSON.stringify(existingUsers));
+
+            setStatus("Registration successful! Redirecting to login...");
+            setTimeout(() => navigate("/admin-login"), 2000);
+        },
+    });
 
     return (
         <div className={styles.registerContainer}>
             <div className={styles.container}>
                 <h2>Admin Register</h2>
-                {error && <div className={styles.message} style={{ color: "red" }}>{error}</div>}
-                {success && <div className={styles.message} style={{ color: "green" }}>{success}</div>}
-                <form onSubmit={handleRegister} className={styles.registerForm}>
+                {formik.status && <div className={styles.message} style={{ color: "green" }}>{formik.status}</div>}
+                <form onSubmit={formik.handleSubmit} className={styles.registerForm}>
                     <div className={styles.inputBox}>
                         <label>Username</label>
                         <input
                             type="text"
                             name="username"
                             placeholder="Enter username"
-                            required
-                            value={formData.username}
-                            onChange={handleChange}
+                            {...formik.getFieldProps("username")}
                         />
+                        {formik.touched.username && formik.errors.username && (
+                            <div className={styles.error}>{formik.errors.username}</div>
+                        )}
                     </div>
 
                     <div className={styles.inputBox}>
@@ -77,10 +75,11 @@ export const AdminRegister = () => {
                             type="email"
                             name="email"
                             placeholder="Enter email"
-                            required
-                            value={formData.email}
-                            onChange={handleChange}
+                            {...formik.getFieldProps("email")}
                         />
+                        {formik.touched.email && formik.errors.email && (
+                            <div className={styles.error}>{formik.errors.email}</div>
+                        )}
                     </div>
 
                     <div className={styles.inputBox}>
@@ -89,10 +88,11 @@ export const AdminRegister = () => {
                             type="password"
                             name="password"
                             placeholder="Enter password"
-                            required
-                            value={formData.password}
-                            onChange={handleChange}
+                            {...formik.getFieldProps("password")}
                         />
+                        {formik.touched.password && formik.errors.password && (
+                            <div className={styles.error}>{formik.errors.password}</div>
+                        )}
                     </div>
 
                     <div className={styles.inputBox}>
@@ -101,13 +101,16 @@ export const AdminRegister = () => {
                             type="password"
                             name="confirmPassword"
                             placeholder="Confirm password"
-                            required
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
+                            {...formik.getFieldProps("confirmPassword")}
                         />
+                        {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+                            <div className={styles.error}>{formik.errors.confirmPassword}</div>
+                        )}
                     </div>
 
-                    <button type="submit" className={styles.btn}>Register</button>
+                    <button type="submit" className={styles.btn} disabled={formik.isSubmitting}>
+                        {formik.isSubmitting ? "Registering..." : "Register"}
+                    </button>
                     <div className={styles.loginLink}>
                         Already have an account? <span onClick={() => navigate("/login")}>Login</span>
                     </div>
