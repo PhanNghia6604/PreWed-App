@@ -89,48 +89,114 @@ const RescheduleBooking = () => {
 
   const handleReschedule = async () => {
     if (!bookingData) return;
-
-    setError("");
-    try {
-      setLoading(true);
-
-      const validationError = validateSlotSelection(selectedSlot);
-      if (validationError) {
-        setError(validationError);
-        setLoading(false);
+    if (!selectedSlot) {
+        alert("Vui lòng chọn khung giờ mới!");
         return;
-      }
-
-      const updateResponse = await fetch(`/api/booking/${bookingId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          slotId: Number(selectedSlot),
-          expertId: bookingData.slotExpert.expert.id,
-          bookingDate: bookingData.slotExpert.date,
-          serviceIds: bookingData.services.map((s) => s.id),
-        }),
-      });
-
-      if (!updateResponse.ok) {
-        const errorData = await updateResponse.json();
-        throw new Error(errorData.message || "Cập nhật thất bại");
-      }
-
-      alert("Cập nhật lịch hẹn thành công!");
-      navigate("/my-booking", { replace: true });
-    } catch (err) {
-      console.error("Lỗi cập nhật lịch:", err);
-      alert(err.message || "Không thể cập nhật lịch, vui lòng thử lại!");
-      setError(err.message || "Không thể cập nhật lịch, vui lòng thử lại!");
-    } finally {
-      setLoading(false);
     }
-  };
 
+    try {
+        setLoading(true);
+        setError("");
+
+        const token = localStorage.getItem("token");
+        const currentUserId = localStorage.getItem("userId");
+
+        if (!token) {
+            alert("Bạn chưa đăng nhập! Vui lòng đăng nhập lại.");
+            navigate("/login");
+            return;
+        }
+
+        // 1️⃣ Kiểm tra trạng thái booking
+        if (bookingData.status !== "AWAIT") {
+            throw new Error("Chỉ có thể thay đổi lịch hẹn khi ở trạng thái chờ xác nhận");
+        }
+
+        // 2️⃣ Lấy thông tin slot mới
+        const newSlot = slots.find(s => s.id === Number(selectedSlot));
+        if (!newSlot) {
+            throw new Error("Khung giờ không hợp lệ!");
+        }
+
+        // 3️⃣ Kiểm tra xem có đổi lịch với cùng slot không
+        if (newSlot.id === bookingData.slotExpert.slot.id) {
+            throw new Error("Bạn đang chọn lại cùng một khung giờ, vui lòng chọn khung giờ khác.");
+        }
+
+        // 4️⃣ Kiểm tra thời gian slot mới
+        const today = new Date().toISOString().split("T")[0];
+        const slotStartTime = new Date(`${today}T${newSlot.startTime}`).getTime();
+        const slotEndTime = new Date(`${today}T${newSlot.endTime}`).getTime();
+        const now = new Date().getTime();
+
+        if (slotStartTime <= now) {
+            throw new Error("Không thể chọn khung giờ trong quá khứ");
+        }
+
+        // 5️⃣ Kiểm tra xung đột lịch hẹn (loại bỏ booking cũ)
+        const userBookings = bookings.filter(
+            (booking) => ["PENDING", "PENDING_PAYMENT", "PROCESSING", "AWAIT"].includes(booking.status) &&
+                        booking.user.id === currentUserId &&
+                        booking.id !== bookingData.id
+        );
+
+        const isTimeOverlap = (start1, end1, start2, end2) => {
+            return start1 < end2 && end1 > start2;
+        };
+
+        for (const booking of userBookings) {
+            if (!booking.slotExpert?.slot) continue;
+
+            const bookedStart = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.startTime}`).getTime();
+            const bookedEnd = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.endTime}`).getTime();
+
+            if (isTimeOverlap(slotStartTime, slotEndTime, bookedStart, bookedEnd)) {
+                if (booking.slotExpert.expert.id === bookingData.slotExpert.expert.id) {
+                    throw new Error(`Bạn đã có lịch với chuyên gia này vào ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime}`);
+                } else {
+                    throw new Error(`Bạn đã có lịch với chuyên gia ${booking.slotExpert.expert.name} vào khung giờ này`);
+                }
+            }
+        }
+
+        // 6️⃣ Gọi API cập nhật
+        const response = await fetch(`/api/booking/${bookingData.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                slotId: newSlot.id,
+                expertId: bookingData.slotExpert.expert.id,
+                bookingDate: today,
+                serviceIds: bookingData.services.map(s => s.id),
+            }),
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error("Cập nhật thất bại, vui lòng thử lại sau!");
+        }
+
+        if (!response.ok) {
+            throw new Error(data.message || "Cập nhật thất bại");
+        }
+
+        // 7️⃣ Thông báo thành công & cập nhật giao diện
+        alert("Đổi lịch thành công! Hệ thống sẽ thông báo cho chuyên gia biết.");
+        navigate("/my-booking");
+
+    } catch (error) {
+        console.error("❌ Lỗi khi đổi lịch:", error);
+        setError(error.message);
+        alert(error.message);
+    } finally {
+        setLoading(false);
+    }
+};
   if (!bookingData) return <div className={styles["reschedule-container"]}>Loading...</div>;
 
   return (

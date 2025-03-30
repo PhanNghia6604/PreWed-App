@@ -25,7 +25,8 @@ const ExpertManagement = () => {
     try {
       const response = await fetch("/api/get");
       const data = await response.json();
-      const filteredData = data.filter(user => user.roleEnum === "EXPERT");
+      // Lọc theo roleEnum === Expert và điều kiện approved phải là true mới xuất hiện data lên
+      const filteredData = data.filter(user => user.roleEnum === "EXPERT" && user.approved === true);
       setExperts(filteredData);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách user:", error);
