@@ -77,9 +77,9 @@ const RescheduleBooking = () => {
     );
 
     if (isBookedByOther) {
-      errors.push("Slot này đã được đặt bởi người khác. Vui lòng chọn slot khác!");
+      const booking = bookings.find(b => b.slotExpert.slot.id === Number(selectedSlot));
+      errors.push(`Slot này đã được đặt bởi ${booking.user.name}. Vui lòng chọn slot khác!`);
     }
-
     if (errors.length > 0) {
       alert(errors.join("\n"));
       return errors[0];
@@ -89,10 +89,12 @@ const RescheduleBooking = () => {
 
   const handleReschedule = async () => {
     if (!bookingData) return;
-    if (!selectedSlot) {
-        alert("Vui lòng chọn khung giờ mới!");
-        return;
-    }
+    // if (!selectedSlot) {
+    //     alert("Vui lòng chọn khung giờ mới!");
+    //     return;
+    // }
+    const validationError = validateSlotSelection(selectedSlot);
+    if (validationError) return;
 
     try {
         setLoading(true);
@@ -114,9 +116,9 @@ const RescheduleBooking = () => {
 
         // 2️⃣ Lấy thông tin slot mới
         const newSlot = slots.find(s => s.id === Number(selectedSlot));
-        if (!newSlot) {
-            throw new Error("Khung giờ không hợp lệ!");
-        }
+        // if (!newSlot) {
+        //     throw new Error("Khung giờ không hợp lệ!");
+        // }
 
         // 3️⃣ Kiểm tra xem có đổi lịch với cùng slot không
         if (newSlot.id === bookingData.slotExpert.slot.id) {
