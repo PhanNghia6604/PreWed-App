@@ -115,11 +115,48 @@ export const MyBookings = () => {
       })
       .catch((error) => console.error("Lỗi hủy lịch:", error));
   };
-
+  const updateBookingStatus = async (bookingId, newStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Phiên đăng nhập đã hết hạn!");
+        return;
+      }
+  
+      const response = await fetch(`/api/booking/${bookingId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Cập nhật trạng thái thất bại: ${errorMessage}`);
+      }
+  
+      const updatedBooking = await response.json();
+      console.log("✅ Cập nhật booking thành công:", updatedBooking);
+  
+      setBookings((prev) =>
+        prev.map((b) => (b.id === bookingId ? updatedBooking : b))
+      );
+    } catch (error) {
+      console.error("❌ Lỗi cập nhật:", error);
+    }
+  };
+  
   const handlePayment = async (bookingId) => {
     try {
       localStorage.setItem("bookingId", bookingId);
       const token = localStorage.getItem("token");
+  
+      // First update status to PENDING_PAYMENT
+      await updateBookingStatus(bookingId, "PENDING_PAYMENT");
+  
+      // Then create payment request
       const response = await fetch("/api/payments", {
         method: "POST",
         headers: {
@@ -131,16 +168,69 @@ export const MyBookings = () => {
   
       if (!response.ok) throw new Error("Lỗi tạo yêu cầu thanh toán!");
   
-      const paymentUrl = await response.text(); // Lấy URL thanh toán từ API
-      window.location.href = paymentUrl; // Chuyển hướng đến VNPay
-  
-      // 🟢 Nếu thanh toán thành công (có thể kiểm tra trong callback sau khi quay lại từ VNPay)
-      updateBookingStatus(bookingId, "AWAIT");
+      const paymentUrl = await response.text();
+      window.location.href = paymentUrl;
     } catch (error) {
       console.error("Lỗi thanh toán:", error);
       alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
     }
   };
+  
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      try {
+        const bookingId = localStorage.getItem("bookingId");
+        if (!bookingId) return;
+  
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
+          return;
+        }
+  
+        // Get all bookings
+        const response = await fetch(`/api/booking`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          if (response.status === 401) {
+            alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
+            return;
+          }
+          throw new Error(`Lỗi API: ${await response.text()}`);
+        }
+  
+        const allBookings = await response.json();
+        
+        // Find the specific booking we're interested in
+        const currentBooking = allBookings.find(b => b.id === parseInt(bookingId));
+        
+        if (!currentBooking) {
+          console.warn("Không tìm thấy booking với ID:", bookingId);
+          return;
+        }
+  
+        if (currentBooking.status === "AWAIT") {
+          console.log("💰 Expert Payment:", currentBooking.expertPayment);
+          alert(`Thanh toán thành công! Số tiền chuyên gia nhận: ${currentBooking.expertPayment}`);
+          clearInterval(intervalId);
+          localStorage.removeItem("bookingId"); // Clean up
+        }
+        
+        // Don't automatically update to AWAIT - let the backend handle this
+      } catch (error) {
+        console.error("❌ Lỗi kiểm tra trạng thái thanh toán:", error);
+      }
+    };
+  
+    const intervalId = setInterval(checkPaymentStatus, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
   
 
   // key reviewedBookings được lưu vào localStorage để dùng đóng form đánh giá
@@ -152,34 +242,7 @@ export const MyBookings = () => {
     const storedReviews = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
     setReviewedBookings(storedReviews);
   }, []);
-  const updateBookingStatus = async (bookingId, newStatus) => {
-    try {
-      const response = await fetch(`/api/booking/${bookingId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Cập nhật trạng thái thất bại");
-      }
-  
-      const updatedBooking = await response.json();
-      console.log("✅ Trạng thái lịch hẹn đã cập nhật:", updatedBooking);
-  
-      // Cập nhật danh sách bookings để giao diện hiển thị thay đổi
-      setBookings((prev) =>
-        prev.map((b) => (b.id === bookingId ? updatedBooking : b))
-      );
-    } catch (error) {
-      console.error("❌ Lỗi khi cập nhật trạng thái:", error);
-      alert("Không thể cập nhật trạng thái, vui lòng thử lại!");
-    }
-  };
-  
+ 
   
 
   // Phân trang

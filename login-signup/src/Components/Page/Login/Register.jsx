@@ -16,19 +16,42 @@ export const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    
+    // Kiểm tra các trường rỗng
     if (!name.trim() || !username.trim() || !email.trim() || !password.trim() || !phone.trim() || !address.trim()) {
       setError("Please fill in all the required fields!");
       return;
     }
 
+    // Kiểm tra định dạng email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Invalid email format!");
       return;
     }
 
-    setError("");
+    // Kiểm tra độ dài mật khẩu
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long!");
+      return;
+    }
 
+    // Kiểm tra số điện thoại (chỉ chứa số, tối thiểu 9 số)
+    const phoneRegex = /^[0-9]{9,}$/;
+    if (!phoneRegex.test(phone)) {
+      setError("Invalid phone number! Must be at least 9 digits and contain only numbers.");
+      return;
+    }
+
+    // Kiểm tra username (không có khoảng trắng, chỉ chữ cái, số, dấu gạch dưới)
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(username)) {
+      setError("Username can only contain letters, numbers, and underscores, without spaces.");
+      return;
+    }
+
+    setError("");
+    
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
@@ -40,25 +63,16 @@ export const Register = () => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Error response:', errorText);
         throw new Error(errorText || 'Registration failed');
       }
 
-      const data = await response.json();
-      console.log("Registration successful:", data);
-
-      // Set success message
       setSuccess("Registration successful! Redirecting to login...");
-
-      // Redirect after a short delay to show the success message
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000); // Redirect after 2 seconds
+      setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
-      console.error("Registration failed:", error);
       setError(error.message || "Registration failed. Please try again.");
     }
   };
+
 
   return (
     <section className={styles.register}>

@@ -34,7 +34,7 @@ const AdminReportPage = () => {
           console.log("Dữ liệu API trả về:", bookings); 
       
         const finishedBookings = bookings.filter(
-          (booking) => booking.status === "FINISHED"
+          (booking) => booking.status === "FINISHED" || booking.status === "AWAIT"
         );
         
         const commissionRate = 0.2;
@@ -55,17 +55,20 @@ const AdminReportPage = () => {
               expertEmail: expert.email,
               totalBookings: 0,
               totalIncome: 0,
-              netIncome: 0, // Thêm biến tính số tiền thực nhận
+              expertPayment: 0, // Thêm biến tính số tiền thực nhận
             };
           }
         
           acc[expertId].totalBookings += 1;
           const servicePrice = booking.services?.[0]?.price || 0; // ✅ Lấy price từ services
+          const expertPayment = booking.expertPayment || 0; // ✅ Lấy từ API
+
           acc[expertId].totalIncome += servicePrice;
-          acc[expertId].netIncome += servicePrice * (1 - commissionRate); // Trừ hoa hồng
+          acc[expertId].expertPayment += expertPayment;
+          // acc[expertId].netIncome += servicePrice * (1 - commissionRate); // Trừ hoa hồng
           return acc;
         }, {});
-        
+        console.log("Dữ liệu API trả về:", bookings);
     
         // Chuyển object thành array để render
         setReportData(Object.values(report));
@@ -114,7 +117,7 @@ const AdminReportPage = () => {
                 })}
               </td>
               <td>
-        {expert.netIncome.toLocaleString("vi-VN", {
+        {expert.expertPayment.toLocaleString("vi-VN", { // ✅ Hiển thị totalEarnings
           style: "currency",
           currency: "VND",
         })}
