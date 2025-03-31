@@ -128,7 +128,12 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
   }, [experts, name]);
   
   const fetchServicePackages = async () => {
-    const token = localStorage.getItem("token"); 
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Bạn chưa đăng nhập, vui lòng đăng nhập trước khi đặt lịch hẹn!");
+        navigate("/customer-login");
+        return;
+    }
     try {
       const response = await fetch("/api/servicepackage",   {
         method: "Get",
@@ -224,6 +229,12 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
   
   
 const handleBooking = async () => {
+  const token = localStorage.getItem("token");
+    // if (!token) {
+    //     alert("Bạn chưa đăng nhập!");
+    //     navigate("/customer-login");
+    //     return;
+    // }
   if (!selectedSlot) {
       alert("Vui lòng chọn một khung giờ trước khi đặt lịch!");
       return;
@@ -292,11 +303,7 @@ const handleBooking = async () => {
           serviceIds: selectedPackage.id ? [selectedPackage.id] : [],
       };
 
-      const token = localStorage.getItem("token");
-      if (!token) {
-          alert("Bạn chưa đăng nhập!");
-          return;
-      }
+      
 
       const response = await fetch("/api/booking", {
           method: "POST",
