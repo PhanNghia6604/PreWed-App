@@ -30,6 +30,7 @@ public class User implements UserDetails {
     public String name;
     @NotBlank(message = "Password cannot be blank")
     public String password;
+    @Pattern(regexp = "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$", message = "Phone number do not match pattern")
     public String phone;
     @NotBlank(message = "Address cannot be blank")
     public String address;
