@@ -8,55 +8,48 @@ const ExpertProfile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState("");
 
+    const fetchExpertData = async () => {
+        const token = localStorage.getItem("token");
+        let expertId = localStorage.getItem("expertId");
+    
+        if (!token || !expertId) {
+            navigate("/expert-login");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/expert/profile/${expertId}`, {
+                headers: { "Authorization": `Bearer ${token}` },
+            });
+    
+            if (!response.ok) throw new Error("Không thể tải thông tin chuyên gia.");
+    
+            const data = await response.json();
+            
+            const uniqueCertificates = Array.from(
+                new Map(data.certificates.map(c => [c.certificateName, c])).values()
+            );
+    
+            setExpertData({ ...data, certificates: uniqueCertificates });
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+    
     useEffect(() => {
-        const fetchExpertData = async () => {
-            const token = localStorage.getItem("token");
-            let expertId = localStorage.getItem("expertId");
-    
-            if (!token || !expertId) {
-                navigate("/expert-login");
-                return;
-            }
-    
-            try {
-                const response = await fetch(`/api/expert/profile/${expertId}`, {
-                    headers: { "Authorization": `Bearer ${token}` },
-                });
-    
-                if (!response.ok) throw new Error("Không thể tải thông tin chuyên gia.");
-    
-                const data = await response.json();
-                console.log("Dữ liệu từ API:", data.certificates);
-    
-                // Loại bỏ chứng chỉ bị trùng
-                const uniqueCertificates = Array.from(
-                    new Map(data.certificates.map(c => [c.certificateName, c])).values()
-                );
-    
-                setExpertData({ ...data, certificates: uniqueCertificates });
-            } catch (err) {
-                setError(err.message);
-            }
-        };
-    
         fetchExpertData();
-    }, [navigate]);
-   
-
-
+    }, []);
 
     const handleChange = (e, index, field) => {
-        e.preventDefault();
         const { name, value } = e.target;
-        if (field) {
-            const updatedArray = [...expertData[field]];
-            updatedArray[index] = value;
-            setExpertData({ ...expertData, [field]: updatedArray });
+        if (field === "certificates") {
+            const updatedCertificates = [...expertData.certificates];
+            updatedCertificates[index] = { ...updatedCertificates[index], [name]: value };
+            setExpertData({ ...expertData, certificates: updatedCertificates });
         } else {
             setExpertData({ ...expertData, [name]: value });
         }
     };
-
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -70,17 +63,18 @@ const ExpertProfile = () => {
         reader.onerror = (error) => console.error("Lỗi khi đọc file:", error);
     };
 
-
-
     const handleAddItem = (field) => {
-        setExpertData({ ...expertData, [field]: [...expertData[field], ""] });
+        setExpertData({ 
+            ...expertData, 
+            [field]: [...expertData[field], { certificateName: "", certificateUrl: "" }] 
+        });
     };
+
     const handleRemoveItem = (index, field) => {
         const updatedArray = expertData[field].filter((_, i) => i !== index);
         setExpertData({ ...expertData, [field]: updatedArray });
     };
 
-    // Xử lý lưu thông tin
     const handleSave = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -90,138 +84,106 @@ const ExpertProfile = () => {
                 alert("Vui lòng điền đầy đủ thông tin!");
                 return;
             }
-            console.log("🔹 Dữ liệu gửi lên API:", expertData);
-            // Log dữ liệu gửi lên BE
-            // console.log("🔹 Expert ID:", expertId);
-            // console.log("🔹 Token:", token);
-            // console.log("🔹 Dữ liệu gửi lên API:", expertData);
 
             const response = await fetch("/api/expert/expert/update", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Nếu API yêu cầu token
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify(expertData),
             });
-            const result = await response.text(); // Lấy phản hồi chi tiết từ server
+            
             if (!response.ok) throw new Error("Không thể cập nhật thông tin.");
-
             alert("Cập nhật thành công!");
             setIsEditing(false);
-
         } catch (err) {
             alert(err.message);
         }
     };
 
+    const handleCancel = () => {
+        setIsEditing(false);
+        fetchExpertData(); // Tải lại dữ liệu gốc
+    };
+
     const handleLogout = () => {
         localStorage.removeItem("expertId");
         localStorage.removeItem("token");
-        localStorage.removeItem("userRole"); // Xóa luôn vai trò người dùng nếu có
-        navigate("/"); // Chuyển về trang đăng nhập
+        localStorage.removeItem("userRole");
+        navigate("/");
     };
 
     if (error) return <p className={styles.error}>{error}</p>;
     if (!expertData) return <p>Đang tải...</p>;
 
     return (
-        <div className={styles["profile-container"]}>
-            <h2>Hồ sơ chuyên gia</h2>
-            <div className={styles["profile-form"]}>
-                {/* Ảnh đại diện */}
+        <div className={styles.expertProfileContainer}>
+            <h2 className={styles.expertProfiletitle}>Hồ sơ chuyên gia</h2>
+            <div className={styles.profileFormExpertProfile}>
                 <label>Ảnh đại diện:</label>
-                <div className={styles["avatar-container"]}>
+                <div className={styles.avatarContainerExpertProfile}>
                     {expertData.avatar ? (
-                        <img
-                            src={expertData.avatar}
-                            alt="Avatar"
-                            className={styles.avatar}
-                            onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }} // Nếu lỗi, hiển thị ảnh mặc định
-                        />
+                        <img src={expertData.avatar} alt="Avatar" className={styles.avatarExpertProfile} />
                     ) : (
-                        <div className={styles["avatar-placeholder"]}>Chưa có ảnh</div>
+                        <div className={styles.avatarPlaceholderExpertProfile}>Chưa có ảnh</div>
                     )}
                     {isEditing && (
                         <>
                             <input type="file" accept="image/*" onChange={handleImageUpload} />
-                            <input
-                                type="text"
-                                name="avatar"
-                                value={expertData.avatar}
-                                onChange={(e) => setExpertData({ ...expertData, avatar: e.target.value })}
-                                placeholder="Nhập URL ảnh..."
-                            />
+                            <input type="text" name="avatar" value={expertData.avatar} onChange={handleChange} />
                         </>
                     )}
                 </div>
 
-                {/* Thông tin cá nhân */}
                 {["name", "phone", "address", "email", "specialty"].map((field) => (
-                    <div key={field}>
+                    <div key={field} className={styles.inputContainerExpertProfile}>
                         <label>{field === "specialty" ? "Chuyên môn" : field.charAt(0).toUpperCase() + field.slice(1)}:</label>
                         {isEditing ? (
                             <input type="text" name={field} value={expertData[field]} onChange={handleChange} />
                         ) : (
-                            <p>{expertData[field]}</p>
+                            <p className={styles.textExpertProfile}>{expertData[field]}</p>
                         )}
                     </div>
                 ))}
 
-                {/* Chứng chỉ */}
                 <label>Chứng chỉ:</label>
-                <ul className={styles.certificatesList}>
-                    {expertData.certificates?.length > 0 ? (
-                        expertData.certificates.map((certificate, index) => (
-                            <li key={certificate.id || index} className={styles.certificateItem}>
-                                {isEditing ? (
-                                    <>
-                                        <input
-                                            type="text"
-                                            value={certificate.certificateName}
-                                            onChange={(e) => handleChange(e, index, "certificates")}
-                                            className={styles.certificateInput}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveItem(index, "certificates")}
-                                            className={styles.removeButton}
-                                        >
-                                            Xóa
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <span style={{ color: "black" }}>
-                                            {certificate.certificateName}
-                                        </span>
-
-                                        <a
-                                            href={certificate.certificateUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={styles.viewLink}
-                                        >
-                                            Xem
-                                        </a>
-                                    </>
-                                )}
-                            </li>
-                        ))
-                    ) : (
-                        <p className={styles.noCertificates}>Chưa có chứng chỉ nào.</p>
-                    )}
+                <ul className={styles.certificatesListExpertProfile}>
+                    {expertData.certificates?.map((certificate, index) => (
+                        <li key={index} className={styles.certificateItemExpertProfile}>
+                            {isEditing ? (
+                                <>
+                                    <input type="text" name="certificateName" value={certificate.certificateName} onChange={(e) => handleChange(e, index, "certificates")} />
+                                    <input type="text" name="certificateUrl" value={certificate.certificateUrl} onChange={(e) => handleChange(e, index, "certificates")} />
+                                    <button type="button" onClick={() => handleRemoveItem(index, "certificates")} className={styles.cancelBtnExpertProfile}>Xóa</button>
+                                </>
+                            ) : (
+                                <>
+                                    <span>{certificate.certificateName}</span>
+                                    {certificate.certificateUrl && <a href={certificate.certificateUrl} target="_blank" rel="noopener noreferrer" className={styles.viewLinkExpertProfile}>Xem chứng chỉ</a>}
+                                </>
+                            )}
+                        </li>
+                    ))}
                 </ul>
-
-                {isEditing && <button type="button" onClick={() => handleAddItem("certificates")}>+ Thêm chứng chỉ</button>}
-
-                {/* Nút hành động */}
-                {isEditing ? (
-                    <button onClick={handleSave} className={styles["save-btn"]}>Lưu thay đổi</button>
-                ) : (
-                    <button onClick={() => setIsEditing(true)} className={styles["edit-btn"]}>Chỉnh sửa</button>
-                )}
+                {isEditing && <button type="button" onClick={() => handleAddItem("certificates")} className={styles.addCertificateBtnExpertProfile}>+ Thêm chứng chỉ</button>}
                 
+                <div className={styles.buttonGroup}>
+                    {isEditing ? (
+                        <>
+                            <button onClick={handleSave} className={styles.saveBtnExpertProfile}>
+                                Lưu thay đổi
+                            </button>
+                            <button onClick={handleCancel} className={styles.cancelBtnExpertProfile}>
+                                Hủy
+                            </button>
+                        </>
+                    ) : (
+                        <button onClick={() => setIsEditing(true)} className={styles.editBtnExpertProfile}>
+                            Chỉnh sửa
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
