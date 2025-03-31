@@ -12,15 +12,18 @@ export const Blog = () => {
     const fetchBlogs = async () => {
       setLoading(true);
       try {
+        const token = localStorage.getItem("token");
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    
         const response = await fetch("/api/blogs", {
           method: "GET",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: headers,
         });
-
+    
         if (!response.ok) {
           throw new Error("Lỗi khi tải danh sách blog");
         }
-
+    
         const data = await response.json();
         setBlogs(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -29,7 +32,7 @@ export const Blog = () => {
         setLoading(false);
       }
     };
-
+    
     fetchBlogs();
   }, []);
 

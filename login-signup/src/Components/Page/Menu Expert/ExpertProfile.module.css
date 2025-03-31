@@ -1,143 +1,282 @@
-/* Định dạng chung */
-.profile-container {
+/* ===== BASE STYLES ===== */
+.expertProfileContainer {
   max-width: 800px;
   margin: 40px auto;
-  padding: 20px;
+  padding: 30px;
   background: #ffffff;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TYPOGRAPHY ===== */
+.expertProfiletitle {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.expertProfiletitle::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #4baeff 0%, #28a745 100%);
+  border-radius: 2px;
+}
+
+/* ===== FORM LAYOUT ===== */
+.profileFormExpertProfile {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  color: #4a5568;
+  margin-bottom: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionTitle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ===== AVATAR SECTION ===== */
+.avatarContainerExpertProfile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  background: #f8fafc;
   border-radius: 10px;
 }
 
-h2 {
-  text-align: center;
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 20px;
+.avatarWrapper {
+  position: relative;
 }
 
-/* Form hồ sơ */
-.profile-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* Ảnh đại diện */
-.avatar-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.avatar {
-  width: 80px;
-  height: 80px;
+.avatarExpertProfile {
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #ddd;
+  border: 3px solid white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.avatar-placeholder {
-  width: 80px;
-  height: 80px;
+.avatarExpertProfile:hover {
+  transform: scale(1.03);
+}
+
+.avatarPlaceholderExpertProfile {
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f0f0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 50%;
   font-size: 14px;
-  color: #777;
+  color: #6c757d;
+  font-weight: 500;
+  border: 3px dashed #e2e8f0;
 }
 
-/* Input */
-input[type="text"],
-input[type="file"] {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.uploadBtn {
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.uploadBtn:hover {
+  background: #e2e8f0;
+}
+
+/* ===== INPUT FIELDS ===== */
+.inputContainerExpertProfile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputContainerExpertProfile label {
   font-size: 14px;
+  color: #4a5568;
+  font-weight: 500;
 }
 
-input[type="file"] {
-  border: none;
+.inputContainerExpertProfile input[type="text"],
+.inputContainerExpertProfile textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s;
+  background: #f8fafc;
 }
 
-/* Chứng chỉ */
-.certificatesList {
+.inputContainerExpertProfile input[type="text"]:focus,
+.inputContainerExpertProfile textarea:focus {
+  border-color: #4baeff;
+  box-shadow: 0 0 0 3px rgba(75, 174, 255, 0.2);
+  outline: none;
+  background: white;
+}
+
+.inputContainerExpertProfile textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* ===== CERTIFICATES SECTION ===== */
+.certificatesListExpertProfile {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.certificateItem {
+.certificateItemExpertProfile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #4baeff;
+  transition: all 0.3s;
+  color:#333;
+}
+
+.certificateItemExpertProfile:hover {
+  transform: translateX(5px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.certificateInfo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid #ddd;
+  gap: 12px;
 }
 
-
-
-.viewLink {
-  color: #007bff;
+.viewLinkExpertProfile {
+  color: #4baeff;
   text-decoration: none;
   font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.viewLink:hover {
+.viewLinkExpertProfile:hover {
   text-decoration: underline;
+  color: #2d8ef8;
 }
 
-.noCertificates {
-  font-style: italic;
-  color: gray;
+/* ===== BUTTONS ===== */
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
 }
 
-/* Nút */
 button {
-  padding: 8px 12px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
-.edit-btn {
-  background-color: #818181;
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.editBtnExpertProfile {
+  background: linear-gradient(135deg, #818181 0%, #6c757d 100%);
   color: white;
 }
 
-.edit-btn:hover {
-  background-color: #818181;
-}
-
-.save-btn {
-  background-color: #4baeff;
+.saveBtnExpertProfile {
+  background: linear-gradient(135deg, #4baeff 0%, #2d8ef8 100%);
   color: white;
 }
 
-.save-btn:hover {
-  background-color: #4baeff;
-}
-
-.logout-btn {
-  background-color: #d9534f;
+.cancelBtnExpertProfile {
+  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
   color: white;
+  padding: 10px 16px;
 }
 
-.logout-btn:hover {
-  background-color:#818181;
-}
-
-.removeButton {
-  background-color: #818181;
+.addCertificateBtnExpertProfile {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
   color: white;
-  padding: 4px 8px;
-  font-size: 12px;
+  margin-top: 10px;
 }
 
-.removeButton:hover {
-  background-color: #818181;
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .expertProfileContainer {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .avatarContainerExpertProfile {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .buttonGroup {
+    flex-direction: column;
+  }
+  
+  button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ===== ICON STYLES ===== */
+.icon {
+  width: 18px;
+  height: 18px;
 }
