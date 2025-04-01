@@ -1,122 +1,137 @@
+/* Container chính của form */
 .register {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(135deg, #1e1f1f 30%, #292a2a 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e1f1f 30%, #292a2a 100%);
+}
+
+.register .container {
+  width: 400px;
+  background: #f9f9f9;  /* Màu nền trắng */
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Tiêu đề */
+.register h2 {
+  color: #1e1f1f;  /* Màu vàng */
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Nhãn */
+.input-box label {
+  color: #ffcc00; /* Màu vàng cho nhãn */
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Input */
+.input-box input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;  /* Viền sáng */
+  border-radius: 5px;
+  font-size: 16px;
+  background: white;  /* Màu nền trắng */
+  color: black;  /* Màu chữ đen */
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-box input:focus {
+  background: rgba(255, 255, 255, 0.8); /* Nền sáng hơn khi focus */
+  border: 1px solid #ffcc00;  /* Viền vàng khi focus */
+}
+
+.input-box input::placeholder {
+  color: rgba(0, 0, 0, 0.6); /* Màu placeholder đậm hơn một chút */
+}
+
+/* Hiển thị lỗi */
+.error-text {
+  color: rgb(254, 60, 60);  /* Màu đỏ cho lỗi */
+  text-align: start;
+  margin-bottom: 5px;
+}
+
+/* Nút Đăng ký */
+.btn {
+  width: 100%;
+  max-width: 400px; /* Giới hạn chiều rộng của nút */
+  background: #0275d8;  /* Màu xanh cho nút */
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(224, 168, 13, 0.3);
+  text-align: center;
+  display: block;
+  margin: 10px auto;  /* Căn giữa nút */
+}
+
+.btn:hover {
+  background: #025aa5;  /* Màu xanh đậm hơn khi hover */
+  transform: scale(1.05);
+  box-shadow: 0px 6px 15px rgba(224, 168, 13, 0.5);
+}
+.login-link {
+  margin-top: 15px;
+  font-size: 14px;
+  color: black; /* Màu chữ mặc định là đen */
+}
+
+.login-link span {
+  color: var(--primaryColor);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-link span:hover {
+  text-decoration: underline;
+  color: #ffcc00;
+}
+
+
+/* Hiệu ứng động khi tải trang */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.register .container {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Các hiệu ứng và cải thiện giao diện trên các màn hình nhỏ */
+@media (max-width: 600px) {
   .register .container {
-    width: 400px;
-    background: rgba(47, 48, 48, 0.9) ;
-    backdrop-filter: blur(10px);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 90%;
+    padding: 20px;
   }
-  
-  .register h2 {
-    color: var(--primaryColor);
-    font-size: 26px;
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-  
-  .register-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .input-box {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  .input-box label {
-    color: var(--primaryColor) !important;
-    font-weight: 500;
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .input-box input {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: var(--white);
-    outline: none;
-    transition: 0.3s;
-  }
-  
-  .input-box input:focus {
-    background: rgba(255, 255, 255, 0.2) ;
-    border-bottom: 2px solid var(--primaryColor);
-  }
-  
-  .btn {
-    width: 100%;
-    background: var(--primaryColor);
-    color: var(--white);
-    font-size: 16px;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: 600;
-    box-shadow: 0px 4px 10px rgba(224, 168, 13, 0.3);
-  }
-  
-  .btn:hover {
-    background: #d1920c;
-    transform: scale(1.05);
-    box-shadow: 0px 6px 15px rgba(224, 168, 13, 0.5);
-  }
-  
-  .login-link {
-    margin-top: 15px;
-    font-size: 14px;
-  }
-  
-  .login-link span {
-    color: var(--primaryColor);
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .login-link span:hover {
-    text-decoration: underline;
-    color: #ffcc00;
-  }
-  
-  /* Hiệu ứng động khi tải trang */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .register .container {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  .error-text {
-    
-    color: rgb(254, 60, 60);
-      
-  
-    text-align: start;
-    
-    margin-bottom: 5px;
- 
-  }
+}

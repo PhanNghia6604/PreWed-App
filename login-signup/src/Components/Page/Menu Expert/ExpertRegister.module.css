@@ -1,21 +1,23 @@
 /* Container chính của form */
 .register-container {
-  max-width: 500px;
+  max-width: 600px;
   margin: auto;
-  padding: 30px;
-  border: 1px solid #bbb;
+  padding: 40px;
+  border: 1px solid #ddd;
   border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9; /* Nền sáng */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Thêm bóng cho container */
+  margin-top: 20px;
 }
 
 /* Tiêu đề */
 h2 {
   text-align: center;
-  color: #222;
+  color: #333;
   margin-bottom: 20px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
+  text-transform: uppercase; /* Chữ in hoa */
 }
 
 /* Thông báo */
@@ -24,6 +26,21 @@ h2 {
   text-align: center;
   font-weight: bold;
   font-size: 16px;
+}
+/* Định dạng cho các thông báo lỗi */
+.error {
+  color: red; /* Màu chữ đỏ */
+  font-size: 12px; /* Kích thước chữ nhỏ hơn */
+  margin-top: 5px; /* Khoảng cách giữa các lỗi */
+  text-align: left; /* Căn trái */
+}
+
+/* Nếu muốn tăng độ nổi bật cho thông báo lỗi, có thể thêm nền cho phần lỗi */
+.error {
+  background-color: #f8d7da; /* Nền màu đỏ nhạt */
+  border: 1px solid #f5c6cb; /* Viền màu đỏ nhạt */
+  padding: 5px;
+  border-radius: 3px; /* Bo tròn các góc */
 }
 
 /* Form */
@@ -89,7 +106,14 @@ input:focus {
   padding: 8px;
   border: 3px solid #444; /* Viền dày */
 }
-
+select[name="specialty"] {
+  width: 518px;  /* Đặt chiều rộng của select là 518px */
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+}
 /* Nút Xóa */
 .remove-btn {
   background-color: #d9534f;
@@ -108,27 +132,32 @@ input:focus {
 }
 
 /* Nút Thêm chứng chỉ */
-.add-btn {
-  background-color: #5cb85c;
+button[type="button"]:first-of-type {
+  background-color: #ffcc00;  /* Màu vàng */
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 12px 20px;  /* Tăng kích thước của nút */
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
   transition: 0.3s;
-  margin-top: 10px;
+  margin: 0 auto;
+  display: block;  /* Đảm bảo nút là block element */
+  width: 220px;  /* Đặt chiều rộng của nút */
+  text-align: center;  /* Căn giữa chữ trong nút */
+  margin-bottom: 20px;  /* Khoảng cách dưới nút */
 }
 
-.add-btn:hover {
-  background-color: #4cae4c;
+button[type="button"]:first-of-type:hover {
+  background-color: #e6b800;
 }
 
-/* Nút Submit */
-button {
+/* Nút Đăng ký */
+button[type="submit"] {
   margin-top: 20px;
-  padding: 12px;
-  background-color: #0275d8;
+  padding: 12px 20px;  /* Tăng padding để nút to hơn */
+  background-color: #0275d8;  /* Màu xanh */
   color: white;
   border: none;
   border-radius: 6px;
@@ -136,9 +165,13 @@ button {
   font-size: 16px;
   font-weight: bold;
   transition: 0.3s;
+  width: 220px; /* Đặt chiều rộng cho nút */
+  margin: 0 auto;  /* Căn giữa nút */
+  display: block;  /* Đảm bảo nút là block element */
+  text-align: center;  /* Căn giữa chữ trong nút */
 }
 
-button:hover {
+button[type="submit"]:hover {
   background-color: #025aa5;
   transform: scale(1.05);
 }

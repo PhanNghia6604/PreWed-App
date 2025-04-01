@@ -23,29 +23,29 @@ const ExpertRegister = () => {
     let newErrors = { ...errors };
   
     if (!formData.username.trim()) {
-      newErrors.username = "Tên đăng nhập không được để trống.";
+      newErrors.username = "Username cannot be empty!";
     }
     if (field === "password" || !field) {
       if (!formData.phone.trim()) {
-        newErrors.phone = "Mật khẩu không được để trống.";
+        newErrors.phone = "Password cannot be empty!";
       } else if (!/^\d{8,10}$/.test(formData.phone)) {
-        newErrors.phone = "Mật khẩu phải từ 8 tới 10 ký tự";
+        newErrors.phone = "Password must be between 8 and 10 characters";
       } else {
         delete newErrors.phone;
       }
     }
     if (!formData.name.trim()) {
-      newErrors.name= "Họ và tên không được để trống."
+      newErrors.name= "Full name cannot be empty."
     }
     
     if (!formData.address.trim()) {
-      newErrors.address = "Địa chỉ không được để trống"
+      newErrors.address = "Address cannot be empty"
     }
     if (field === "phone" || !field) {
       if (!formData.phone.trim()) {
-        newErrors.phone = "Số điện thoại không được để trống.";
+        newErrors.phone = "Phone number cannot be empty";
       } else if (!/^\d{9,11}$/.test(formData.phone)) {
-        newErrors.phone = "Số điện thoại phải từ 9 đến 11 số.";
+        newErrors.phone = "Phone number must be between 9 and 11 digits.";
       } else {
         delete newErrors.phone;
       }
@@ -53,26 +53,26 @@ const ExpertRegister = () => {
     
   if (field === "email" || !field) {
     if (!formData.email.trim()) {
-      newErrors.email = "Email không được để trống.";
+      newErrors.email = "Email cannot be empty";
     } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = "Email không hợp lệ, phải chứa '@'.";
+      newErrors.email = "Invalid email, must contain '@'.";
     } else {
       delete newErrors.email;
     }
   }
     if (!formData.avatar.trim()) {
-      newErrors.avatar = "URL ảnh đại diện không được để trống.";
+      newErrors.avatar = "Avatar URL cannot be empty";
     }
     if (!formData.specialty.trim()) {
-      newErrors.specialty = "Vui lòng chọn chuyên môn.";
+      newErrors.specialty = "Please select a specialty";
     }
   
     formData.certificates.forEach((certificate, index) => {
       if (!certificate.certificateUrl.trim()) {
-        newErrors[`certificateUrl${index}`] = "URL chứng chỉ không được để trống.";
+        newErrors[`certificateUrl${index}`] = "Certificate URL cannot be empty";
       }
       if (!certificate.certificateName.trim()) {
-        newErrors[`certificateName${index}`] = "Tên chứng chỉ không được để trống.";
+        newErrors[`certificateName${index}`] = "Certificate name cannot be empty";
       }
     });
   
@@ -138,8 +138,8 @@ const ExpertRegister = () => {
   
       const result = await response.json();
       if (response.ok) {
-        setMessage("Đăng ký thành công!");
-        alert("Bạn đã đăng ký thành công! Vui lòng chờ email phê duyệt từ admin.");
+        setMessage(" Registration successful!");
+        alert("You have successfully registered! Please wait for the approval email from the admin.");
         navigate("/expert-login");
       } else {
         setMessage(result.message || "Đăng ký thất bại.");
@@ -152,7 +152,7 @@ const ExpertRegister = () => {
 
   return (
     <div className={styles["register-container"]}>
-      <h2>Đăng ký chuyên gia</h2>
+      <h2>Expert Registration</h2>
       {message && <p className={styles.message}>{message}</p>}
       <form onSubmit={handleSubmit}>
         <label>Username:</label>
@@ -163,23 +163,23 @@ const ExpertRegister = () => {
         <input type="password" name="password" value={formData.password} onChange={handleChange} onBlur={() => validateForm("password")} required />
         {errors.password && <p className={styles.error}>{errors.password}</p>}
 
-        <label>Họ và tên:</label>
+        <label>Full Name:</label>
         <input type="text" name="name" value={formData.name} onChange={handleChange} onBlur={validateForm} required />
 
         <label>Email:</label>
         <input type="email" name="email" value={formData.email} onChange={handleChange} onBlur={() => validateForm("email")} required />
         {errors.email && <p className={styles.error}>{errors.email}</p>}
 
-        <label>Số điện thoại:</label>
+        <label>Phone:</label>
         <input type="text" name="phone" value={formData.phone} onChange={handleChange}   onBlur={() => validateForm("phone")} required />
         {errors.phone && <p className={styles.error}>{errors.phone}</p>}
 
-        <label>Địa chỉ:</label>
+        <label>Address:</label>
         <input type="text" name="address" value={formData.address} onChange={handleChange} onBlur={validateForm} required />
 
-        <label>Chuyên môn:</label>
+        <label> Specialty:</label>
         <select name="specialty" value={formData.specialty} onChange={handleChange} onBlur={validateForm} required>
-          <option value="">-- Chọn chuyên môn --</option>
+          <option value="">--  Select a specialty --</option>
           <option value="TAMLY">Tâm lý</option>
           <option value="TAICHINH">Tài chính</option>
           <option value="GIADINH">Gia đình</option>
@@ -189,11 +189,11 @@ const ExpertRegister = () => {
         </select>
         {errors.specialty && <p className={styles.error}>{errors.specialty}</p>}
 
-        <label>Ảnh đại diện (URL):</label>
+        <label> Avatar (URL):</label>
         <input type="text" name="avatar" value={formData.avatar} onChange={handleChange} onBlur={validateForm} required />
         {errors.avatar && <p className={styles.error}>{errors.avatar}</p>}
 
-        <label>Chứng chỉ:</label>
+        <label>Certificates:</label>
         {formData.certificates.map((certificate, index) => (
           <div key={index} className={styles["certificate-container"]}>
             <label>URL chứng chỉ:</label>
@@ -210,6 +210,7 @@ const ExpertRegister = () => {
         <button type="button" onClick={handleAddCertificate}>+ Thêm chứng chỉ</button>
         <button type="submit">Đăng ký</button>
       </form>
+      
     </div>
   );
 };
