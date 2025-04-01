@@ -7,6 +7,9 @@ export const Blog = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [blogsPerPage] = useState(6);
+  const [totalBlogs,setTotalBlogs] = useState(0);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -26,6 +29,7 @@ export const Blog = () => {
     
         const data = await response.json();
         setBlogs(Array.isArray(data) ? data : []);
+        setTotalBlogs(data.length); // Cập nhật tổng số bài blog
       } catch (err) {
         setError(err.message);
       } finally {
@@ -35,6 +39,22 @@ export const Blog = () => {
     
     fetchBlogs();
   }, []);
+   // Xác định bài blog cần hiển thị cho trang hiện tại
+  const indexOfLastBlog = currentPage * blogsPerPage;
+  const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+  const currentBlogs = blogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+  // Tính toán số trang
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(totalBlogs / blogsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  // Chuyển trang
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
 
   return (
     <section className={styles.blog}>
@@ -44,8 +64,8 @@ export const Blog = () => {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {!loading && !error && (
           <div className={styles.content}>
-            {blogs.length > 0 ? (
-              blogs.map((item) => (
+            {currentBlogs.length > 0 ? (
+              currentBlogs.map((item) => (
                 <div className={styles.box} key={item.id}>
                   <Link to={`/blog/${item.id}`}>
                     <div className={styles.img}>
@@ -62,6 +82,18 @@ export const Blog = () => {
             )}
           </div>
         )}
+        {/* Phân trang */}
+        <div className={styles.paginationBlog}>
+          {pageNumbers.map((number) => (
+            <button
+              key={number}
+              className={currentPage === number ? styles.active : ""}
+              onClick={() => handlePageChange(number)}
+            >
+              {number}
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -91,3 +91,35 @@ p {
 .read-more:hover {
   background-color: #0056b3;
 }
+.paginationBlog {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: auto;
+}
+
+.paginationBlog button {
+  width: 30px;       /* Chiều rộng cố định */
+  height: 30px;      /* Chiều cao bằng chiều rộng để tạo hình vuông */
+  margin: 0 2px;     /* Giảm khoảng cách giữa các button */
+  padding: 0;        /* Loại bỏ padding để không ảnh hưởng đến kích thước */
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 3px; /* Bo góc nhẹ nếu muốn */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginationBlog button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.paginationBlog button:hover:not(.active) {
+  background-color: #f0f0f0;
+}
