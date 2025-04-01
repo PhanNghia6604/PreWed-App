@@ -65,11 +65,12 @@ public class BlogAPI {
     }
 
 
-    @GetMapping
+    @GetMapping("/all")
     @Operation(summary = "Lấy danh sách blog", description = "Lấy tất cả blog chưa bị xóa")
     public ResponseEntity<List<BlogResponse>> getAllBlogs() {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Lấy chi tiết blog", description = "Lấy blog theo ID")
