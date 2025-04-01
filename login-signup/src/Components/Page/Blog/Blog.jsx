@@ -15,7 +15,7 @@ export const Blog = () => {
         const token = localStorage.getItem("token");
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
     
-        const response = await fetch("/api/blogs", {
+        const response = await fetch("/api/blogs/all", {
           method: "GET",
           headers: headers,
         });

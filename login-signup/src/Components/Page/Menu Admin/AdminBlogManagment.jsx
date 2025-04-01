@@ -16,7 +16,7 @@ const AdminBlogManagement = () => {
   const fetchBlogs = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/blogs", {
+      const response = await fetch("/api/blogs/all", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const data = await response.json();

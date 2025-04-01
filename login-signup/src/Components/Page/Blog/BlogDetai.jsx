@@ -10,17 +10,18 @@ export const BlogDetail = () => {
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
+    console.log("blog id:",id); // Kiểm tra xem id có giá trị không
     const fetchBlogDetail = async () => {
       setLoading(true);
       try {
         const response = await fetch(`/api/blogs/${id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          // headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-
+  
         if (!response.ok) {
           throw new Error("Không tìm thấy bài blog");
         }
-
+  
         const data = await response.json();
         setBlog(data);
       } catch (err) {
@@ -29,9 +30,12 @@ export const BlogDetail = () => {
         setLoading(false);
       }
     };
-
-    fetchBlogDetail();
+  
+    if (id) {
+      fetchBlogDetail();
+    }
   }, [id]);
+  
 
   if (loading) return <h2>Đang tải dữ liệu...</h2>;
   if (error) return <h2 style={{ color: "red" }}>{error}</h2>;
