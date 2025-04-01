@@ -77,7 +77,9 @@ export const ExpertsList = () => {
       const approvedExperts = expertsData.filter(expert => expert.approved);
         const feedbackMap = new Map();
 
-  
+        const uniqueSpecialties = ["Tất cả", ...new Set(approvedExperts.map((expert) => expert.specialty))];
+        setSpecialties(uniqueSpecialties);
+        
         feedbacksData.forEach((feedback) => {
           const expertId = feedback.expert?.id;
           if (!expertId) return;
@@ -124,15 +126,19 @@ export const ExpertsList = () => {
 
   const filterExperts = (specialty = "Tất cả", search = searchTerm, rating = ratingFilter) => {
     let filtered = list;
+    
     if (specialty !== "Tất cả") {
       filtered = filtered.filter((expert) => expert.specialty === specialty);
     }
+    
     if (search) {
       filtered = filtered.filter((expert) => expert.name.toLowerCase().includes(search));
     }
+    
     if (rating > 0) {
       filtered = filtered.filter((expert) => expert.rating >= parseFloat(rating));
-    } 
+    }
+  
     setFilteredList(filtered);
     setCurrentPage(1);
   };
@@ -157,30 +163,21 @@ export const ExpertsList = () => {
             className={style.searchInput}
           />
 
-          <select
-            className={style.dropdownFilter}
-            value={selectedSpecialty}
-            onChange={(e) => {
-              setSelectedSpecialty(e.target.value);
-              filterExperts(e.target.value);
-            }}
-          >
-            {specialties.map((specialty) => (
-              <option key={specialty} value={specialty}>{specialty}</option>
-            ))}
-          </select>
-
-          <div className={style.ratingFilter}>
-            <label>Lọc theo đánh giá:</label>
-            <select onChange={(e) => { setRatingFilter(e.target.value); filterExperts(selectedSpecialty, searchTerm, e.target.value); }}>
-              <option value={0}>Tất cả</option>
-              <option value={1}>1 sao trở lên</option>
-              <option value={2}>2 sao trở lên</option>
-              <option value={3}>3 sao trở lên</option>
-              <option value={4}>4 sao trở lên</option>
-              <option value={5}>5 sao</option>
-            </select>
-          </div>
+<select
+  className={style.dropdownFilter}
+  value={selectedSpecialty}
+  onChange={(e) => {
+    setSelectedSpecialty(e.target.value);
+    filterExperts(e.target.value);
+  }}
+>
+  {specialties.map((specialty) => (
+    <option key={specialty} value={specialty}>
+      {specialtyMap[specialty] || specialty}
+    </option>
+  ))}
+</select>
+       
         </div>
       )}
 
