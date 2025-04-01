@@ -17,7 +17,7 @@ const specialtyMap = {
 }
 const ExpertDetail = () => {
   const { name } = useParams();
-  
+
   const [experts, setExperts] = useState([]);
   const [experience, setExperience] = useState(null);
   const [servicePackages, setServicePackages] = useState([]);
@@ -29,29 +29,29 @@ const ExpertDetail = () => {
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-const [reviewsPerPage] = useState(3); // Số lượng đánh giá hiển thị trên mỗi trang
+  const [reviewsPerPage] = useState(3); // Số lượng đánh giá hiển thị trên mỗi trang
 
- 
+
   const [reviews, setReviews] = useState([]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
-const nextPage = () => {
-  if (currentPage < Math.ceil(reviews.length / reviewsPerPage)) {
-    setCurrentPage(currentPage + 1);
-  }
-};
+  const nextPage = () => {
+    if (currentPage < Math.ceil(reviews.length / reviewsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
-const prevPage = () => {
-  if (currentPage > 1) {
-    setCurrentPage(currentPage - 1);
-  }
-};
-const indexOfLastReview = currentPage * reviewsPerPage;
-const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
-const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-  
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  const indexOfLastReview = currentPage * reviewsPerPage;
+  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+  const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
@@ -60,11 +60,11 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
   useEffect(() => {
     const fetchReviews = async () => {
       const token = localStorage.getItem("token");
-  
+
       try {
         const expert = experts.find((e) => e.name === decodeURIComponent(name));
         if (!expert) return;
-  
+
         // Gọi API để lấy tất cả feedback
         const response = await fetch(`/api/feedback`, {
           method: "GET",
@@ -72,12 +72,12 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
             // "Authorization": `Bearer ${token}`,
           },
         });
-  
+
         if (!response.ok) throw new Error("Không thể lấy bình luận");
-  
+
         const data = await response.json();
         console.log("📌 Bình luận chuyên gia:", data);
-  
+
         // Lọc feedback chỉ lấy những feedback có expert.id trùng với ID của chuyên gia hiện tại
         const filteredReviews = data.filter((review) => review.expert.id === expert.id);
         setReviews(filteredReviews);
@@ -85,25 +85,43 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
         console.error("❌ Lỗi khi tải bình luận:", error);
       }
     };
-  
+
     fetchReviews();
   }, [experts, name]);
-  
 
 
-  
+
+
+
   useEffect(() => {
     const fetchExperts = async () => {
       try {
         const response = await fetch("/api/get");
         if (!response.ok) throw new Error("Lỗi khi tải danh sách chuyên gia");
-        
+  
         const data = await response.json();
         console.log("📌 Dữ liệu chuyên gia từ API:", data);
   
-        // Lọc chỉ lấy các chuyên gia có roleEnum là "EXPERT"
+        // Lọc chuyên gia có roleEnum là "EXPERT"
         const expertList = data.filter((user) => user.roleEnum === "EXPERT");
-        setExperts(expertList);
+  
+        // Hàm lọc chứng chỉ trùng lặp (giả sử chứng chỉ nằm trong `user.certificates`)
+        const filterUniqueCertificates = (certificates) => {
+          const seen = new Set();
+          return certificates.filter(cert => {
+            if (seen.has(cert.name)) return false; // Nếu đã tồn tại, bỏ qua
+            seen.add(cert.name);
+            return true;
+          });
+        };
+  
+        // Loại bỏ chứng chỉ trùng lặp trong danh sách chuyên gia
+        const expertsWithUniqueCertificates = expertList.map((expert) => ({
+          ...expert,
+          certificates: filterUniqueCertificates(expert.certificates || []),
+        }));
+  
+        setExperts(expertsWithUniqueCertificates);
       } catch (error) {
         console.error("❌ Lỗi khi tải danh sách chuyên gia:", error);
       }
@@ -111,12 +129,13 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
   
     fetchExperts();
   }, []);
+  
   useEffect(() => {
     const expert = experts.find((e) => e.name === decodeURIComponent(name));
     if (expert) {
       const experienceKey = `experience_${expert.id}`;
       const storedExperience = localStorage.getItem(experienceKey);
-  
+
       if (storedExperience !== null) {
         setExperience(parseInt(storedExperience, 10)); // Dùng giá trị đã lưu
       } else {
@@ -126,22 +145,22 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
       }
     }
   }, [experts, name]);
-  
+
   const fetchServicePackages = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-        alert("Bạn chưa đăng nhập, vui lòng đăng nhập trước khi đặt lịch hẹn!");
-        navigate("/customer-login");
-        return;
+      alert("Bạn chưa đăng nhập, vui lòng đăng nhập trước khi đặt lịch hẹn!");
+      navigate("/customer-login");
+      return;
     }
     try {
-      const response = await fetch("/api/servicepackage",   {
+      const response = await fetch("/api/servicepackage", {
         method: "Get",
-        headers:{
+        headers: {
           "Authorization": `Bearer ${token}`, // Gửi token trong headers
         }
       });
-      
+
       if (!response.ok) throw new Error("Lỗi khi tải gói tư vấn");
       const data = await response.json();
       setServicePackages(data);
@@ -151,47 +170,47 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
     }
   };
 
- const fetchAvailableSlots = async () => {
+  const fetchAvailableSlots = async () => {
     try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("/api/slots", {
-            method: "GET",
-            headers: { "Authorization": `Bearer ${token}` },
-        });
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/slots", {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` },
+      });
 
-        console.log("📌 API Response:", response);
+      console.log("📌 API Response:", response);
 
-        if (!response.ok) {
-            // Thử lấy phản hồi dạng text vì không phải JSON
-            const errorText = await response.text();
-            console.log("📨 Phản hồi từ server (raw text):", errorText);
+      if (!response.ok) {
+        // Thử lấy phản hồi dạng text vì không phải JSON
+        const errorText = await response.text();
+        console.log("📨 Phản hồi từ server (raw text):", errorText);
 
-            if (errorText.includes("Selected staff is not available for the chosen slot")) {
-                throw new Error("Slot này đã có người đặt, vui lòng chọn slot khác!");
-            } else {
-                throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
-            }
+        if (errorText.includes("Selected staff is not available for the chosen slot")) {
+          throw new Error("Slot này đã có người đặt, vui lòng chọn slot khác!");
+        } else {
+          throw new Error(`Lỗi API: ${response.status} - ${errorText}`);
         }
+      }
 
-        const data = await response.json();
-        console.log("📌 Lịch trống nhận được:", data);
+      const data = await response.json();
+      console.log("📌 Lịch trống nhận được:", data);
 
-        if (data.length === 0) {
-            throw new Error("Không có lịch trống nào!");
-        }
+      if (data.length === 0) {
+        throw new Error("Không có lịch trống nào!");
+      }
 
-        setAvailableSlots(data);
+      setAvailableSlots(data);
     } catch (error) {
-        console.error("❌ Lỗi khi tải lịch trống:", error);
-        alert(error.message); // Hiển thị lỗi trên giao diện
+      console.error("❌ Lỗi khi tải lịch trống:", error);
+      alert(error.message); // Hiển thị lỗi trên giao diện
     }
-};
+  };
 
 
 
 
-  
-  
+
+
 
   const handleSelectPackage = (pkg) => {
     setSelectedPackage(pkg);
@@ -202,146 +221,146 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
   };
   const getUserBookings = async () => {
     try {
-        const token = localStorage.getItem("token");
-        const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
 
-        if (!userId) {
-            console.error("Không tìm thấy userId!");
-            return [];
-        }
-
-        const response = await fetch("/api/booking", {
-            method: "GET",
-            headers: { "Authorization": `Bearer ${token}` },
-        });
-
-        if (!response.ok) {
-            throw new Error("Không thể lấy lịch đặt của người dùng.");
-        }
-
-        return await response.json(); // Trả về toàn bộ lịch đặt
-    } catch (error) {
-        console.error("Lỗi khi lấy danh sách lịch đặt:", error);
+      if (!userId) {
+        console.error("Không tìm thấy userId!");
         return [];
-    }
-};
+      }
 
-  
-  
-const handleBooking = async () => {
-  const token = localStorage.getItem("token");
+      const response = await fetch("/api/booking", {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        throw new Error("Không thể lấy lịch đặt của người dùng.");
+      }
+
+      return await response.json(); // Trả về toàn bộ lịch đặt
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách lịch đặt:", error);
+      return [];
+    }
+  };
+
+
+
+  const handleBooking = async () => {
+    const token = localStorage.getItem("token");
     // if (!token) {
     //     alert("Bạn chưa đăng nhập!");
     //     navigate("/customer-login");
     //     return;
     // }
-  if (!selectedSlot) {
+    if (!selectedSlot) {
       alert("Vui lòng chọn một khung giờ trước khi đặt lịch!");
       return;
-  }
-  if (!selectedPackage) {
+    }
+    if (!selectedPackage) {
       alert("Vui lòng chọn một gói tư vấn trước khi đặt lịch!");
       return;
-  }
+    }
 
-  const expert = experts.find((e) => e.name === decodeURIComponent(name));
-  if (!expert) {
+    const expert = experts.find((e) => e.name === decodeURIComponent(name));
+    if (!expert) {
       alert("Không tìm thấy chuyên gia!");
       return;
-  }
+    }
 
-  const today = new Date().toISOString().split("T")[0];
-  const slotStartTime = new Date(`${today}T${selectedSlot.startTime}`).getTime();
-  const slotEndTime = new Date(`${today}T${selectedSlot.endTime}`).getTime();
+    const today = new Date().toISOString().split("T")[0];
+    const slotStartTime = new Date(`${today}T${selectedSlot.startTime}`).getTime();
+    const slotEndTime = new Date(`${today}T${selectedSlot.endTime}`).getTime();
 
-  try {
+    try {
       const currentUserId = localStorage.getItem("userId");
       const userBookings = await getUserBookings();
 
       // Lọc ra tất cả các lịch đặt có trạng thái hợp lệ
       const activeBookings = userBookings.filter(
-          (booking) => ["PENDING", "PENDING_PAYMENT", "PROCESSING"].includes(booking.status)
+        (booking) => ["PENDING", "PENDING_PAYMENT", "PROCESSING"].includes(booking.status)
       );
 
       console.log("📌 Lịch hẹn của user:", activeBookings);
 
       const isTimeOverlap = (start1, end1, start2, end2) => {
-          return start1 < end2 && end1 > start2;
+        return start1 < end2 && end1 > start2;
       };
 
       for (const booking of activeBookings) {
-          if (!booking.slotExpert || !booking.slotExpert.slot) {
-              console.error("❌ Lỗi: Không có slot hợp lệ!", booking);
-              continue;
+        if (!booking.slotExpert || !booking.slotExpert.slot) {
+          console.error("❌ Lỗi: Không có slot hợp lệ!", booking);
+          continue;
+        }
+
+        const bookedStartTime = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.startTime}`).getTime();
+        const bookedEndTime = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.endTime}`).getTime();
+
+        console.log(`🔍 Kiểm tra lịch: ${booking.slotExpert.expert.name} (${booking.slotExpert.date} ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime})`);
+
+        // ❌ Nếu slot trùng giờ với lịch đã đặt
+        if (isTimeOverlap(slotStartTime, slotEndTime, bookedStartTime, bookedEndTime)) {
+          if (booking.slotExpert.expert.id === expert.id) {
+            if (booking.user.id !== currentUserId) {
+              alert(`❌ Đã có người khác (User ${booking.user.name}) đặt lịch với chuyên gia này vào khung giờ ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime}. Vui lòng chọn khung giờ khác!`);
+            } else {
+              alert(`Bạn đã đặt lịch với chuyên gia này vào khung giờ ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime}!`);
+            }
+            return;
+          } else if (booking.user.id === currentUserId) {
+            alert(`Bạn đã đặt lịch với chuyên gia ${booking.slotExpert.expert.name} vào khung giờ này! Không thể đặt thêm.`);
+            return;
           }
-
-          const bookedStartTime = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.startTime}`).getTime();
-          const bookedEndTime = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.endTime}`).getTime();
-
-          console.log(`🔍 Kiểm tra lịch: ${booking.slotExpert.expert.name} (${booking.slotExpert.date} ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime})`);
-
-          // ❌ Nếu slot trùng giờ với lịch đã đặt
-          if (isTimeOverlap(slotStartTime, slotEndTime, bookedStartTime, bookedEndTime)) {
-              if (booking.slotExpert.expert.id === expert.id) {
-                  if (booking.user.id !== currentUserId) {
-                      alert(`❌ Đã có người khác (User ${booking.user.name}) đặt lịch với chuyên gia này vào khung giờ ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime}. Vui lòng chọn khung giờ khác!`);
-                  } else {
-                      alert(`Bạn đã đặt lịch với chuyên gia này vào khung giờ ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime}!`);
-                  }
-                  return;
-              } else if (booking.user.id === currentUserId) {
-                  alert(`Bạn đã đặt lịch với chuyên gia ${booking.slotExpert.expert.name} vào khung giờ này! Không thể đặt thêm.`);
-                  return;
-              }
-          }
+        }
       }
 
       const bookingData = {
-          expertId: expert.id,
-          slotId: selectedSlot.id,
-          bookingDate: today,
-          serviceIds: selectedPackage.id ? [selectedPackage.id] : [],
+        expertId: expert.id,
+        slotId: selectedSlot.id,
+        bookingDate: today,
+        serviceIds: selectedPackage.id ? [selectedPackage.id] : [],
       };
 
-      
+
 
       const response = await fetch("/api/booking", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
-          },
-          body: JSON.stringify(bookingData),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookingData),
       });
 
       const responseText = await response.text();
       let data;
       try {
-          data = JSON.parse(responseText);
+        data = JSON.parse(responseText);
       } catch (e) {
-          data = { message: responseText };
+        data = { message: responseText };
       }
 
       if (response.ok) {
-          alert("Đặt lịch thành công!");
-          navigate("/my-booking");
+        alert("Đặt lịch thành công!");
+        navigate("/my-booking");
       } else {
-          alert(`Lỗi: ${data.message || "Không thể đặt lịch!"}`);
+        alert(`Lỗi: ${data.message || "Không thể đặt lịch!"}`);
       }
-  } catch (error) {
+    } catch (error) {
       console.error("❌ Lỗi khi xử lý đặt lịch:", error);
       alert("Đã có lỗi xảy ra, vui lòng thử lại!");
-  }
-};
+    }
+  };
 
-  
-  
-  
 
-  
-  
-  
-  
+
+
+
+
+
+
+
 
   if (!experts || experts.length === 0) {
     return <p>Đang tải dữ liệu chuyên gia...</p>;
@@ -353,61 +372,61 @@ const handleBooking = async () => {
   }
   console.log("Danh sách gói trước khi đặt lịch:", servicePackages);
 
-  
+
   return (
     <div className={styles.container}>
 
 
-<div className={styles.card}>
-  <div className={styles.avatarContainer}>
-    <img
-      src={expert.avatar || "/images/experts/default-avatar.png"}
-      alt={expert.name}
-      className={styles.avatar}
-      onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
-    />
-  </div>
-  <h2>{expert.name}</h2>
-  <p>
-  <strong>Kinh nghiệm:</strong>{" "}
-  {experience !== null ? `${experience} năm` : "Đang cập nhật..."}
-</p>
-  <p>
-    <strong>Chuyên môn:</strong> {specialtyMap[expert.specialty] || "Chưa cập nhật"}
-  </p>
+      <div className={styles.card}>
+        <div className={styles.avatarContainer}>
+          <img
+            src={expert.avatar || "/images/experts/default-avatar.png"}
+            alt={expert.name}
+            className={styles.avatar}
+            onError={(e) => (e.target.src = "/images/experts/default-avatar.png")}
+          />
+        </div>
+        <h2>{expert.name}</h2>
+        <p>
+          <strong>Kinh nghiệm:</strong>{" "}
+          {experience !== null ? `${experience} năm` : "Đang cập nhật..."}
+        </p>
+        <p>
+          <strong>Chuyên môn:</strong> {specialtyMap[expert.specialty] || "Chưa cập nhật"}
+        </p>
 
-  {specialtyMap[expert.specialty] && (
-  <p className={styles.description}>
-    <strong>Mô tả chuyên môn:</strong>{" "}
-    {expertDescriptions[specialtyMap[expert.specialty]] || "Chưa có mô tả"}
-  </p>
-)}
+        {specialtyMap[expert.specialty] && (
+          <p className={styles.description}>
+            <strong>Mô tả chuyên môn:</strong>{" "}
+            {expertDescriptions[specialtyMap[expert.specialty]] || "Chưa có mô tả"}
+          </p>
+        )}
 
-  {expert.certificates && expert.certificates.length > 0 && (
-    <div className={styles.certifications}>
-      <h3>Chứng chỉ:</h3>
-      <ul>
-        {expert.certificates.map((cert) => (
-          <li key={cert.id}>
-            {cert.certificateName} -{" "}
-            <a href={cert.certificateUrl} target="_blank" rel="noopener noreferrer">
-              Xem chứng chỉ
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
+        {expert.certificates && expert.certificates.length > 0 && (
+          <div className={styles.certifications}>
+            <h3>Chứng chỉ:</h3>
+            <ul>
+              {expert.certificates.map((cert) => (
+                <li key={cert.id}>
+                  {cert.certificateName} -{" "}
+                  <a href={cert.certificateUrl} target="_blank" rel="noopener noreferrer">
+                    Xem chứng chỉ
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-  <div className={styles.buttonContainer}>
-    <button className={styles.bookButton} onClick={handleGoBack}>
-      ← Quay lại danh sách chuyên gia
-    </button>
-    <button className={styles.backButton} onClick={fetchServicePackages}>
-      Đặt lịch hẹn
-    </button>
-  </div>
-</div>;
+        <div className={styles.buttonContainer}>
+          <button className={styles.bookButton} onClick={handleGoBack}>
+            ← Quay lại danh sách chuyên gia
+          </button>
+          <button className={styles.backButton} onClick={fetchServicePackages}>
+            Đặt lịch hẹn
+          </button>
+        </div>
+      </div>;
 
       {isModalOpen && (
         <div className={styles.modalOverlay}>
@@ -430,70 +449,70 @@ const handleBooking = async () => {
         </div>
       )}
 
-{selectedPackage && (
-  <div className={styles.modalOverlay}>
-    <div className={styles.modal}>
-      <h3>Chọn giờ tư vấn</h3>
-      <ul className={styles.slotContainer}>
-  {availableSlots.length === 0 ? (
-    <p>Không có lịch trống</p>
-  ) : (
-    availableSlots.map((slot) => {
-      // Lấy thời gian hiện tại
-      const now = new Date();
-      
-      // Tạo đối tượng Date với thời gian của slot
-      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-      const slotTime = new Date(`${today}T${slot.startTime}`);
+      {selectedPackage && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Chọn giờ tư vấn</h3>
+            <ul className={styles.slotContainer}>
+              {availableSlots.length === 0 ? (
+                <p>Không có lịch trống</p>
+              ) : (
+                availableSlots.map((slot) => {
+                  // Lấy thời gian hiện tại
+                  const now = new Date();
 
-      // Kiểm tra xem slot đã qua hay chưa
-      const isPast = slotTime < now;
+                  // Tạo đối tượng Date với thời gian của slot
+                  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+                  const slotTime = new Date(`${today}T${slot.startTime}`);
 
-      return (
-        <li
-          key={slot.id}
-          className={`${styles.slotItem} ${selectedSlot?.id === slot.id ? styles.selectedSlot : ""}`}
-        >
-          <button 
-            onClick={() => !isPast && setSelectedSlot(slot)} 
-            disabled={isPast} // Disable nếu slot đã qua
-          >
-            Giờ bắt đầu: {slot.startTime.split(":").slice(0, 2).join(":")} - 
-            Giờ kết thúc: {slot.endTime.split(":").slice(0, 2).join(":")}
-            {selectedSlot?.id === slot.id ? " ✅" : ""}
-            {isPast ? " (Hết hạn)" : ""}
-          </button>
-        </li>
-      );
-    })
-  )}
-</ul>
 
-      <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
-        {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
-      </button>
-      <p>{message}</p>
-      <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
-    </div>
-    
-  </div>
-)}
-<div className={styles.reviewsSection}>
-  <h3>Đánh giá từ khách hàng</h3>
-  {reviews.length > 0 ? (
-    <ul className={styles.reviewsList}>
-     {currentReviews.map((review, index) => (
-  <li key={index} className={styles.reviewItem}>
-    <p><strong>{review.user.name}</strong> - ⭐ {review.rating}</p>
-    <p>{review.comments}</p>
-    <p><small>{review.date ? new Date(review.date).toLocaleDateString() : "Ngày không xác định"}</small></p>
-  </li>
-))}
-    </ul>
-  ) : (
-    <p>Chưa có đánh giá nào.</p>
-  )}
-   <div className={styles.pagination}>
+                  const isPast = slotTime < now;
+
+                  return (
+                    <li
+                      key={slot.id}
+                      className={`${styles.slotItem} ${selectedSlot?.id === slot.id ? styles.selectedSlot : ""}`}
+                    >
+                      <button
+                        onClick={() => !isPast && setSelectedSlot(slot)}
+                        disabled={isPast} // Disable nếu slot đã qua
+                      >
+                        Giờ bắt đầu: {slot.startTime.split(":").slice(0, 2).join(":")} -
+                        Giờ kết thúc: {slot.endTime.split(":").slice(0, 2).join(":")}
+                        {selectedSlot?.id === slot.id ? " ✅" : ""}
+                        {isPast ? " (Hết hạn)" : ""}
+                      </button>
+                    </li>
+                  );
+                })
+              )}
+            </ul>
+
+            <button className={styles.confirmButton} onClick={handleBooking} disabled={isBooking}>
+              {isBooking ? "Đang đặt..." : "Xác nhận đặt lịch"}
+            </button>
+            <p>{message}</p>
+            <button className={styles.closeButton} onClick={() => setSelectedPackage(null)}>Quay lại</button>
+          </div>
+
+        </div>
+      )}
+      <div className={styles.reviewsSection}>
+        <h3>Đánh giá từ khách hàng</h3>
+        {reviews.length > 0 ? (
+          <ul className={styles.reviewsList}>
+            {currentReviews.map((review, index) => (
+              <li key={index} className={styles.reviewItem}>
+                <p><strong>{review.user.name}</strong> - ⭐ {review.rating}</p>
+                <p>{review.comments}</p>
+                <p><small>{review.date ? new Date(review.date).toLocaleDateString() : "Ngày không xác định"}</small></p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Chưa có đánh giá nào.</p>
+        )}
+        <div className={styles.pagination}>
           <button onClick={prevPage} disabled={currentPage === 1}>
             Trang trước
           </button>
@@ -505,7 +524,7 @@ const handleBooking = async () => {
             Trang sau
           </button>
         </div>
-</div>
+      </div>
 
 
     </div>
