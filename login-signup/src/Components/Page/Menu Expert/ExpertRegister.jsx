@@ -207,7 +207,7 @@ const ExpertRegister = () => {
             {index > 0 && <button type="button" onClick={() => handleRemoveCertificate(index)}>Xóa</button>}
           </div>
         ))}
-        <button type="button" onClick={handleAddCertificate}>+ Thêm chứng chỉ</button>
+        <button type="button" className="add-certificate-btn">+ Thêm chứng chỉ</button>
         <button type="submit">Đăng ký</button>
       </form>
       

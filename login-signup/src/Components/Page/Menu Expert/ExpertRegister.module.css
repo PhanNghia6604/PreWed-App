@@ -132,7 +132,7 @@ select[name="specialty"] {
 }
 
 /* Nút Thêm chứng chỉ */
-button[type="button"]:first-of-type {
+.add-certificate-btn {
   background-color: #ffcc00;  /* Màu vàng */
   color: white;
   border: none;
@@ -147,11 +147,14 @@ button[type="button"]:first-of-type {
   width: 220px;  /* Đặt chiều rộng của nút */
   text-align: center;  /* Căn giữa chữ trong nút */
   margin-bottom: 20px;  /* Khoảng cách dưới nút */
+  z-index: 10; /* Đảm bảo nút không bị ảnh hưởng bởi các phần tử khác */
 }
 
-button[type="button"]:first-of-type:hover {
+/* Nút Thêm chứng chỉ khi hover */
+.add-certificate-btn:hover {
   background-color: #e6b800;
 }
+
 
 /* Nút Đăng ký */
 button[type="submit"] {
