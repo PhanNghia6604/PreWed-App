@@ -12,6 +12,7 @@ const RescheduleBooking = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const token = localStorage.getItem("token");
+  const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
     if (!token) {
@@ -89,182 +90,190 @@ const RescheduleBooking = () => {
 
   const handleReschedule = async () => {
     if (!bookingData) return;
-    // if (!selectedSlot) {
-    //     alert("Vui lòng chọn khung giờ mới!");
-    //     return;
-    // }
+  
     const validationError = validateSlotSelection(selectedSlot);
     if (validationError) return;
-
+  
     try {
-        setLoading(true);
-        setError("");
-
-        const token = localStorage.getItem("token");
-        const currentUserId = localStorage.getItem("userId");
-
-        if (!token) {
-            alert("Bạn chưa đăng nhập! Vui lòng đăng nhập lại.");
-            navigate("/login");
-            return;
+      setLoading(true);
+      setError("");
+  
+      const token = localStorage.getItem("token");
+      const currentUserId = localStorage.getItem("userId");
+  
+      if (!token) {
+        alert("Bạn chưa đăng nhập! Vui lòng đăng nhập lại.");
+        navigate("/login");
+        return;
+      }
+  
+      // 1️⃣ Kiểm tra trạng thái booking
+      if (bookingData.status !== "AWAIT") {
+        throw new Error("Chỉ có thể thay đổi lịch hẹn khi ở trạng thái chờ xác nhận");
+      }
+  
+      // 2️⃣ Lấy thông tin slot mới
+      const newSlot = slots.find(s => s.id === Number(selectedSlot));
+      
+      // 3️⃣ Xử lý ngày mới
+      const newBookingDate = selectedDate || new Date().toISOString().split("T")[0]; // Nếu không thay đổi ngày, dùng ngày hiện tại
+  
+      // 4️⃣ Kiểm tra thời gian slot mới
+      const today = new Date().toISOString().split("T")[0];
+      const slotStartTime = new Date(`${today}T${newSlot.startTime}`).getTime();
+      const slotEndTime = new Date(`${today}T${newSlot.endTime}`).getTime();
+      const now = new Date().getTime();
+  
+      if (slotStartTime <= now) {
+        throw new Error("Không thể chọn khung giờ trong quá khứ");
+      }
+  
+      // 5️⃣ Kiểm tra xung đột lịch hẹn (loại bỏ booking cũ)
+      const userBookings = bookings.filter(
+        (booking) => ["PENDING", "PENDING_PAYMENT", "PROCESSING", "AWAIT"].includes(booking.status) &&
+                    booking.user.id === currentUserId &&
+                    booking.id !== bookingData.id
+      );
+  
+      const isTimeOverlap = (start1, end1, start2, end2) => {
+        return start1 < end2 && end1 > start2;
+      };
+  
+      for (const booking of userBookings) {
+        if (!booking.slotExpert?.slot) continue;
+  
+        const bookedStart = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.startTime}`).getTime();
+        const bookedEnd = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.endTime}`).getTime();
+  
+        if (isTimeOverlap(slotStartTime, slotEndTime, bookedStart, bookedEnd)) {
+          if (booking.slotExpert.expert.id === bookingData.slotExpert.expert.id) {
+            throw new Error(`Bạn đã có lịch với chuyên gia này vào ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime}`);
+          } else {
+            throw new Error(`Bạn đã có lịch với chuyên gia ${booking.slotExpert.expert.name} vào khung giờ này`);
+          }
         }
-
-        // 1️⃣ Kiểm tra trạng thái booking
-        if (bookingData.status !== "AWAIT") {
-            throw new Error("Chỉ có thể thay đổi lịch hẹn khi ở trạng thái chờ xác nhận");
-        }
-
-        // 2️⃣ Lấy thông tin slot mới
-        const newSlot = slots.find(s => s.id === Number(selectedSlot));
-        // if (!newSlot) {
-        //     throw new Error("Khung giờ không hợp lệ!");
-        // }
-
-        // 3️⃣ Kiểm tra xem có đổi lịch với cùng slot không
-        if (newSlot.id === bookingData.slotExpert.slot.id) {
-            throw new Error("Bạn đang chọn lại cùng một khung giờ, vui lòng chọn khung giờ khác.");
-        }
-
-        // 4️⃣ Kiểm tra thời gian slot mới
-        const today = new Date().toISOString().split("T")[0];
-        const slotStartTime = new Date(`${today}T${newSlot.startTime}`).getTime();
-        const slotEndTime = new Date(`${today}T${newSlot.endTime}`).getTime();
-        const now = new Date().getTime();
-
-        if (slotStartTime <= now) {
-            throw new Error("Không thể chọn khung giờ trong quá khứ");
-        }
-
-        // 5️⃣ Kiểm tra xung đột lịch hẹn (loại bỏ booking cũ)
-        const userBookings = bookings.filter(
-            (booking) => ["PENDING", "PENDING_PAYMENT", "PROCESSING", "AWAIT"].includes(booking.status) &&
-                        booking.user.id === currentUserId &&
-                        booking.id !== bookingData.id
-        );
-
-        const isTimeOverlap = (start1, end1, start2, end2) => {
-            return start1 < end2 && end1 > start2;
-        };
-
-        for (const booking of userBookings) {
-            if (!booking.slotExpert?.slot) continue;
-
-            const bookedStart = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.startTime}`).getTime();
-            const bookedEnd = new Date(`${booking.slotExpert.date}T${booking.slotExpert.slot.endTime}`).getTime();
-
-            if (isTimeOverlap(slotStartTime, slotEndTime, bookedStart, bookedEnd)) {
-                if (booking.slotExpert.expert.id === bookingData.slotExpert.expert.id) {
-                    throw new Error(`Bạn đã có lịch với chuyên gia này vào ${booking.slotExpert.slot.startTime}-${booking.slotExpert.slot.endTime}`);
-                } else {
-                    throw new Error(`Bạn đã có lịch với chuyên gia ${booking.slotExpert.expert.name} vào khung giờ này`);
-                }
-            }
-        }
-
-        // 6️⃣ Gọi API cập nhật
-        const response = await fetch(`/api/booking/${bookingData.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                slotId: newSlot.id,
-                expertId: bookingData.slotExpert.expert.id,
-                bookingDate: today,
-                serviceIds: bookingData.services.map(s => s.id),
-            }),
-        });
-
-        let data;
-        try {
-            data = await response.json();
-        } catch {
-            throw new Error("Cập nhật thất bại, vui lòng thử lại sau!");
-        }
-
-        if (!response.ok) {
-            throw new Error(data.message || "Cập nhật thất bại");
-        }
-
-        // 7️⃣ Thông báo thành công & cập nhật giao diện
-        alert("Đổi lịch thành công! Hệ thống sẽ thông báo cho chuyên gia biết.");
-        navigate("/my-booking");
-
+      }
+  
+      // 6️⃣ Gọi API cập nhật
+      const response = await fetch(`/api/booking/${bookingData.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          slotId: newSlot.id,
+          expertId: bookingData.slotExpert.expert.id,
+          bookingDate: newBookingDate || today , // Dùng ngày mới hoặc ngày hiện tại
+          serviceIds: bookingData.services.map(s => s.id),
+        }),
+      });
+  
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("Cập nhật thất bại, vui lòng thử lại sau!");
+      }
+  
+      if (!response.ok) {
+        throw new Error(data.message || "Cập nhật thất bại");
+      }
+  
+      // 7️⃣ Thông báo thành công & cập nhật giao diện
+      alert("Đổi lịch thành công! Hệ thống sẽ thông báo cho chuyên gia biết.");
+      navigate("/my-booking");
+  
     } catch (error) {
-        console.error("❌ Lỗi khi đổi lịch:", error);
-        setError(error.message);
-        alert(error.message);
+      console.error("❌ Lỗi khi đổi lịch:", error);
+      setError(error.message);
+      alert(error.message);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
+  
   if (!bookingData) return <div className={styles["reschedule-container"]}>Loading...</div>;
 
   return (
     <div className={styles["reschedule-container"]}>
       <h2>Đổi lịch hẹn</h2>
       <p>Lịch hẹn hiện tại: {bookingData.slotExpert.slot.date} {bookingData.slotExpert.slot.startTime} - {bookingData.slotExpert.slot.endTime}</p>
-      
+  
+      <label>Chọn ngày mới (Nếu bạn cần thay đổi ngày thì có thể chọn):</label>
+      <input
+        type="date"
+        className={styles["reschedule-date"]}
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        min={new Date().toISOString().split("T")[0]} // Không cho phép chọn ngày trong quá khứ
+      />
+  
       <label>Chọn thời gian mới:</label>
       <select
-  className={styles["reschedule-select"]}
-  onChange={(e) => setSelectedSlot(e.target.value)}
-  value={selectedSlot || ""}
->
-  <option value="">-- Chọn --</option>
-  {slots.map((slot) => {
-   const today = new Date().toISOString().split("T")[0]; // Lấy ngày hôm nay
-   const slotDateTime = new Date(`${today}T${slot.startTime}`);
-   const now = new Date();
-   const isPast = slotDateTime.getTime() <= now.getTime();
-
-
-    // Cắt bỏ phần ":00" cuối cùng
-    const startTimeFormatted = slot.startTime.slice(0, 5);
-    const endTimeFormatted = slot.endTime.slice(0, 5);
-
-    return (
-      <option key={slot.id} value={slot.id} disabled={isPast}>
-        {startTimeFormatted} - {endTimeFormatted} {isPast ? "(Hết hạn)" : ""}
-      </option>
-    );
-  })}
-</select>
-<p>Danh sách lịch hẹn</p>
-<ul className={styles["slot-status-list"]}>
-  {slots.map((slot) => {
-    const slotDateTime = new Date(`${slot.date}T${slot.startTime}`);
-    const now = new Date();
-    const isPast = slotDateTime.getTime() <= now.getTime();
-
-    // Cắt bỏ phần ":00" cuối cùng
-    const startTimeFormatted = slot.startTime.slice(0, 5);
-    const endTimeFormatted = slot.endTime.slice(0, 5);
-
-    return (
-      <li key={slot.id} className={styles["slot-status-item"]}>
-        {slot.date} {startTimeFormatted} - {endTimeFormatted}
-        {isPast && <span className={styles["status-text"]}> (Hết hạn)</span>}
-        {slot.isBooked && <span className={styles["status-text"]}> (Đã được đặt)</span>}
-      </li>
-    );
-  })}
-</ul>
-
-
+        className={styles["reschedule-select"]}
+        onChange={(e) => setSelectedSlot(e.target.value)}
+        value={selectedSlot || ""}
+      >
+        <option value="">-- Chọn --</option>
+        {slots.map((slot) => {
+          const today = new Date().toISOString().split("T")[0]; // Lấy ngày hôm nay
+          const slotDateTime = new Date(`${today}T${slot.startTime}`);
+          const now = new Date();
+          const isPast = slotDateTime.getTime() <= now.getTime();
+  
+          // Cắt bỏ phần ":00" cuối cùng
+          const startTimeFormatted = slot.startTime.slice(0, 5);
+          const endTimeFormatted = slot.endTime.slice(0, 5);
+  
+          return (
+            <option key={slot.id} value={slot.id} disabled={isPast}>
+              {startTimeFormatted} - {endTimeFormatted} {isPast ? "(Hết hạn)" : ""}
+            </option>
+          );
+        })}
+      </select>
+  
+      <p>Danh sách lịch hẹn</p>
+      <ul className={styles["slot-status-list"]}>
+        {slots.map((slot) => {
+          const slotDateTime = new Date(`${slot.date}T${slot.startTime}`);
+          const now = new Date();
+          const isPast = slotDateTime.getTime() <= now.getTime();
+  
+          // Cắt bỏ phần ":00" cuối cùng
+          const startTimeFormatted = slot.startTime.slice(0, 5);
+          const endTimeFormatted = slot.endTime.slice(0, 5);
+  
+          return (
+            <li key={slot.id} className={styles["slot-status-item"]}>
+              {slot.date} {startTimeFormatted} - {endTimeFormatted}
+              {isPast && <span className={styles["status-text"]}> (Hết hạn)</span>}
+              {slot.isBooked && <span className={styles["status-text"]}> (Đã được đặt)</span>}
+            </li>
+          );
+        })}
+      </ul>
+  
       {error && <p className={styles.error}>{error}</p>}
-
+  
       <div className={styles["reschedule-button-group"]}>
-        <button className={`${styles.button} ${styles["reschedule-back-button"]}`} onClick={() => navigate("/my-booking")} disabled={loading}>
+        <button
+          className={`${styles.button} ${styles["reschedule-back-button"]}`}
+          onClick={() => navigate("/my-booking")}
+          disabled={loading}
+        >
           Quay lại
         </button>
-        <button className={`${styles.button} ${styles["reschedule-button"]}`} onClick={handleReschedule} disabled={loading || !selectedSlot}>
+        <button
+          className={`${styles.button} ${styles["reschedule-button"]}`}
+          onClick={handleReschedule}
+          disabled={loading || !selectedSlot}
+        >
           {loading ? "Đang cập nhật..." : "Cập nhật lịch hẹn"}
         </button>
       </div>
     </div>
   );
-};
-
+}  
 export default RescheduleBooking;
