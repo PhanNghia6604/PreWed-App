@@ -122,7 +122,7 @@ export const MyBookings = () => {
         alert("Phiên đăng nhập đã hết hạn!");
         return;
       }
-  
+
       const response = await fetch(`/api/booking/${bookingId}`, {
         method: "PATCH",
         headers: {
@@ -131,15 +131,15 @@ export const MyBookings = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-  
+
       if (!response.ok) {
         const errorMessage = await response.text();
         throw new Error(`Cập nhật trạng thái thất bại: ${errorMessage}`);
       }
-  
+
       const updatedBooking = await response.json();
       console.log("✅ Cập nhật booking thành công:", updatedBooking);
-  
+
       setBookings((prev) =>
         prev.map((b) => (b.id === bookingId ? updatedBooking : b))
       );
@@ -147,15 +147,15 @@ export const MyBookings = () => {
       console.error("❌ Lỗi cập nhật:", error);
     }
   };
-  
+
   const handlePayment = async (bookingId) => {
     try {
       localStorage.setItem("bookingId", bookingId);
       const token = localStorage.getItem("token");
-  
+
       // First update status to PENDING_PAYMENT
       await updateBookingStatus(bookingId, "PENDING_PAYMENT");
-  
+
       // Then create payment request
       const response = await fetch("/api/payments", {
         method: "POST",
@@ -165,9 +165,9 @@ export const MyBookings = () => {
         },
         body: JSON.stringify({ bookingId }),
       });
-  
+
       if (!response.ok) throw new Error("Lỗi tạo yêu cầu thanh toán!");
-  
+
       const paymentUrl = await response.text();
       window.location.href = paymentUrl;
     } catch (error) {
@@ -175,19 +175,19 @@ export const MyBookings = () => {
       alert("Không thể tạo yêu cầu thanh toán, vui lòng thử lại!");
     }
   };
-  
+
   useEffect(() => {
     const checkPaymentStatus = async () => {
       try {
         const bookingId = localStorage.getItem("bookingId");
         if (!bookingId) return;
-  
+
         const token = localStorage.getItem("token");
         if (!token) {
           alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
           return;
         }
-  
+
         // Get all bookings
         const response = await fetch(`/api/booking`, {
           method: "GET",
@@ -196,7 +196,7 @@ export const MyBookings = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         if (!response.ok) {
           if (response.status === 401) {
             alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
@@ -204,46 +204,55 @@ export const MyBookings = () => {
           }
           throw new Error(`Lỗi API: ${await response.text()}`);
         }
-  
+
         const allBookings = await response.json();
-        
+
         // Find the specific booking we're interested in
         const currentBooking = allBookings.find(b => b.id === parseInt(bookingId));
-        
+
         if (!currentBooking) {
           console.warn("Không tìm thấy booking với ID:", bookingId);
           return;
         }
-  
+
         if (currentBooking.status === "AWAIT") {
           console.log("💰 Expert Payment:", currentBooking.expertPayment);
           alert(`Thanh toán thành công! Số tiền chuyên gia nhận: ${currentBooking.expertPayment}`);
           clearInterval(intervalId);
           localStorage.removeItem("bookingId"); // Clean up
         }
-        
+
         // Don't automatically update to AWAIT - let the backend handle this
       } catch (error) {
         console.error("❌ Lỗi kiểm tra trạng thái thanh toán:", error);
       }
     };
-  
+
     const intervalId = setInterval(checkPaymentStatus, 5000);
     return () => clearInterval(intervalId);
   }, []);
-  
+
 
   // key reviewedBookings được lưu vào localStorage để dùng đóng form đánh giá
+  const handleReview = (bookingId) => {
+    setReviewedBookings((prev) => {
+      const updatedReviews = { ...prev, [bookingId]: true };
+      localStorage.setItem("reviewedBookings", JSON.stringify(updatedReviews));
+      return updatedReviews;
+    });
+  };
   const [reviewedBookings, setReviewedBookings] = useState(() => {
-    return JSON.parse(localStorage.getItem("reviewedBookings")) || {};
+    const storedReviews = localStorage.getItem("reviewedBookings");
+    return storedReviews ? JSON.parse(storedReviews) : {};
   });
 
-  useEffect(() => {
-    const storedReviews = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
-    setReviewedBookings(storedReviews);
-  }, []);
- 
-  
+
+  // useEffect(() => {
+  //   const storedReviews = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
+  //   setReviewedBookings(storedReviews);
+  // }, []);
+
+
 
   // Phân trang
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -345,17 +354,21 @@ export const MyBookings = () => {
                       </p>
                     )}
                     {b.status === "FINISHED" && (
-                      reviewedBookings[b.id] ? (
+                      reviewedBookings?.[b.id] ? (
                         <p className={style.reviewedText}>✅ Đã đánh giá</p>
                       ) : (
                         <button
                           className={style.feedbackButton}
-                          onClick={() => navigate(`/feedback/${b.id}/${expert.id}`)}
+                          onClick={() => {
+                            handleReview(b.id); // Cập nhật trạng thái đánh giá
+                            navigate(`/feedback/${b.id}/${expert.id}`);
+                          }}
                         >
                           ✩ Đánh giá chuyên gia
                         </button>
                       )
                     )}
+
                     {b.status === "CANCELLED" && <p className={style.cancelledText}>❌ Lịch hẹn đã bị hủy.</p>}
                     {["PENDING", "PENDING_PAYMENT"].includes(b.status) && (
                       <button className={style.cancelButton} onClick={() => handleCancelBooking(b.id)}>
