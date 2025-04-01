@@ -64,8 +64,8 @@ public class BlogAPI {
         return ResponseEntity.ok(blogService.restoreBlog(id));
     }
 
+
     @GetMapping
-    @Secured({"ROLE_ADMIN", "ROLE_CUSTOMER"})
     @Operation(summary = "Lấy danh sách blog", description = "Lấy tất cả blog chưa bị xóa")
     public ResponseEntity<List<BlogResponse>> getAllBlogs() {
         return ResponseEntity.ok(blogService.getAllBlogs());

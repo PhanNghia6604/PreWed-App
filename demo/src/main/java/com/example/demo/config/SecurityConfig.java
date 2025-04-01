@@ -60,7 +60,9 @@ public class SecurityConfig {
             "/swagger-ui/favicon-16x16.png",
             "/api-docs/**",
             "/api-docs",
-            "/swagger-ui/swagger-ui.css"
+            "/swagger-ui/swagger-ui.css",
+            "/api/blogs",
+            "/api/blogs/{id}"
 
     );
 
