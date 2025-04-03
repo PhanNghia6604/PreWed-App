@@ -3,10 +3,13 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Answer;
 import com.example.demo.entity.Diagnos;
+import com.example.demo.entity.Expert;
 import com.example.demo.entity.PremaritalTest;
 import com.example.demo.entity.request.PremaritalTestRequest;
 import com.example.demo.entity.response.DiagnosResponse;
+import com.example.demo.entity.response.ExpertResponse;
 import com.example.demo.enums.CategoryEnum;
+import com.example.demo.repository.ExpertRepository;
 import com.example.demo.repository.PremaritalTestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ public class PremaritalTestService {
     private PremaritalTestRepository premaritalTestRepository;
     @Autowired
     private DiagnosService diagnosService;
+    @Autowired
+    private ExpertRepository expertRepository;
 
     public DiagnosResponse evaluateTest(PremaritalTestRequest testRequest) {
         Set<String> categoriesToImprove = new HashSet<>(); // Using a Set to prevent duplicates
@@ -70,6 +75,7 @@ public class PremaritalTestService {
         // Return DiagnosResponse
         return diagnosService.createDiagnosResponse(categoriesInVietnamese, reasons, consultations);
     }
+
 
     private String generateDiagnosisResult(int criticalIssuesCount) {
         if (criticalIssuesCount > 3) {

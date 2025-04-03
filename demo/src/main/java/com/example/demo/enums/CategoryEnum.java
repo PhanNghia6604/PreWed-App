@@ -10,7 +10,8 @@ public enum CategoryEnum {
     GIADINH("Gia đình"),
     SUCKHOE("Sức khỏe"),
     GIAOTIEP("Giao tiếp"),
-    TONGIAO("Tôn giáo");
+    TONGIAO("Tôn giáo"),
+    ALL("Tất cả chuyên môn");
 
     private final String categoryName;
 

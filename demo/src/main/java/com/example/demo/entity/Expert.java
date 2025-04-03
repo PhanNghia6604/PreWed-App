@@ -19,9 +19,9 @@ import java.util.List;
 @Setter
 @DiscriminatorValue("EXPERT") // Xác định loại user là Expert
 public class Expert extends User {
+    @ElementCollection(targetClass = CategoryEnum.class)
     @Enumerated(EnumType.STRING)
-
-    private CategoryEnum specialty;
+    private List<CategoryEnum> specialty; // Lưu danh sách chuyên môn
     private String avatar;
     private boolean approved = false;
 

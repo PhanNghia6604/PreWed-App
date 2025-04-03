@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,9 +55,25 @@ public class ExpertService {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username is already taken");
         }
+
         // Kiểm tra specialty hợp lệ
-        if (request.getSpecialty() == null || !isValidCategoryEnum(request.getSpecialty())) {
-            throw new RuntimeException("Invalid specialty category");
+        if (request.getSpecialty() == null || request.getSpecialty().isEmpty()) {
+            throw new RuntimeException("Specialty cannot be null or empty");
+        }
+
+        List<CategoryEnum> specialties = new ArrayList<>();
+        // Nếu specialty là "ALL", thêm tất cả chuyên môn vào specialties
+        if (request.getSpecialty().contains(CategoryEnum.ALL)) {
+            specialties = Arrays.asList(CategoryEnum.values()); // Chọn tất cả chuyên môn
+        } else {
+            // Nếu không phải "ALL", kiểm tra xem các chuyên môn có hợp lệ không
+            for (CategoryEnum specialty : request.getSpecialty()) {
+                if (isValidCategoryEnum(specialty)) {
+                    specialties.add(specialty);  // Thêm chuyên môn hợp lệ vào danh sách
+                } else {
+                    throw new RuntimeException("Invalid specialty category: " + specialty);
+                }
+            }
         }
 
         // Kiểm tra các trường bắt buộc không bị trống
@@ -77,7 +94,7 @@ public class ExpertService {
         expert.setEmail(request.getEmail());
         expert.setPhone(request.getPhone());
         expert.setAddress(request.getAddress());
-        expert.setSpecialty(request.getSpecialty());
+        expert.setSpecialty(specialties);  // Gán danh sách các chuyên môn cho expert
         expert.setAvatar(request.getAvatar());
         expert.setRoleEnum(RoleEnum.EXPERT);
         expert.setApproved(false);
@@ -85,14 +102,15 @@ public class ExpertService {
         // Chuyển đổi từ CertificateRequest sang Certificate
         List<Certificate> certificates = new ArrayList<>();
         for (CertificateRequest certRequest : request.getCertificates()) {
-            Certificate certificate = new Certificate(certRequest.getCertificateUrl(), certRequest.getCertificateName(), expert);  // Liên kết chứng chỉ với chuyên gia
-            certificates.add(certificate);  // Thêm chứng chỉ vào danh sách
+            Certificate certificate = new Certificate(certRequest.getCertificateUrl(), certRequest.getCertificateName(), expert);
+            certificates.add(certificate);
         }
 
-        expert.setCertificates(certificates);  // Set danh sách chứng chỉ vào expert
+        expert.setCertificates(certificates);  // Gán danh sách chứng chỉ vào expert
 
-        return userRepository.save(expert);  // Lưu expert vào cơ sở dữ liệu
+        return expertRepository.save(expert);  // Lưu expert vào cơ sở dữ liệu
     }
+
 
     public ExpertResponse getExpertProfile(Long id) {
         Optional<Expert> expert = expertRepository.findById(id);
@@ -160,12 +178,30 @@ public class ExpertService {
             if (request.getEmail() != null && !request.getEmail().isEmpty()) {
                 expert.setEmail(request.getEmail());
             }
-            if (request.getSpecialty() != null && isValidCategoryEnum(request.getSpecialty())) {
-                expert.setSpecialty(request.getSpecialty());  // Set specialty to CategoryEnum
+
+            // Kiểm tra và cập nhật specialty (danh sách chuyên môn)
+            if (request.getSpecialty() != null && !request.getSpecialty().isEmpty()) {
+                // Nếu specialty chứa "ALL", gán tất cả các chuyên môn vào danh sách
+                if (request.getSpecialty().contains(CategoryEnum.ALL)) {
+                    expert.setSpecialty(Arrays.asList(CategoryEnum.values()));  // Gán tất cả chuyên môn
+                } else {
+                    List<CategoryEnum> specialties = new ArrayList<>();
+                    for (CategoryEnum specialty : request.getSpecialty()) {
+                        if (isValidCategoryEnum(specialty)) {
+                            specialties.add(specialty);  // Chỉ thêm chuyên môn hợp lệ
+                        } else {
+                            throw new RuntimeException("Invalid specialty category: " + specialty);
+                        }
+                    }
+                    expert.setSpecialty(specialties);  // Gán danh sách chuyên môn hợp lệ vào expert
+                }
             }
+
             if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
                 expert.setAvatar(request.getAvatar());
             }
+
+            // Kiểm tra và cập nhật chứng chỉ
             if (request.getCertificates() != null && !request.getCertificates().isEmpty()) {
                 List<Certificate> certificates = new ArrayList<>();
                 for (CertificateRequest certRequest : request.getCertificates()) {
@@ -180,14 +216,14 @@ public class ExpertService {
             if (request.getPassword() != null && !request.getPassword().isEmpty()) {
                 expert.setPassword(passwordEncoder.encode(request.getPassword()));
             }
-            expert.setApproved(true);
+            expert.setApproved(true);  // Đảm bảo rằng chuyên gia đã được phê duyệt
 
-
-            return expertRepository.save(expert);
+            return expertRepository.save(expert);  // Lưu cập nhật vào cơ sở dữ liệu
         } else {
             throw new RuntimeException("Expert not found with id: " + id);
         }
     }
+
 
 
 
@@ -302,8 +338,22 @@ public class ExpertService {
             if (request.getEmail() != null && !request.getEmail().isEmpty()) {
                 expert.setEmail(request.getEmail());
             }
-            if (request.getSpecialty() != null && isValidCategoryEnum(request.getSpecialty())) {
-                expert.setSpecialty(request.getSpecialty());  // Set specialty to CategoryEnum
+            // Kiểm tra và cập nhật specialty (danh sách chuyên môn)
+            if (request.getSpecialty() != null && !request.getSpecialty().isEmpty()) {
+                // Nếu specialty chứa "ALL", gán tất cả các chuyên môn vào danh sách
+                if (request.getSpecialty().contains(CategoryEnum.ALL)) {
+                    expert.setSpecialty(Arrays.asList(CategoryEnum.values()));  // Gán tất cả chuyên môn
+                } else {
+                    List<CategoryEnum> specialties = new ArrayList<>();
+                    for (CategoryEnum specialty : request.getSpecialty()) {
+                        if (isValidCategoryEnum(specialty)) {
+                            specialties.add(specialty);  // Chỉ thêm chuyên môn hợp lệ
+                        } else {
+                            throw new RuntimeException("Invalid specialty category: " + specialty);
+                        }
+                    }
+                    expert.setSpecialty(specialties);  // Gán danh sách chuyên môn hợp lệ vào expert
+                }
             }
             if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
                 expert.setAvatar(request.getAvatar());

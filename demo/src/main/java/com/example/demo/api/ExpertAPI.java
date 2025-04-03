@@ -4,8 +4,10 @@ import com.example.demo.entity.Expert;
 import com.example.demo.entity.request.ExpertRequest;
 import com.example.demo.entity.response.ExpertResponse;
 import com.example.demo.service.ExpertService;
+import com.example.demo.service.PremaritalTestService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -14,11 +16,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/expert")
 public class ExpertAPI {
     private final ExpertService expertService;
+
+    @Autowired
+    private  PremaritalTestService premaritalTestService;
 
     public ExpertAPI(ExpertService expertService) {
         this.expertService = expertService;
@@ -33,6 +39,7 @@ public class ExpertAPI {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Trả về lỗi nếu specialty không hợp lệ
         }
     }
+
     @PutMapping("/approve/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> approveExpert(@PathVariable Long id) {

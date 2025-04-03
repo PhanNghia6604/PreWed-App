@@ -3,6 +3,7 @@ package com.example.demo.api;
 import com.example.demo.entity.PremaritalTest;
 import com.example.demo.entity.request.PremaritalTestRequest;
 import com.example.demo.entity.response.DiagnosResponse;
+import com.example.demo.entity.response.ExpertResponse;
 import com.example.demo.service.PremaritalTestService;
 import com.example.demo.service.DiagnosService;
 
@@ -13,6 +14,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/test")
@@ -60,4 +62,5 @@ public class TestController {
         List<PremaritalTest> allTestHistory = premaritalTestService.getTestHistory(null);  // null có thể dùng để lấy tất cả nếu không có userId
         return ResponseEntity.ok(allTestHistory);
     }
+
 }

@@ -33,7 +33,8 @@ public class ExpertRequest {
     @NotBlank(message = "Address cannot be blank")
     private String address;   // Địa chỉ (plan to inherit from User)
 
-    private CategoryEnum specialty;  // Chuyên môn
+    @NotEmpty(message = "Specialties cannot be empty")
+    private List<CategoryEnum> specialty;  // Danh sách chuyên môn (có thể chọn nhiều chuyên môn)
 
     private String avatar;     // Ảnh đại diện
 

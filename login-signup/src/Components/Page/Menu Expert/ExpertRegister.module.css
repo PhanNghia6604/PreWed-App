@@ -71,6 +71,59 @@ input:focus {
   border-color: #0056b3;
   box-shadow: 0 0 8px rgba(0, 86, 179, 0.5);
 }
+/* Cập nhật lại style cho các phần tử có id */
+#specialtyTAMLY, #specialtyTAICHINH, #specialtyGIADINH, #specialtySUCKHOE, #specialtyGIAOTIEP, #specialtyTONGIAO {
+  margin-right: 100px; /* Khoảng cách giữa các checkbox */
+}
+
+/* Cập nhật lại style cho fieldset và legend */
+.specialty-fieldset {
+  border: 2px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  color: #000;
+}
+
+.specialty-fieldset legend {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Dùng CSS Grid để căn chỉnh checkbox cho thẳng hàng và đều */
+.specialty-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Chia các checkbox thành cột đều */
+  gap: 10px;  /* Khoảng cách giữa các checkbox */
+  justify-items: start; /* Căn chỉnh các checkbox về phía bên trái */
+  align-items: center; /* Căn giữa các checkbox */
+  max-width: 100%; /* Giới hạn chiều rộng tối đa của container */
+}
+
+/* Thêm style cho label và checkbox để căn chỉnh tốt */
+.specialty-checkboxes label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;  /* Khoảng cách giữa checkbox và tên */
+  white-space: nowrap; /* Không cho phép xuống dòng trong các label */
+}
+
+.specialty-checkboxes input {
+  margin: 0;  /* Loại bỏ margin mặc định của checkbox */
+  cursor: pointer;
+}
+
+/* Style cho lỗi */
+.error {
+  color: red;
+  font-size: 12px;
+}
+
 
 /* Nhóm chứng chỉ */
 .certificate-container {
