@@ -1,27 +1,32 @@
-package com.example.demo.entity.DTO;
+package com.example.demo.entity;
 
 import com.example.demo.enums.CategoryEnum;
+import jakarta.persistence.*;
 
-
+@Entity
 public class Answer {
 
-    private Long userId; // Thêm trường userId để lưu thông tin người dùng
-    private Long questionId;
-    private String answerText; // "Không ổn", "Bình thường", "Rất ổn"
-    private CategoryEnum category;   // Category using Enum like Tâm lý, Tài chính, etc.
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long userId; // ID của người dùng (để theo dõi bài kiểm tra)
+    private Long questionId;  // ID câu hỏi mà người dùng trả lời
+    private int score;  // Điểm của câu trả lời (1, 2, 3)
+    private CategoryEnum category;   // Khía cạnh mà câu trả lời thuộc về (Tâm lý, Tài chính, v.v.)
 
     // Constructor mặc định cần thiết cho JPA
     public Answer() {}
 
     // Constructor với tham số
-    public Answer(Long userId, Long questionId, String answerText, CategoryEnum category) {
+    public Answer(Long userId, Long questionId, int score, CategoryEnum category) {
         this.userId = userId;
         this.questionId = questionId;
-        this.answerText = answerText;
+        this.score = score;
         this.category = category;
     }
 
-    // Getter và setter
+    // Getter, Setter
     public Long getUserId() {
         return userId;
     }
@@ -38,12 +43,12 @@ public class Answer {
         this.questionId = questionId;
     }
 
-    public String getAnswerText() {
-        return answerText;
+    public int getScore() {
+        return score;
     }
 
-    public void setAnswerText(String answerText) {
-        this.answerText = answerText;
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public CategoryEnum getCategory() {

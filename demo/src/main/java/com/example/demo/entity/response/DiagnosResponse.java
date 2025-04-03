@@ -5,16 +5,34 @@ import java.util.List;
 public class DiagnosResponse {
 
     private List<String> categoriesToImprove;  // Các chuyên môn cần cải thiện
+    private List<String> reasons;             // Các lý do cần cải thiện
+    private List<String> consultations;       // Các khuyến nghị về tư vấn
     private String diagnosisResult;            // Kết quả chẩn đoán
 
     // Constructor mặc định
-    public DiagnosResponse() {
+    public DiagnosResponse() {}
+
+    public DiagnosResponse(List<String> categoriesToImprove, List<String> consultations, String diagnosisResult, List<String> reasons) {
+        this.categoriesToImprove = categoriesToImprove;
+        this.consultations = consultations;
+        this.diagnosisResult = diagnosisResult;
+        this.reasons = reasons;
     }
 
-    // Constructor đầy đủ
-    public DiagnosResponse(List<String> categoriesToImprove, String diagnosisResult) {
-        this.categoriesToImprove = categoriesToImprove;
-        this.diagnosisResult = diagnosisResult;
+    public List<String> getConsultations() {
+        return consultations;
+    }
+
+    public void setConsultations(List<String> consultations) {
+        this.consultations = consultations;
+    }
+
+    public List<String> getReasons() {
+        return reasons;
+    }
+
+    public void setReasons(List<String> reasons) {
+        this.reasons = reasons;
     }
 
     // Getter và Setter cho categoriesToImprove
@@ -38,13 +56,13 @@ public class DiagnosResponse {
     // Phương thức toString() để dễ dàng in thông tin đối tượng khi debug
     @Override
     public String toString() {
-        return "DiagnosResponseDTO{" +
+        return "DiagnosResponse{" +
                 "categoriesToImprove=" + categoriesToImprove +
                 ", diagnosisResult='" + diagnosisResult + '\'' +
                 '}';
     }
 
-    // Phương thức equals() để so sánh 2 đối tượng DiagnosResponseDTO
+    // Phương thức equals() để so sánh 2 đối tượng DiagnosResponse
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,4 +83,3 @@ public class DiagnosResponse {
         return result;
     }
 }
-

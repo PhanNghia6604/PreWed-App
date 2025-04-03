@@ -1,103 +1,98 @@
-/* Test.module.css */
-
 .container {
-  max-width: 600px; /* Tăng chiều rộng để thoáng hơn */
-  margin: 60px auto; /* Tăng margin để nổi bật giữa trang */
-  padding: 30px; /* Thêm padding cho không gian nội dung */
-  background: linear-gradient(135deg, #ffffff, #f9f9f9); /* Gradient nhẹ nhàng */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Đổ bóng mềm mại hơn */
+  max-width: 600px; /* Chiều rộng */
+  margin: 60px auto; /* Khoảng cách phía trên */
+  padding: 30px; /* Padding */
+  background: linear-gradient(135deg, #ffffff, #f9f9f9); /* Gradient */
+  border-radius: 12px; /* Bo tròn */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Bóng */
   text-align: center;
 }
 
 .title {
-  font-size: 24px; /* Tăng kích thước chữ */
-  font-weight: 700; /* Đậm hơn một chút */
-  color: #2c3e50; /* Màu tối hơn, chuyên nghiệp hơn */
-  margin-bottom: 20px; /* Tăng khoảng cách */
-  letter-spacing: 0.5px; /* Thêm khoảng cách chữ cho tinh tế */
+  font-size: 24px; /* Kích thước chữ */
+  font-weight: 700; /* Đậm */
+  color: #2c3e50; /* Màu chữ */
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
 }
 
 .testSection {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Tăng khoảng cách giữa các phần */
+  gap: 20px;
 }
 
 .questionBox {
-  padding: 15px; /* Tăng padding */
-  border-bottom: 1px solid #e0e0e0; /* Màu viền nhạt hơn */
-  background: #fdfdfd; /* Nền nhẹ để nổi bật */
-  border-radius: 6px; /* Bo tròn nhẹ */
-  transition: background 0.2s ease; /* Hiệu ứng mượt mà */
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fdfdfd;
+  border-radius: 6px;
+  transition: background 0.2s ease;
 }
 
 .questionBox:hover {
-  background: #f7f7f7; /* Hiệu ứng hover nhẹ */
+  background: #f7f7f7;
 }
 
 .questionText {
-  font-size: 16px; /* Tăng kích thước chữ cho dễ đọc */
-  color: #34495e; /* Màu chữ tối hơn, dễ nhìn */
-  margin-bottom: 12px; /* Tăng khoảng cách */
-  line-height: 1.5; /* Cải thiện độ cao dòng */
+  font-size: 16px;
+  color: #34495e;
+  font-weight: 600; /* In đậm câu hỏi */
+  margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .options {
-  display: flex;
-  justify-content: center;
-  gap: 80px; /* Tăng khoảng cách giữa các lựa chọn */
-  padding: 10px 25px; /* Điều chỉnh padding */
+  display: block; /* Đảm bảo các câu trả lời sẽ nằm dưới nhau */
+  padding: 10px 0;
 }
 
 .option {
-  font-size: 15px; /* Tăng nhẹ kích thước chữ */
-  color: #4a4a4a; /* Màu chữ trung tính */
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Tăng khoảng cách giữa radio và text */
-  transition: color 0.3s ease; /* Hiệu ứng chuyển màu */
+  font-size: 15px;
+  color: #4a4a4a;
+  margin-bottom: 10px; /* Khoảng cách giữa các câu trả lời */
+  transition: color 0.3s ease;
 }
 
 .option:hover {
-  color: #007bff; /* Đổi màu khi hover */
+  color: #007bff;
 }
 
 input[type="radio"] {
-  accent-color: #007bff; /* Màu chủ đạo */
-  width: 18px; /* Tăng kích thước radio button */
-  height: 18px;
+  accent-color: #007bff;
+  width: 18px;
+  height: 11px;
   cursor: pointer;
 }
 
 .submitBtn {
-  margin-top: 25px; /* Tăng khoảng cách */
-  padding: 12px 24px; /* Tăng kích thước nút */
-  background: linear-gradient(90deg, #007bff, #0056b3); /* Gradient cho nút */
-  border: none; /* Bỏ viền */
-  color: #fff; /* Màu chữ trắng */
+  margin-top: 25px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  border: none;
+  color: #fff;
   font-size: 15px;
   font-weight: 600;
-  border-radius: 8px; /* Bo tròn hơn */
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3); /* Thêm bóng nhẹ */
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
 }
 
 .submitBtn:hover {
-  background: linear-gradient(90deg, #0056b3, #003d82); /* Gradient tối hơn khi hover */
-  transform: translateY(-2px); /* Nâng nhẹ nút khi hover */
-  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4); /* Tăng bóng */
+  background: linear-gradient(90deg, #0056b3, #003d82);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
 }
 
 .categoryHeader {
   text-align: center;
-  background: linear-gradient(135deg, #f5f5f5, #ececec); /* Gradient nhẹ */
-  padding: 12px; /* Tăng padding */
-  font-size: 22px; /* Tăng kích thước chữ */
+  background: linear-gradient(135deg, #f5f5f5, #ececec);
+  padding: 12px;
+  font-size: 22px;
   font-weight: 700;
-  color: #2c3e50; /* Màu chữ tối hơn */
-  margin: 25px 0; /* Tăng khoảng cách */
-  border-radius: 8px; /* Bo tròn hơn */
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05); /* Bóng nhẹ */
+  color: #2c3e50;
+  margin: 25px 0;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
