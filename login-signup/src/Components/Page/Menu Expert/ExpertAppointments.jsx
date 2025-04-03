@@ -12,7 +12,7 @@ const ExpertAppointment = () => {
 
   useEffect(() => {
     const expertId = Number(localStorage.getItem("expertId")); // Lấy expertId của chuyên gia hiện tại
-  
+
     fetch("/api/booking", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     })
@@ -20,7 +20,7 @@ const ExpertAppointment = () => {
       .then((data) => {
         console.log("Dữ liệu từ API:", data);
         const filteredByExpert = data.filter(appt => appt.slotExpert.expert.id === expertId);
-        
+
         // Xếp hạng mức độ ưu tiên của status
         const statusPriority = {
           "PENDING": 1,  // Ưu tiên cao nhất
@@ -30,7 +30,7 @@ const ExpertAppointment = () => {
           "FINISHED": 4,
           "CANCELLED": 5  // Ưu tiên thấp nhất
         };
-  
+
         // Sắp xếp lịch hẹn theo `status` trước, sau đó theo `id` giảm dần
         const sortedAppointments = filteredByExpert.sort((a, b) => {
           if (statusPriority[a.status] !== statusPriority[b.status]) {
@@ -38,35 +38,35 @@ const ExpertAppointment = () => {
           }
           return b.id - a.id; // Nếu cùng status, sắp xếp theo id giảm dần
         });
-  
+
         console.log("Lịch hẹn đã sắp xếp:", sortedAppointments);
         setAppointments(sortedAppointments);
         setFilteredAppointments(sortedAppointments);
       })
       .catch((error) => console.error("Lỗi khi tải lịch hẹn:", error));
   }, []);
-  
-// Xử lý bộ lọc khi có sự thay đổi
-useEffect(() => {
-  let filtered = appointments;
 
-  if (statusFilter) {
-    filtered = filtered.filter(appt => appt.status === statusFilter);
-  }
+  // Xử lý bộ lọc khi có sự thay đổi
+  useEffect(() => {
+    let filtered = appointments;
 
-  if (dateFilter) {
-    filtered = filtered.filter(appt => appt.slotExpert.date === dateFilter);
-  }
+    if (statusFilter) {
+      filtered = filtered.filter(appt => appt.status === statusFilter);
+    }
 
-  if (searchTerm) {
-    filtered = filtered.filter(appt =>
-      appt.user?.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }
+    if (dateFilter) {
+      filtered = filtered.filter(appt => appt.slotExpert.date === dateFilter);
+    }
 
-  setFilteredAppointments(filtered);
-  setCurrentPage(1);
-}, [statusFilter, dateFilter, searchTerm, appointments]); // Thêm appointments vào dependency array
+    if (searchTerm) {
+      filtered = filtered.filter(appt =>
+        appt.user?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredAppointments(filtered);
+    setCurrentPage(1);
+  }, [statusFilter, dateFilter, searchTerm, appointments]); // Thêm appointments vào dependency array
 
   // Phân trang
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -77,12 +77,41 @@ useEffect(() => {
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   // Cập nhật trạng thái lịch hẹn
-  const updateStatus = async (bookingId, newStatus) => {
+  const updateStatus = async (bookingId, newStatus, appointment) => {
     try {
+      // Kiểm tra thời gian để cho phép bắt đầu tư vấn
+      if (newStatus === "PROCESSING") {
+        const now = new Date();
+        const appointmentStartTime = new Date(`${appointment.slotExpert.date}T${appointment.slotExpert.slot.startTime}`);
+        const timeDifference = appointmentStartTime - now;
+
+        // Nếu thời gian hiện tại chưa tới 10 phút trước thời gian bắt đầu lịch hẹn
+        if (timeDifference > 600000) {
+          // Cho phép nhấn nút nhưng không thể bắt đầu ngay
+          alert("⏳ Bạn có thể nhấn bắt đầu để chuẩn bị, nhưng lịch hẹn chưa đến giờ bắt đầu. Đợi ít nhất 10 phút.");
+          // Cập nhật trạng thái "AWAIT" hoặc trạng thái sẵn sàng
+          const token = localStorage.getItem("token");
+          const response = await fetch(`/api/booking/${bookingId}?status=AWAIT`, {
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${token}` },
+          });
+
+          if (!response.ok) throw new Error(`Lỗi: ${response.statusText}`);
+
+          setAppointments((prev) =>
+            prev.map((appt) =>
+              appt.id === bookingId ? { ...appt, status: "AWAIT" } : appt
+            )
+          );
+          return;
+        }
+      }
+
+      // Nếu đủ thời gian, thay đổi trạng thái thành "PROCESSING" để bắt đầu tư vấn
       const token = localStorage.getItem("token");
       const response = await fetch(`/api/booking/${bookingId}?status=${newStatus}`, {
         method: "PATCH",
-        headers: { "Authorization": `Bearer ${token}` }
+        headers: { "Authorization": `Bearer ${token}` },
       });
 
       if (!response.ok) throw new Error(`Lỗi: ${response.statusText}`);
@@ -93,7 +122,7 @@ useEffect(() => {
         )
       );
 
-      alert("✅ Cập nhật trạng thái thành công!");
+      alert("✅ Cập nhật trạng thái thành công và bắt đầu tư vấn!");
     } catch (error) {
       console.error("❌ Lỗi khi cập nhật trạng thái:", error);
       alert("Không thể cập nhật trạng thái!");
@@ -109,7 +138,7 @@ useEffect(() => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Danh sách lịch hẹn</h2>
-  
+
       {/* Bộ lọc */}
       <div className={styles.filters}>
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
@@ -121,9 +150,9 @@ useEffect(() => {
           <option value="FINISHED">Hoàn thành</option>
           <option value="CANCELLED">Đã hủy</option>
         </select>
-  
+
         <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} />
-  
+
         <input
           type="text"
           placeholder="Tìm khách hàng..."
@@ -131,7 +160,7 @@ useEffect(() => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-  
+
       {/* Bảng danh sách lịch hẹn */}
       <table className={styles.table}>
         <thead>
@@ -147,70 +176,78 @@ useEffect(() => {
           </tr>
         </thead>
         <tbody>
-  {displayedAppointments.map((appointment) => (
-    <tr key={appointment.id}>
-      <td>{appointment.id}</td>
-      <td>{appointment.slotExpert.date}</td>
-      <td>{appointment.slotExpert.slot.startTime} - {appointment.slotExpert.slot.endTime}</td>
-      <td>{appointment.status}</td>
-      <td>{appointment.user?.name} ({appointment.user?.email})</td>
-      <td>
-        {appointment.services.length > 0 ? (
-          <ul className={styles.serviceList}>
-            {appointment.services.map(service => (
-              <li key={service.id}>{service.name} ({service.duration} phút)</li>
-            ))}
-          </ul>
-        ) : "Không có dịch vụ"}
-      </td>
-      <td>
-        {appointment.services.length > 0 ? (
-          appointment.services.reduce((total, service) => total + service.price, 0).toLocaleString() + " VND"
-        ) : "0 VND"}
-      </td>
-      <td>
-        {appointment.status === "PENDING" && (
-          <>
-            <button className={styles.acceptButton} onClick={() => updateStatus(appointment.id, "PENDING_PAYMENT")}>Chấp nhận</button>
-            <button className={styles.rejectButton} onClick={() => updateStatus(appointment.id, "CANCELLED")}>Từ chối</button>
-          </>
-        )}
+          {displayedAppointments.map((appointment) => (
+            <tr key={appointment.id}>
+              <td>{appointment.id}</td>
+              <td>{appointment.slotExpert.date}</td>
+              <td>{appointment.slotExpert.slot.startTime} - {appointment.slotExpert.slot.endTime}</td>
+              <td>{appointment.status}</td>
+              <td>{appointment.user?.name} ({appointment.user?.email})</td>
+              <td>
+                {appointment.services.length > 0 ? (
+                  <ul className={styles.serviceList}>
+                    {appointment.services.map(service => (
+                      <li key={service.id}>{service.name} ({service.duration} phút)</li>
+                    ))}
+                  </ul>
+                ) : "Không có dịch vụ"}
+              </td>
+              <td>
+                {appointment.services.length > 0 ? (
+                  appointment.services.reduce((total, service) => total + service.price, 0).toLocaleString() + " VND"
+                ) : "0 VND"}
+              </td>
+              <td>
+                {appointment.status === "PENDING" && (
+                  <>
+                    <button className={styles.acceptButton} onClick={() => updateStatus(appointment.id, "PENDING_PAYMENT")}>Chấp nhận</button>
+                    <button className={styles.rejectButton} onClick={() => updateStatus(appointment.id, "CANCELLED")}>Từ chối</button>
+                  </>
+                )}
 
-        {appointment.status === "AWAIT" && (
-          <>
-            <button className={styles.startButton} onClick={() => updateStatus(appointment.id, "PROCESSING")}>Bắt đầu tư vấn</button>
-            
-            {/* Ô nhập link Google Meet */}
-            <div className={styles.meetContainer}>
-              <input
-                type="text"
-                placeholder="Nhập link Google Meet"
-                className={styles.meetInput}
-                value={appointment.meetLink || ""}
-                onChange={(e) => {
-                  const newLink = e.target.value;
-                  setAppointments((prev) =>
-                    prev.map((appt) =>
-                      appt.id === appointment.id ? { ...appt, meetLink: newLink } : appt
-                    )
-                  );
-                }}
-              />
-              <button className={styles.saveButton} onClick={() => saveMeetLink(appointment.id, appointment.meetLink)}>💾 Lưu</button>
-            </div>
-          </>
-        )}
+                {appointment.status === "AWAIT" && (
+                  <>
+                    <>
+                      {/* Nút chuẩn bị trước 10 phút */}
+                      <button
+                        className={styles.startButton}
+                        onClick={() => updateStatus(appointment.id, "PROCESSING", appointment)}
+                      >
+                        Bắt đầu tư vấn
+                      </button>
+                    </>
 
-        {appointment.status === "PROCESSING" && (
-          <button className={styles.finishButton} onClick={() => updateStatus(appointment.id, "FINISHED")}>Hoàn tất tư vấn</button>
-        )}
-      </td>
-    </tr>
-  ))}
-</tbody>
+                    {/* Ô nhập link Google Meet */}
+                    <div className={styles.meetContainer}>
+                      <input
+                        type="text"
+                        placeholder="Nhập link Google Meet"
+                        className={styles.meetInput}
+                        value={appointment.meetLink || ""}
+                        onChange={(e) => {
+                          const newLink = e.target.value;
+                          setAppointments((prev) =>
+                            prev.map((appt) =>
+                              appt.id === appointment.id ? { ...appt, meetLink: newLink } : appt
+                            )
+                          );
+                        }}
+                      />
+                      <button className={styles.saveButton} onClick={() => saveMeetLink(appointment.id, appointment.meetLink)}>💾 Lưu</button>
+                    </div>
+                  </>
+                )}
+
+                {appointment.status === "PROCESSING" && (
+                  <button className={styles.finishButton} onClick={() => updateStatus(appointment.id, "FINISHED")}>Hoàn tất tư vấn</button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
 
       </table>
-  
+
       {/* Phân trang */}
       <div className={styles.pagination}>
         <button onClick={prevPage} disabled={currentPage === 1}>⬅️ Trang trước</button>
@@ -219,5 +256,5 @@ useEffect(() => {
       </div>
     </div>
   );
-}  
+}
 export default ExpertAppointment;

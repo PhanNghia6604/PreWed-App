@@ -317,3 +317,22 @@ strong {
   gap: 10px; /* Khoảng cách giữa hai nút */
   margin-top: 20px; /* Khoảng cách từ phần trên xuống */
 }
+/* Thêm vào file CSS của bạn */
+/* Slot bạn đã đặt */
+.bookedByMeSlot {
+  background-color: #fff3cd; /* Màu vàng nhạt */
+  color: #856404;
+}
+
+/* Slot người khác đã đặt */
+.bookedByOthersSlot {
+  background-color: #f8d7da; /* Màu đỏ nhạt */
+  color: #721c24;
+}
+
+/* Slot bị disabled */
+.bookedByMeSlot button,
+.bookedByOthersSlot button {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
