@@ -16,6 +16,12 @@ public class Diagnos {
     @ElementCollection
     private List<String> categoriesToImprove; // Các chuyên môn cần cải thiện
 
+    @ElementCollection
+    private List<String> reasons;  // Lý do cần cải thiện
+
+    @ElementCollection
+    private List<String> consultations;  // Các lời khuyên tư vấn
+
     private String diagnosisResult; // Kết quả chẩn đoán
     @ManyToOne
     @JoinColumn(name = "premarital_test_id")
@@ -23,6 +29,23 @@ public class Diagnos {
     private PremaritalTest premaritalTest;  // Mỗi kết quả chẩn đoán thuộc về một bài kiểm tra
 
     // Getters và Setters
+
+    public List<String> getConsultations() {
+        return consultations;
+    }
+
+    public void setConsultations(List<String> consultations) {
+        this.consultations = consultations;
+    }
+
+    public List<String> getReasons() {
+        return reasons;
+    }
+
+    public void setReasons(List<String> reasons) {
+        this.reasons = reasons;
+    }
+
     public Long getId() {
         return id;
     }

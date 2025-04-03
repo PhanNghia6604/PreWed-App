@@ -1,6 +1,8 @@
 package com.example.demo.entity.request;
 
-import com.example.demo.entity.DTO.Answer;
+
+
+import com.example.demo.entity.Answer;
 
 import java.util.List;
 
@@ -8,11 +10,13 @@ public class PremaritalTestRequest {
     private Long userId;
     private List<Answer> answers; // Danh sách câu trả lời của người dùng
 
+    // Constructor
     public PremaritalTestRequest(Long userId, List<Answer> answers) {
         this.userId = userId;
         this.answers = answers;
     }
 
+    // Getter và Setter
     public Long getUserId() {
         return userId;
     }
@@ -37,4 +41,3 @@ public class PremaritalTestRequest {
                 '}';
     }
 }
-

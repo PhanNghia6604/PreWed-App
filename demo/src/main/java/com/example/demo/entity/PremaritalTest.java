@@ -14,8 +14,8 @@ public class PremaritalTest {
     private Long id;
 
     private Long userId;
-    @ElementCollection
-    private List<String> answers;  // Danh sách chuyên môn cần cải thiện
+
+
     private LocalDateTime testDate;  // Thời gian bài kiểm tra được thực hiện
 
     @OneToMany(mappedBy = "premaritalTest", cascade = CascadeType.ALL)
@@ -39,13 +39,9 @@ public class PremaritalTest {
         this.userId = userId;
     }
 
-    public List<String> getAnswers() {
-        return answers;
-    }
 
-    public void setAnswers(List<String> answers) {
-        this.answers = answers;
-    }
+
+
 
     public LocalDateTime getTestDate() {
         return testDate;
@@ -54,6 +50,7 @@ public class PremaritalTest {
     public void setTestDate(LocalDateTime testDate) {
         this.testDate = testDate;
     }
+
     public List<Diagnos> getDiagnosResults() {
         return diagnosResults;
     }
