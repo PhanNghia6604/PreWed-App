@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./Result.module.css";
+import { Link } from "react-router-dom";
+
 
 // Hàm chuyển đổi chuyên môn thành dạng viết tắt
 const convertToShortForm = (category) => {
@@ -121,24 +123,33 @@ const Result = () => {
 
         {/* Hiển thị chuyên gia gợi ý */}
         <div className={styles.recommendedExperts}>
-          <h3>Chuyên gia tư vấn gợi ý:</h3>
-          {loading ? (
-            <p>Đang tải chuyên gia...</p>
-          ) : recommendedExperts.length > 0 ? (
-            recommendedExperts.map((expert) => (
-              <div key={expert.id} className={styles.expertCard}>
-                <img src={expert.avatar} alt={expert.name} className={styles.expertAvatar} />
-                <div>
-                  <h4>{expert.name}</h4>
-                  <p>{expert.specialty.join(", ")}</p>
-                  
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>Không có chuyên gia nào phù hợp với các lĩnh vực cần cải thiện của bạn.</p>
-          )}
+  <h3>Chuyên gia tư vấn gợi ý:</h3>
+  {loading ? (
+    <p>Đang tải chuyên gia...</p>
+  ) : recommendedExperts.length > 0 ? (
+    recommendedExperts.map((expert) => (
+      <div key={expert.id} className={styles.expertCard}>
+        <img
+          src={expert.avatar}
+          alt={expert.name}
+          className={styles.expertAvatar}
+        />
+        <div>
+          <h4>
+            {/* Thêm Link để chuyển tới trang chi tiết của chuyên gia */}
+            <Link to={`/expert/${expert.name}`} className={styles.expertLink}>
+              {expert.name}
+            </Link>
+          </h4>
+          <p>{expert.specialty.join(", ")}</p>
         </div>
+      </div>
+    ))
+  ) : (
+    <p>Không có chuyên gia nào phù hợp với các lĩnh vực cần cải thiện của bạn.</p>
+  )}
+</div>
+
       </div>
 
       <div className={styles.navigationButtons}>

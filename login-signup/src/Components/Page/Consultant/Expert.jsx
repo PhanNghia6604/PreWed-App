@@ -23,6 +23,14 @@ export const ExpertsList = () => {
   const [showFilters, setShowFilters] = useState(true);
   const [selectedSpecialty, setSelectedSpecialty] = useState("Tất cả");
   const expertsPerPage = 6;
+  const getSpecialtyDisplay = (specialty) => {
+    // Kiểm tra nếu chuyên gia có tất cả các chuyên môn
+    if (specialty.length === Object.keys(specialtyMap).length) {
+      return ["Chuyên gia toàn diện"];
+    } else {
+      return specialty.map(code => specialtyMap[code] || code);
+    }
+  };
 
   // useEffect(() => {
   //   setLoading(true);
@@ -75,6 +83,7 @@ export const ExpertsList = () => {
         });
           // Lọc chuyên gia chỉ lấy những người đã được phê duyệt (approved: true)
       const approvedExperts = expertsData.filter(expert => expert.approved);
+
         const feedbackMap = new Map();
 
         const uniqueSpecialties = ["Tất cả", ...new Set(approvedExperts.map((expert) => expert.specialty))];
@@ -203,7 +212,9 @@ export const ExpertsList = () => {
 />
                   </div>
                   <h3 class={style.expertName}>{expert.name}</h3>
-                  <p className={style.specialty}>{specialtyMap[expert.specialty] || expert.specialty}</p>
+                  <p className={`${style.specialty} ${expert.specialty.length > 20 ? style.multiLine : ''}`}>
+  {getSpecialtyDisplay(expert.specialty).join(", ") || "Chưa cập nhật"}
+</p>
 
                   {/* <p className={style.rating}>
   ⭐ {expert.rating > 0 ? expert.rating : "Chưa có đánh giá"}
