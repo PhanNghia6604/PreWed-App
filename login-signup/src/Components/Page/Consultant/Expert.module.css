@@ -97,12 +97,43 @@
   color: #bbbbbb;
 }
 
-/* Chuyên ngành */
+/* ======================= */
+/* 🟢 Chuyên ngành (specialty) */
+/* Center text and ensure wrapping for long text */
 .specialty {
   font-style: italic;
   color: #bbbbbb;
   margin: 6px 0;
   font-weight: 500;
+  text-align: center; /* Center the text */
+  word-wrap: break-word; /* Ensure long words wrap */
+  white-space: normal; /* Allow wrapping to multiple lines */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Optional: Adds "..." if text is too long */
+  max-width: 100%; /* Prevent it from overflowing its container */
+  line-height: 1.4; /* Adjust line height for readability */
+}
+
+/* Ensure that multi-line text also stays centered */
+.specialty span {
+  display: inline-block; /* If it's wrapped in a span, keep it centered */
+  text-align: center;
+}
+
+/* If you're working with a list of specialties, style it like this */
+.specialtyList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Center all list items */
+  gap: 12px;
+}
+
+.specialtyList li {
+  list-style: none;
+  font-weight: 500;
+  font-style: italic;
+  color: #bbbbbb;
+  margin: 6px 0;
 }
 
 /* Rating */
