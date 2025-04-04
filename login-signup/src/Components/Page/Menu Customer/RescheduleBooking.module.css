@@ -1,139 +1,134 @@
 .reschedule-container {
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  .reschedule-container h2 {
-    color: #2c3e50;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: 600;
-    text-align: center;
-  }
-  
-  .reschedule-container p {
-    color: #555;
-    margin-bottom: 25px;
-    padding: 12px;
-    background-color: #f8f9fa;
-    border-radius: 6px;
-    font-size: 15px;
-  }
-  
-  .reschedule-container label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 10px;
-    color: #495057;
-    text-align: left;
-    font-size: 15px;
-  }
-  
-  .reschedule-select {
-    width: 100%;
-    padding: 12px 15px;
-    font-size: 15px;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    background-color: #fff;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .reschedule-select:focus {
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  }
-  
-  .reschedule-button-group {
-    display: flex;
-    gap: 15px;
-    margin-top: 25px;
-  }
-  
-  .button {
-    flex: 1;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    text-align: center;
-  }
-  
-  .reschedule-back-button {
-    background-color: #f1f3f5;
-    color: #495057;
-    border: 1px solid #dee2e6;
-  }
-  
-  .reschedule-back-button:hover {
-    background-color: #e9ecef;
-    border-color: #ced4da;
-  }
-  
-  .reschedule-back-button:disabled {
-    background-color: #e9ecef;
-    color: #adb5bd;
-    cursor: not-allowed;
-  }
-  
-  .reschedule-button {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  .reschedule-button:hover {
-    background-color: #3e8e41;
-  }
-  
-  .reschedule-button:disabled {
-    background-color: #a5d6a7;
-    cursor: not-allowed;
-  }
-  
-  .error {
-    color: #dc3545;
-    margin: 15px 0;
-    padding: 10px;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  
-  .reschedule-disabled-slot {
-    color: #adb5bd !important;
-    background-color: #f8f9fa !important;
-  }
-  
-  option:not(.reschedule-disabled-slot) {
-    color: #212529;
-    background-color: white;
-  }
-  .slot-status-list {
-    margin-top: 10px;
-    padding: 0;
-    list-style: none;
-    color: #333;
-  }
-  
-  .slot-status-item {
-    font-size: 14px;
-    padding: 5px 0;
-  }
-  
-  .status-text {
-    color: red;
-    font-weight: bold;
-    margin-left: 5px;
-  }
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.h2-reschedule{
+  color:white;
+}
+.p-reschedule{
+  color:white;
+}
+.label-newdate {
+  color:white;
+}
+/* Phần chọn ngày */
+.reschedule-date {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Dropdown chọn giờ */
+.time-select-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.reschedule-select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  appearance: none;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Grid hiển thị slot */
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.slot-item {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  color:black;
+}
+
+.slot-available {
+  background-color: #f8fff8;
+  border-left: 4px solid #77dd77;
+}
+
+.slot-booked {
+  background-color: #fff8f8;
+  border-left: 4px solid #ffb347;
+  opacity: 0.7;
+}
+
+.slot-expert-busy {
+  background-color: #fff0f0;
+  border-left: 4px solid #ff6b6b;
+}
+
+.slot-past {
+  background-color: #f9f9f9;
+  border-left: 4px solid #ccc;
+  opacity: 0.6;
+}
+
+.slot-time {
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.slot-status {
+  margin-bottom: 5px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  color: white;
+  font-size: 12px;
+}
+
+.slot-detail {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Các option trong dropdown */
+.past-option {
+  color: #999 !important;
+  font-style: italic;
+}
+
+.expert-busy-option {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.booked-option {
+  color: #ffb347;
+}
+
+.slot-list-title {
+  font-weight: bold;
+  margin: 20px 0 10px;
+  color: white;
+  font-size: 18px;
+}
