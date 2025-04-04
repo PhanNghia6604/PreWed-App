@@ -10,7 +10,7 @@ const ExpertRegister = () => {
     email: "",
     phone: "",
     address: "",
-    specialty: [],
+    specialty: [],  // Lưu danh sách chuyên môn
     avatar: "",
     certificates: [{ certificateName: "", certificateUrl: "" }],
   });
@@ -22,6 +22,7 @@ const ExpertRegister = () => {
   const validateForm = (field) => {
     let newErrors = { ...errors };
 
+    // Validate các trường thông tin
     if (!formData.username.trim()) {
       newErrors.username = "Username cannot be empty!";
     }
@@ -44,8 +45,9 @@ const ExpertRegister = () => {
     if (!formData.avatar.trim()) {
       newErrors.avatar = "Avatar URL cannot be empty";
     }
-     // Kiểm tra specialty - ít nhất một checkbox được chọn
-     if (formData.specialty.length === 0) {
+
+    // Kiểm tra specialty
+    if (formData.specialty.length === 0) {
       newErrors.specialty = "Please select at least one specialty";  // Hiển thị lỗi nếu không có chuyên môn nào được chọn
     } else {
       delete newErrors.specialty;  // Nếu có ít nhất một chuyên môn được chọn, loại bỏ lỗi
@@ -64,6 +66,7 @@ const ExpertRegister = () => {
 
     return Object.keys(newErrors).length === 0;
   };
+
   useEffect(() => {
     // Gọi validateForm mỗi khi formData.specialty thay đổi
     validateForm();
@@ -107,21 +110,18 @@ const ExpertRegister = () => {
       certificates: prevState.certificates.filter((_, i) => i !== index),
     }));
   };
-  const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
-  
-    // Cập nhật mảng specialty (thêm hoặc xóa chuyên môn)
-    const newSpecialty = checked
-      ? [...formData.specialty, value]  // Nếu checkbox được chọn, thêm vào danh sách
-      : formData.specialty.filter((item) => item !== value); // Nếu checkbox bị bỏ chọn, xóa khỏi danh sách
-  
-    setFormData({ ...formData, specialty: newSpecialty });
-  
-    // Gọi lại validateForm mỗi khi checkbox thay đổi
-    validateForm();  // Kiểm tra lại form ngay lập tức sau khi người dùng chọn checkbox
+
+  const handleSelectChange = (e) => {
+    const selectedSpecialty = e.target.value;
+
+    if (selectedSpecialty === "ALL") {
+      // Nếu người dùng chọn "ALL", ta chỉ cần gửi giá trị "ALL" và backend sẽ xử lý
+      setFormData({ ...formData, specialty: ["ALL"] });
+    } else {
+      // Nếu người dùng chọn một chuyên môn cụ thể, ta chỉ lưu chuyên môn đó
+      setFormData({ ...formData, specialty: [selectedSpecialty] });
+    }
   };
-  
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -140,7 +140,7 @@ const ExpertRegister = () => {
 
       const result = await response.json();
       if (response.ok) {
-        setMessage(" Registration successful!");
+        setMessage("Registration successful!");
         alert("You have successfully registered! Please wait for the approval email from the admin.");
         navigate("/expert-login");
       } else {
@@ -178,79 +178,18 @@ const ExpertRegister = () => {
         <label>Address:</label>
         <input type="text" name="address" value={formData.address} onChange={handleChange} onBlur={validateForm} required />
 
-        
-        
-<fieldset className={styles["specialty-fieldset"]}>
-  <legend>Specialties:</legend>
-  <div className={styles["specialty-checkboxes"]}>
-    <label htmlFor="specialtyTAMLY">
-      <input
-        type="checkbox"
-        id="specialtyTAMLY"
-        value="TAMLY"
-        checked={formData.specialty.includes("TAMLY")}
-        onChange={handleCheckboxChange}
-      />
-      Tâm lý
-    </label>
-
-    <label htmlFor="specialtyTAICHINH">
-      <input
-        type="checkbox"
-        id="specialtyTAICHINH"
-        value="TAICHINH"
-        checked={formData.specialty.includes("TAICHINH")}
-        onChange={handleCheckboxChange}
-      />
-      Tài chính
-    </label>
-
-    <label htmlFor="specialtyGIADINH">
-      <input
-        type="checkbox"
-        id="specialtyGIADINH"
-        value="GIADINH"
-        checked={formData.specialty.includes("GIADINH")}
-        onChange={handleCheckboxChange}
-      />
-      Gia đình
-    </label>
-
-    <label htmlFor="specialtySUCKHOE">
-      <input
-        type="checkbox"
-        id="specialtySUCKHOE"
-        value="SUCKHOE"
-        checked={formData.specialty.includes("SUCKHOE")}
-        onChange={handleCheckboxChange}
-      />
-      Sức khỏe
-    </label>
-
-    <label htmlFor="specialtyGIAOTIEP">
-      <input
-        type="checkbox"
-        id="specialtyGIAOTIEP"
-        value="GIAOTIEP"
-        checked={formData.specialty.includes("GIAOTIEP")}
-        onChange={handleCheckboxChange}
-      />
-      Giao tiếp
-    </label>
-
-    <label htmlFor="specialtyTONGIAO">
-      <input
-        type="checkbox"
-        id="specialtyTONGIAO"
-        value="TONGIAO"
-        checked={formData.specialty.includes("TONGIAO")}
-        onChange={handleCheckboxChange}
-      />
-      Tôn giáo
-    </label>
-  </div>
-</fieldset>
-{errors.specialty && <p className={styles.error}>{errors.specialty}</p>}
+        <label>Specialties:</label>
+        <select name="specialty"   value={formData.specialty[0] || ""} onChange={handleSelectChange} required>
+          <option value="">Select Specialty</option>
+          <option value="TAMLY">Tâm lý</option>
+          <option value="TAICHINH">Tài chính</option>
+          <option value="GIADINH">Gia đình</option>
+          <option value="SUCKHOE">Sức khỏe</option>
+          <option value="GIAOTIEP">Giao tiếp</option>
+          <option value="TONGIAO">Tôn giáo</option>
+          <option value="ALL">Tất cả chuyên môn</option>
+        </select>
+        {errors.specialty && <p className={styles.error}>{errors.specialty}</p>}
 
         <label>Avatar (URL):</label>
         <input type="text" name="avatar" value={formData.avatar} onChange={handleChange} onBlur={validateForm} required />

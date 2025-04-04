@@ -17,25 +17,24 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("EXPERT") // Xác định loại user là Expert
+@DiscriminatorValue("EXPERT")
 public class Expert extends User {
     @ElementCollection(targetClass = CategoryEnum.class)
     @Enumerated(EnumType.STRING)
-    private List<CategoryEnum> specialty; // Lưu danh sách chuyên môn
+    private List<CategoryEnum> specialty;
+
     private String avatar;
     private boolean approved = false;
 
-    @OneToMany(mappedBy = "expert", cascade = CascadeType.ALL)  // Thiết lập mối quan hệ One-to-Many với Certificate
+    @OneToMany(mappedBy = "expert", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Certificate> certificates; // Liên kết với nhiều chứng chỉ
-
-
+    private List<Certificate> certificates;
 
     public Expert() {
-        this.setRoleEnum(RoleEnum.EXPERT); // Mặc định role là EXPERT
+        this.setRoleEnum(RoleEnum.EXPERT);
     }
+
     @OneToMany(mappedBy = "expert")
     @JsonIgnore
     List<Feedback> feedbacks = new ArrayList<>();
-
 }

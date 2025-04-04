@@ -11,28 +11,28 @@ public enum CategoryEnum {
     SUCKHOE("Sức khỏe"),
     GIAOTIEP("Giao tiếp"),
     TONGIAO("Tôn giáo"),
-    ALL("Tất cả chuyên môn");
+    ALL("Tất cả chuyên môn"); // This stays, but handled as a special case
 
     private final String categoryName;
 
-    // Constructor
     CategoryEnum(String categoryName) {
         this.categoryName = categoryName;
     }
 
-    // Getter
     public String getCategoryName() {
         return categoryName;
     }
 
-    // To String method for easier logging/debugging
     @Override
     public String toString() {
         return categoryName;
     }
 
-    // Static method to get CategoryEnum by category name
     public static CategoryEnum fromCategoryName(String categoryName) {
+        if ("ALL".equalsIgnoreCase(categoryName)) {
+            return CategoryEnum.ALL;  // Trả về Enum ALL khi chọn tất cả
+        }
+
         for (CategoryEnum category : values()) {
             if (category.categoryName.equalsIgnoreCase(categoryName)) {
                 return category;
@@ -40,5 +40,11 @@ public enum CategoryEnum {
         }
         throw new IllegalArgumentException("No enum constant for category: " + categoryName);
     }
-}
 
+    public String getDisplayName() {
+        if (this == CategoryEnum.ALL) {
+            return "Tất cả chuyên môn";
+        }
+        return categoryName;  // Trả về tên chuyên môn thông thường
+    }
+}

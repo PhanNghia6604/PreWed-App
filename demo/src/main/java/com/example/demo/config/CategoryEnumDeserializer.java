@@ -13,7 +13,11 @@ public class CategoryEnumDeserializer extends JsonDeserializer<CategoryEnum> {
     public CategoryEnum deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String categoryName = p.getText().trim();
 
-        // Chuyển chuỗi thành chữ hoa và thay đổi dấu tiếng Việt thành không dấu
+        // Kiểm tra nếu chuỗi là "ALL", ta sẽ trả về "Tất cả chuyên môn"
+        if ("ALL".equalsIgnoreCase(categoryName)) {
+            return CategoryEnum.ALL;  // Trả về "ALL"
+        }
+
         categoryName = categoryName.toUpperCase()
                 .replace("TÂM LÝ", "TAMLY")
                 .replace("TÀI CHÍNH", "TAICHINH")
@@ -23,7 +27,7 @@ public class CategoryEnumDeserializer extends JsonDeserializer<CategoryEnum> {
                 .replace("GIA ĐÌNH", "GIADINH");
 
         try {
-            return CategoryEnum.valueOf(categoryName);
+            return CategoryEnum.valueOf(categoryName);  // Trả về CategoryEnum từ tên chuỗi
         } catch (IllegalArgumentException e) {
             throw new IOException("Unknown category: " + categoryName);
         }

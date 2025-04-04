@@ -60,6 +60,13 @@ const ExpertDetail = () => {
   const handleGoBack = () => {
     navigate("/expert"); // Đường dẫn tới trang danh sách chuyên gia
   };
+  const getSpecialtyDisplay = (specialty) => {
+    if (specialty.includes("ALL")) {
+      return ["Tâm lý", "Tài chính", "Gia đình", "Sức khỏe", "Giao tiếp", "Tôn giáo"];
+    } else {
+      return specialty.map(code => specialtyMap[code] || code);
+    }
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -469,7 +476,7 @@ const ExpertDetail = () => {
           {experience !== null ? `${experience} năm` : "Đang cập nhật..."}
         </p>
         <p>
-          <strong>Chuyên môn:</strong> {specialtyMap[expert.specialty] || "Chưa cập nhật"}
+        <strong>Chuyên môn:</strong> {getSpecialtyDisplay(expert.specialty).join(", ") || "Chưa cập nhật"}
         </p>
 
         {specialtyMap[expert.specialty] && (
