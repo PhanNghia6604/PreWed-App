@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Đảm bảo rằng bạn đã import useNavigate
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Heading } from "../../Common/Heading";
@@ -26,13 +26,13 @@ export const Login = ({ setIsLoggedIn }) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values),
         });
-  
+
         if (!response.ok) {
           const errorData = await response.json();
           setErrors({ server: errorData.message || "Login failed." });
           return;
         }
-  
+
         const data = await response.json();
         if (data.token) {
           localStorage.setItem("token", data.token);
@@ -47,7 +47,7 @@ export const Login = ({ setIsLoggedIn }) => {
             username: data.username
           }));
           setIsLoggedIn(true);
-          navigate("/");
+          navigate("/"); // Redirect to homepage or dashboard
         }
       } catch (error) {
         setErrors({ server: "Tài khoản hoặc mật khẩu bị sai" });
@@ -56,7 +56,7 @@ export const Login = ({ setIsLoggedIn }) => {
       }
     },
   });
-  
+
 
   return (
     <section className={styles.login}>
@@ -94,7 +94,8 @@ export const Login = ({ setIsLoggedIn }) => {
               )}
             </div>
             <div className={styles["forgot-password"]}>
-              <span onClick={() => alert("Redirect to Forgot Password")}>Forgot Password?</span>
+              {/* Thay đổi onClick để điều hướng tới trang ForgotPassword */}
+              <span onClick={() => navigate()}>Forgot Password?</span>
             </div>
             <button type="submit" className={styles.btn} disabled={formik.isSubmitting}>
               {formik.isSubmitting ? "Logging in..." : "Login"}
@@ -119,9 +120,6 @@ export const Login = ({ setIsLoggedIn }) => {
           >
              Back 
           </button>
-
-
-
         </div>
       </div>
     </section>

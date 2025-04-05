@@ -26,55 +26,63 @@ public class PremaritalTestService {
     private DiagnosService diagnosService;
     @Autowired
     private ExpertRepository expertRepository;
+    public PremaritalTest savePremaritalTest(PremaritalTest premaritalTest) {
+        // Lưu PremaritalTest và các Diagnos liên quan sẽ được lưu tự động nhờ CascadeType.ALL
+        return premaritalTestRepository.save(premaritalTest);
+    }
+
 
     public DiagnosResponse evaluateTest(PremaritalTestRequest testRequest) {
-        Set<String> categoriesToImprove = new HashSet<>(); // Using a Set to prevent duplicates
+        Set<String> categoriesToImprove = new HashSet<>();
         List<String> reasons = new ArrayList<>();
         List<String> consultations = new ArrayList<>();
         int criticalIssuesCount = 0;
 
-        // Loop through all the answers
+        // Duyệt qua tất cả các câu trả lời
         for (Answer answer : testRequest.getAnswers()) {
-            if (answer.getScore() == 1) {  // If the answer requires improvement
-                categoriesToImprove.add(answer.getCategory().name()); // Add category to the set
+            if (answer.getScore() == 1) {
+                categoriesToImprove.add(answer.getCategory().name());
                 criticalIssuesCount++;
             }
         }
 
-        // Convert the categories to Vietnamese names
         List<String> categoriesInVietnamese = new ArrayList<>();
         for (String category : categoriesToImprove) {
-            String categoryInVietnamese = CategoryEnum.valueOf(category).getCategoryName(); // Get the translated name
+            String categoryInVietnamese = CategoryEnum.valueOf(category).getCategoryName();
             categoriesInVietnamese.add(categoryInVietnamese);
         }
 
-        // For categories that need improvement, use getImprovementReason for one category
-        // or getCombinedImprovementReason if there are multiple categories
-        if (categoriesInVietnamese.size() == 1) {
-            // Only one category
-            for (String category : categoriesInVietnamese) {
-                reasons.add(getImprovementReason(category));
-                consultations.add(getConsultationRecommendation(category));
-            }
+        // Tạo đối tượng PremaritalTest
+        PremaritalTest premaritalTest = new PremaritalTest();
+        premaritalTest.setUserId(testRequest.getUserId());
+        premaritalTest.setTestDate(LocalDateTime.now());  // Gán thời gian bài kiểm tra
 
-        } else if (categoriesInVietnamese.size() >= 2) {
-            // Multiple categories
-            reasons.add(getCombinedImprovementReason(testRequest.getAnswers()));
-            consultations.add(getCombinedConsultationRecommendation(categoriesInVietnamese));
-        }
-
-        // Create Diagnosis Result
+        // Tạo đối tượng Diagnos
         Diagnos diagnos = new Diagnos();
-        diagnos.setCategoriesToImprove(categoriesInVietnamese); // Set the categories in Vietnamese
+        diagnos.setCategoriesToImprove(categoriesInVietnamese);
         diagnos.setDiagnosisResult(generateDiagnosisResult(criticalIssuesCount));
-        diagnos.setPremaritalTest(new PremaritalTest());  // Link to the premarital test
+        diagnos.setPremaritalTest(premaritalTest);  // Liên kết Diagnos với PremaritalTest
 
-        // Save the diagnosis to the database if needed
-        // Save logic for diagnos and premaritalTest...
+        // Điền lý do và khuyến nghị tư vấn cho từng thể loại cần cải thiện
+        for (String category : categoriesInVietnamese) {
+            reasons.add(getImprovementReason(category));  // Lấy lý do cải thiện cho mỗi thể loại
+            consultations.add(getConsultationRecommendation(category));  // Lấy khuyến nghị tư vấn cho mỗi thể loại
+        }
+        // Lưu lý do và khuyến nghị vào Diagnos
+        diagnos.setReasons(reasons);
+        diagnos.setConsultations(consultations);
 
-        // Return DiagnosResponse
+        // Thêm Diagnos vào danh sách diagnosResults của PremaritalTest
+        premaritalTest.setDiagnosResults(Arrays.asList(diagnos));  // Lưu kết quả chẩn đoán cùng với bài kiểm tra
+
+        // Lưu PremaritalTest (và các Diagnos liên quan) vào cơ sở dữ liệu
+        premaritalTest = savePremaritalTest(premaritalTest);
+
+        // Trả về DiagnosResponse với lý do và khuyến nghị tư vấn
         return diagnosService.createDiagnosResponse(categoriesInVietnamese, reasons, consultations);
     }
+
+
 
 
     private String generateDiagnosisResult(int criticalIssuesCount) {

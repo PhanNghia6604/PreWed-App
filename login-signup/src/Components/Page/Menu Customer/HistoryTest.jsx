@@ -39,11 +39,15 @@ const HistoryTest = () => {
         }
         const data = await response.json();
 
+        // Xử lý dữ liệu: Chỉ lấy categoriesToImprove và consultations
         const processedData = data.map((test, index) => ({
-            ...test,
-            testNumber: index + 1,
-            translatedCategories: [...new Set(test.answers.map((cat) => categoryMap[cat] || cat))], // Loại bỏ lặp
-          }));
+          ...test,
+          testNumber: index + 1,
+          diagnosResults: test.diagnosResults.map((diagnos) => ({
+            categoriesToImprove: diagnos.categoriesToImprove, // Chỉ lấy categoriesToImprove
+            consultations: diagnos.consultations, // Chỉ lấy consultations
+          })),
+        }));
 
         setHistory(processedData);
       } catch (error) {
@@ -56,7 +60,7 @@ const HistoryTest = () => {
 
   // 🔎 Lọc danh sách theo danh mục hoặc ngày
   const filteredHistory = history.filter((test) => {
-    const matchCategory = filterCategory ? test.translatedCategories.includes(filterCategory) : true;
+    const matchCategory = filterCategory ? test.diagnosResults.some(diagnos => diagnos.categoriesToImprove.includes(filterCategory)) : true;
     const matchDate = filterDate ? test.testDate.startsWith(filterDate) : true;
     return matchCategory && matchDate;
   });
@@ -85,38 +89,39 @@ const HistoryTest = () => {
 
         {/* 📝 Bảng lịch sử */}
         <table className={styles.historyTable}>
-  <thead >
-    <tr>
-      <th>#</th>
-      <th>Ngày làm bài</th>
-      <th>Kết quả</th>
-      <th>Ghi chú</th> {/* Thêm cột ghi chú */}
-    </tr>
-  </thead>
-  <tbody>
-    {filteredHistory.length > 0 ? (
-      filteredHistory.map((test) => {
-        const hasIssues = test.translatedCategories.some(cat => cat !== "🎉 Chúc mừng! Không có vấn đề nào đáng lo.");
-        const note = hasIssues 
-          ? `Bạn đang cần tư vấn về: ${test.translatedCategories.join(", ")}`
-          : "Bạn không cần tư vấn";
-        
-        return (
-          <tr key={test.id}>
-            <td>{test.testNumber}</td>
-            <td>{new Date(test.testDate).toLocaleDateString("vi-VN")}</td>
-            <td>{test.translatedCategories.join(", ")}</td>
-            <td>{note}</td>
-          </tr>
-        );
-      })
-    ) : (
-      <tr>
-        <td colSpan="4" className={styles.noData}>Không có dữ liệu phù hợp.</td>
-      </tr>
-    )}
-  </tbody>
-</table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Ngày làm bài</th>
+              <th>Kết quả</th>
+              <th>Ghi chú</th> {/* Thêm cột ghi chú */}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredHistory.length > 0 ? (
+              filteredHistory.map((test) => {
+                // Lấy dữ liệu từ diagnosResults
+                const diagnos = test.diagnosResults[0];
+                const note = diagnos.consultations.length > 0 
+                  ? `${diagnos.consultations.join(", ")}`
+                  : "Bạn không cần tư vấn";
+                
+                return (
+                  <tr key={test.id}>
+                    <td>{test.testNumber}</td>
+                    <td>{new Date(test.testDate).toLocaleDateString("vi-VN")}</td>
+                    <td>{diagnos.categoriesToImprove.join(", ")}</td>
+                    <td>{note}</td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan="4" className={styles.noData}>Không có dữ liệu phù hợp.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
         {/* 🔘 Nút thao tác */}
         <div className={styles.buttonContainer}>

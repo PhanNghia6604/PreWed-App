@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 import styles from "./Result.module.css";
 import { Link } from "react-router-dom";
 
@@ -25,6 +26,22 @@ const convertToShortForm = (category) => {
   }
 };
 
+const specialtyMap = {
+  TAMLY: "Tâm lý",
+  TAICHINH: "Tài chính",
+  GIADINH: "Gia đình",
+  SUCKHOE: "Sức khỏe",
+  GIAOTIEP: "Giao tiếp",
+  TONGIAO: "Tôn giáo",
+}
+;const getSpecialtyDisplay = (specialty) => {
+    // Kiểm tra nếu chuyên gia có tất cả các chuyên môn
+    if (specialty.length === Object.keys(specialtyMap).length) {
+      return ["Chuyên gia toàn diện"];
+    } else {
+      return specialty.map(code => specialtyMap[code] || code);
+    }
+  };
 const Result = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -41,7 +58,15 @@ const Result = () => {
   const [recommendedExperts, setRecommendedExperts] = useState([]); // State để lưu chuyên gia gợi ý
   const [allExperts, setAllExperts] = useState([]); // Lưu tất cả các chuyên gia
   const [loading, setLoading] = useState(false);
-
+    // Phân trang: Số chuyên gia mỗi trang
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 6; // Số chuyên gia hiển thị trên mỗi trang
+   
+    useEffect(() => {
+      // Đảm bảo khi `currentPage` thay đổi, `displayedExperts` cũng thay đổi
+      console.log("Chuyển sang trang", currentPage + 1);
+    }, [currentPage]); // Chạy lại khi `currentPage` thay đổi
+    
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 200);
 
@@ -85,6 +110,17 @@ const Result = () => {
     navigate(`/expert-profile/${expertId}`); // Navigate đến trang chi tiết của chuyên gia
   };
 
+   // Xử lý phân trang
+   const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+  };
+
+  // Hiển thị chuyên gia cho trang hiện tại
+  const displayedExperts = recommendedExperts.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
   return (
     <div className={`${styles.container} ${isVisible ? styles.show : ""}`}>
       <h1 className={styles.title}>Kết quả Bài Kiểm Tra</h1>
@@ -121,35 +157,48 @@ const Result = () => {
           <p>{diagnosisResult}</p>
         </div>
 
-        {/* Hiển thị chuyên gia gợi ý */}
-        <div className={styles.recommendedExperts}>
-  <h3>Chuyên gia tư vấn gợi ý:</h3>
-  {loading ? (
-    <p>Đang tải chuyên gia...</p>
-  ) : recommendedExperts.length > 0 ? (
-    recommendedExperts.map((expert) => (
-      <div key={expert.id} className={styles.expertCard}>
-        <img
-          src={expert.avatar}
-          alt={expert.name}
-          className={styles.expertAvatar}
-        />
-        <div>
-          <h4>
-            {/* Thêm Link để chuyển tới trang chi tiết của chuyên gia */}
-            <Link to={`/expert/${expert.name}`} className={styles.expertLink}>
-              {expert.name}
-            </Link>
-          </h4>
-          <p>{expert.specialty.join(", ")}</p>
+         {/* Hiển thị chuyên gia gợi ý */}
+         <div className={styles.recommendedExperts}>
+          <h3>Chuyên gia tư vấn gợi ý:</h3>
+          {loading ? (
+            <p>Đang tải chuyên gia...</p>
+          ) : displayedExperts.length > 0 ? (
+            <div className={styles.expertList}>
+              {displayedExperts.map((expert) => (
+                <div key={expert.id} className={styles.expertCard}>
+                  <img
+                    src={expert.avatar}
+                    alt={expert.name}
+                    className={styles.expertAvatar}
+                  />
+                  <div>
+                    <h4>
+                      <Link to={`/expert/${expert.name}`} className={styles.expertLink}>
+                        {expert.name}
+                      </Link>
+                    </h4>
+                    <p className={`${styles.specialty} ${expert.specialty.length > 20 ? styles.multiLine : ''}`}>
+                      {getSpecialtyDisplay(expert.specialty).join(", ") || "Chưa cập nhật"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Không có chuyên gia nào phù hợp với các lĩnh vực cần cải thiện của bạn.</p>
+          )}
         </div>
-      </div>
-    ))
-  ) : (
-    <p>Không có chuyên gia nào phù hợp với các lĩnh vực cần cải thiện của bạn.</p>
-  )}
-</div>
-
+<ReactPaginate
+          previousLabel={"‹"}
+          nextLabel={"›"}
+          pageCount={Math.ceil(recommendedExperts.length / itemsPerPage)}
+          onPageChange={handlePageClick}
+          containerClassName={styles.paginationContainer}
+          pageClassName={styles.page}
+          previousClassName={styles.previous}
+          nextClassName={styles.next}
+          activeClassName={styles.active}
+        />
       </div>
 
       <div className={styles.navigationButtons}>

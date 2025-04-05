@@ -124,3 +124,147 @@
 .result-expertBtn:hover {
   background-color: #218838;
 }
+/* CSS cho phân trang và hiển thị theo kiểu ngang */
+/* Container chính của danh sách chuyên gia */
+.recommendedExperts {
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* Phần tiêu đề */
+.recommendedExperts h3 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Hiển thị các thẻ chuyên gia theo dạng Flexbox */
+.expertList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 10px;
+}
+
+/* Các thẻ chuyên gia */
+.expertCard {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  width: 200px; /* Điều chỉnh kích thước thẻ */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 15px;
+}
+
+/* Hiệu ứng hover */
+.expertCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Ảnh đại diện chuyên gia */
+.expertAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+/* Tên chuyên gia */
+.expertCard h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Chuyên môn của chuyên gia */
+.expertCard p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Link tới trang chi tiết chuyên gia */
+.expertLink {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.expertLink:hover {
+  text-decoration: underline;
+}
+
+/* Pagination */
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.page, .previous, .next {
+  padding: 0px 0px;  /* Tăng khoảng cách xung quanh */
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin: 0 5px;
+  transition: background-color 0.2s ease;
+}
+
+.page:hover, .previous:hover, .next:hover {
+  background-color: #f0f0f0;  /* Thêm hiệu ứng hover */
+}
+
+.active {
+  font-weight: bold;
+  background-color: #007bff;  /* Màu nền cho trang đang chọn */
+  color: white;  /* Màu chữ của trang đang chọn */
+}
+
+.previous, .next {
+  padding: 0px 0px;  /* Điều chỉnh kích thước nút */
+  background-color: #f0f0f0; /* Thêm hiệu ứng nền cho nút trước và sau */
+  border-radius: 5px;
+}
+
+.previous:hover, .next:hover {
+  background-color: #e0e0e0;
+}
+
+/* Đảm bảo toàn bộ li là clickable */
+.paginationContainer li {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.paginationContainer li a {
+  display: block;  /* Đảm bảo a chiếm toàn bộ chiều rộng của li */
+  padding: 10px 20px;
+  text-align: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.paginationContainer li a:hover {
+  background-color: #e0e0e0;
+}
+
+.specialty {
+  font-style: italic;
+  color: #bbbbbb;
+  margin: 6px 0;
+  font-weight: 500;
+  text-align: center; /* Center the text */
+  word-wrap: break-word; /* Ensure long words wrap */
+  white-space: normal; /* Allow wrapping to multiple lines */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Optional: Adds "..." if text is too long */
+  max-width: 100%; /* Prevent it from overflowing its container */
+  line-height: 1.4; /* Adjust line height for readability */
+}
+

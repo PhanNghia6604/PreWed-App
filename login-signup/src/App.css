@@ -468,3 +468,32 @@ footer i {
   background-color: var(--primaryColor); /* Màu nền badge */
   color: var(--white); /* Màu chữ badge */
 }
+.premaritalTestBtn {
+  background-color: #FF6A00; /* Màu cam sáng */
+  color: white;
+  padding: 12px 30px; /* Giảm padding để nút nhỏ lại */
+  font-size: 16px; /* Giảm font-size để chữ nhỏ hơn */
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 50px; /* Bo tròn */
+  transition: all 0.3s ease;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* Bóng đổ */
+  
+}
+
+.premaritalTestBtn:hover {
+  background-color: #e67e22;
+  transform: scale(1.05); /* Phóng to nút khi hover */
+}
+
+.premaritalTestBtn:focus {
+  outline: none;
+  box-shadow: 0px 4px 8px rgba(255, 140, 0, 0.6); /* Hiệu ứng focus */
+}
+
+
+.premaritalTestBtn:active {
+  transform: scale(0.98); /* Giảm kích thước nút khi click */
+}
