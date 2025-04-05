@@ -171,3 +171,17 @@ button {
   margin: 5px 0;
   color: black;
 }
+.completeButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.completeButton:hover {
+  background-color: #45a049;
+}

@@ -119,32 +119,40 @@ export const MyBookings = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Phiên đăng nhập đã hết hạn!");
+        alert("Phiên đăng nhập đã hết hạn! Vui lòng đăng nhập lại.");
+        navigate("/login");
         return;
       }
-
-      const response = await fetch(`/api/booking/${bookingId}`, {
+  
+      // Sửa URL để truyền status qua query parameter như API yêu cầu
+      const url = `/api/booking/${bookingId}?status=${newStatus}`;
+      
+      const response = await fetch(url, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json" // Thêm header Accept
+        }
+        // KHÔNG gửi body vì status đã truyền qua URL
       });
-
+  
       if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Cập nhật trạng thái thất bại: ${errorMessage}`);
+        if (response.status === 401) {
+          alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+          return;
+        }
+        throw new Error(`Cập nhật trạng thái thất bại: ${await response.text()}`);
       }
-
+  
       const updatedBooking = await response.json();
       console.log("✅ Cập nhật booking thành công:", updatedBooking);
-
+  
       setBookings((prev) =>
         prev.map((b) => (b.id === bookingId ? updatedBooking : b))
       );
     } catch (error) {
       console.error("❌ Lỗi cập nhật:", error);
+      alert("Có lỗi xảy ra khi cập nhật trạng thái. Vui lòng thử lại!");
     }
   };
 
@@ -166,7 +174,11 @@ export const MyBookings = () => {
         body: JSON.stringify({ bookingId }),
       });
 
-      if (!response.ok) throw new Error("Lỗi tạo yêu cầu thanh toán!");
+      if (!response.ok) {
+        const errorDetail = await response.json(); // ← Log chi tiết lỗi từ backend
+        console.error("Backend error:", errorDetail);
+        throw new Error("Lỗi tạo payment");
+      }
 
       const paymentUrl = await response.text();
       window.location.href = paymentUrl;
@@ -345,13 +357,24 @@ export const MyBookings = () => {
                       </div>
                     )}
                     {b.status === "PROCESSING" && meetLink && (
-                      <p>🔗 <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={style.link}>
-                        Link tư vấn
-                      </a>
-                      </p>
+                      <>
+                        <p>🔗 <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={style.link}>
+                          Link tư vấn
+                        </a></p>
+                        <button
+                          className={style.completeButton}
+                          onClick={() => {
+                            if (window.confirm("Bạn có chắc muốn đánh dấu hoàn thành tư vấn?")) {
+                              updateBookingStatus(b.id, "FINISHED");
+                            }
+                          }}
+                        >
+                          ✅ Hoàn thành tư vấn
+                        </button>
+                      </>
                     )}
                     {b.status === "FINISHED" && (
                       reviewedBookings?.[b.id] ? (
