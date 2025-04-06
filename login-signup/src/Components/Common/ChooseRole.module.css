@@ -2,8 +2,8 @@
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: center;  /* Đảm bảo các phần tử con được căn giữa theo chiều ngang */
+    justify-content: center;  /* Đảm bảo các phần tử con được căn giữa theo chiều dọc */
     height: 100vh;
     background: linear-gradient(135deg, #1e1f1f 30%, #292a2a 100%);
     text-align: center;
@@ -26,8 +26,10 @@
     gap: 15px;
     width: 100%;
     max-width: 400px;
+    align-items: center; /* Đảm bảo các nút đăng nhập được căn giữa trong container */
 }
 
+/* Button */
 /* Button */
 .button {
     width: 100%;
@@ -40,9 +42,15 @@
     transition: all 0.3s ease-in-out;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     background: rgba(255, 255, 255, 0.1);
-    color: var(--white);
+    color: #d1d1d1;
     outline: none;
+    
+  
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
 }
+
 
 /* Hover effect */
 .button:hover {
