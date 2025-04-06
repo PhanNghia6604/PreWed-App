@@ -35,38 +35,40 @@ export const AdminHeader = ({ isLoggedIn, setIsLoggedIn }) => {
                     <Link to="/admin-blogs" className={styles.navLink}>Quản lý Blogs</Link>
 
                     {/* User Menu */}
-                    {isLoggedIn && (
-                        <>
-                            <IconButton
-                                onClick={(e) => setAnchorEl(e.currentTarget)}
-                                className={styles.menuIcon}
-                            >
-                                <AccountCircle fontSize="large" />
-                            </IconButton>
-                            <Menu
-                                anchorEl={anchorEl}
-                                open={Boolean(anchorEl)}
-                                onClose={() => setAnchorEl(null)}
-                                keepMounted
-                            >
-                                <MenuItem
-                                    onClick={() => {
-                                        navigate("/admin-profile");
-                                        setAnchorEl(null);
-                                    }}
-                                    className={styles.menuItem}
-                                >
-                                    Hồ sơ
-                                </MenuItem>
-                                <MenuItem
-                                    onClick={handleLogout}
-                                    className={styles.menuItem}
-                                >
-                                    Đăng xuất
-                                </MenuItem>
-                            </Menu>
-                        </>
-                    )}
+{isLoggedIn && (
+  <>
+    <IconButton
+      onClick={(e) => setAnchorEl(e.currentTarget)}
+      className={styles.menuIcon}
+    >
+      <AccountCircle fontSize="large" />
+    </IconButton>
+    <Menu
+      anchorEl={anchorEl}
+      open={Boolean(anchorEl)}
+      onClose={() => setAnchorEl(null)}
+      keepMounted
+      id="user-menu"  // Thêm id để tránh xung đột
+    >
+      <MenuItem
+        onClick={() => {
+          navigate("/admin-profile");
+          setAnchorEl(null);
+        }}
+        className={styles.menuItem}
+      >
+        Hồ sơ
+      </MenuItem>
+      <MenuItem
+        onClick={handleLogout}
+        className={styles.menuItem}
+      >
+        Đăng xuất
+      </MenuItem>
+    </Menu>
+  </>
+)}
+
                 </nav>
             </div>
         </header>

@@ -36,6 +36,9 @@ import { AdminRegister } from './Menu Admin/AdminRegister';
 import ExpertDetail from './Consultant/ExpertDetail';
 import { ExpertProvider } from "./Consultant/ExpertContext"; // Import ExpertProvider
 
+
+
+
 import ServicePackageManagement from './Menu Admin/ServicePackageManagement';
 import SlotManagement from './Menu Admin/SlotManagement';
 import HistoryTest from './Menu Customer/HistoryTest';
@@ -82,6 +85,7 @@ export const Page = () => {
         )}
 
         <Routes>
+        
           <Route exact path="/" element={<Home />} />
           <Route exact path="/services" element={<Services />} />
           <Route exact path="/blog" element={<Blog />} />
@@ -121,6 +125,8 @@ export const Page = () => {
           <Route path="/admin-experts" element={<ExpertManagement/>}/>
           <Route path="/admin-accept" element={<PendingExperts/>}/>
           <Route exact path="/feedback" element={<FeedbackPage />} />
+          
+
         </Routes>
 
         <Footer />

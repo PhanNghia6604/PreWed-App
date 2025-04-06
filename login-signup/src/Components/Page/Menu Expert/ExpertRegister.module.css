@@ -209,8 +209,8 @@ select[name="specialty"] {
 }
 
 
-/* Nút Đăng ký */
-button[type="submit"] {
+/* Nút Đăng ký cho ExpertRegister */
+#expert-register-submit {
   margin-top: 20px;
   padding: 12px 20px;  /* Tăng padding để nút to hơn */
   background-color: #0275d8;  /* Màu xanh */
@@ -227,7 +227,7 @@ button[type="submit"] {
   text-align: center;  /* Căn giữa chữ trong nút */
 }
 
-button[type="submit"]:hover {
+#expert-register-submit:hover {
   background-color: #025aa5;
   transform: scale(1.05);
 }

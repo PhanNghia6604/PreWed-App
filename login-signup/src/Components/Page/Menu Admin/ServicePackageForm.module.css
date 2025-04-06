@@ -30,6 +30,7 @@ body {
   min-width: auto !important; /* Không giới hạn chiều rộng tối thiểu */
 }
 
+
 .button:hover {
   color: #1565c0 !important; /* Đổi màu chữ khi hover */
   background-color: rgba(0, 0, 0, 0.05) !important; /* Một chút nền mờ khi hover */
@@ -123,4 +124,25 @@ body {
 .delete-btn {
   background: #1976d2;
   color: white;
+}
+/* Nút Tạo Gói Dịch Vụ */
+#create-service-button {
+  padding: 12px 20px; /* Tăng padding để nút lớn hơn */
+  background-color: #0275d8; /* Màu xanh */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.3s;
+  width: 220px; /* Đặt chiều rộng cho nút */
+  margin: 0 auto;  /* Căn giữa nút */
+  display: block;  /* Đảm bảo nút là block element */
+  text-align: center;  /* Căn giữa chữ trong nút */
+}
+
+#create-service-button:hover {
+  background-color: #025aa5; /* Màu xanh đậm khi hover */
+  transform: scale(1.05); /* Hiệu ứng phóng to khi hover */
 }

@@ -90,8 +90,9 @@ const ServicePackageEdit = ({ packageData, setPackages, setEditingPackage }) => 
           required
         />
         <div className={styles.buttonGroup}>
-          <button type="submit" className={styles.saveButton}>Lưu</button>
-          <button type="button" className={styles.cancelButton} onClick={() => setEditingPackage(null)}>Hủy</button>
+        <button type="submit" className={styles.saveButtonEdit}>Lưu</button>
+        <button type="button" className={styles.cancelButtonEdit} onClick={() => setEditingPackage(null)}>Hủy</button>
+
         </div>
       </form>
     </div>

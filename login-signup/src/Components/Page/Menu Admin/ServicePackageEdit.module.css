@@ -79,11 +79,11 @@ body {
 
 
 /* ✅ Save Button */
-.saveButton,
-.cancelButton {
-  border: 1px solid black; /* Chỉ viền đen */
-  background: none !important; /* Không có màu nền */
-  color: black; /* Chữ màu đen */
+.saveButtonEdit, .cancelButtonEdit {
+  width: 48%; /* Đặt chiều rộng của nút chiếm 48% */
+  border: 1px solid #000; /* Viền đen */
+  background: transparent; /* Nền trong suốt */
+  color: #000; /* Chữ màu xanh lá cho Save */
   padding: 10px 15px;
   border-radius: 5px;
   font-size: 1rem;
@@ -91,10 +91,22 @@ body {
   transition: all 0.3s ease;
 }
 
-.saveButton:hover {
-  background:#818181 !important ;/* Màu xám nhẹ khi hover */
+/* Hover effect for Save Button */
+.saveButtonEdit:hover {
+  background: #4CAF50; /* Màu nền xanh khi hover */
+  color: white; /* Chữ màu trắng khi hover */
+  border-color: #45a049; /* Viền màu xanh khi hover */
 }
 
-.cancelButton:hover {
-  background: #818181 !important ; /* Màu hồng nhạt khi hover */
+/* Hover effect for Cancel Button */
+.cancelButtonEdit:hover {
+  background: #f44336; /* Màu nền đỏ khi hover */
+  color: white; /* Chữ màu trắng khi hover */
+  border-color: #f44336; /* Viền màu đỏ khi hover */
+}
+
+/* Căn giữa nút trong container */
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
 }

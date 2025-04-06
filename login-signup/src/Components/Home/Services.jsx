@@ -13,7 +13,7 @@ export const Services = () => {
               <div className='box' >
                 <i>{item.icon}</i>
                 <h3>{item.title}</h3>
-                <p>{item.desc}</p>
+                <p style={{ color: "white" }}>{item.desc}</p>
               </div>
             ))}
           </div>

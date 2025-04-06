@@ -14,8 +14,8 @@ export const About = () => {
                 </div>
                 <div className="right">
                     <Heading title='About Us'/>
-                    <p>{val.desc}</p>
-                    <p>{val.desc1}</p>
+                    <p style={{ color: "white" }}>{val.desc}</p>
+                    <p style={{ color: "white" }}>{val.desc1}</p>
                 </div>
                 </>
               ))}

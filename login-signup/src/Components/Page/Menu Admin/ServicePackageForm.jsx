@@ -50,7 +50,8 @@ const ServicePackageForm = ({ setPackages }) => {
         <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Mô tả" className={styles.textarea} required></textarea>
         <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Giá" className={styles.input} required />
         <input type="number" name="duration" value={formData.duration} onChange={handleChange} placeholder="Thời gian (phút)" className={styles.input} required />
-        <button type="submit" className={styles.button}>Tạo</button>
+        <button type="submit" id="create-service-button" className={styles.button}>Tạo</button>
+
       </form>
     </div>
   );

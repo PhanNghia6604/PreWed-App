@@ -13,7 +13,7 @@ export const Counter = () => {
                         <h1 className='heading'>
                             <CountUp enableScrollby duration={2} end ={item.num}/>
                         </h1>
-                        <h3>{item.title}</h3>
+                        <h3 style={{ color: "white" }}>{item.title}</h3>
                     </div>
                 ))}
             </div>

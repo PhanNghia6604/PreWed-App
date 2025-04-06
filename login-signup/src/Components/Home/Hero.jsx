@@ -31,12 +31,12 @@ export const Hero = () => {
               }} 
             />
           </h1>
-          <p>{val.desc}</p>
+          <p style={{ color: "white" }}>{val.desc}</p>
 
            {/* Thêm div bao quanh nút để có hiệu ứng gradient */}
       {/* Liên kết đến trang "Premarital Test" */}
       <button onClick={handleButtonClick} className="premaritalTestBtn">
-  <span>Premarital Test</span>
+  <span>Start Now</span>
 </button>
 
         </div>

@@ -210,7 +210,10 @@ const ExpertRegister = () => {
           </div>
         ))}
         <button type="button" onClick={handleAddCertificate}>+ Thêm chứng chỉ</button>
-        <button type="submit">Đăng ký</button>
+        <button id="expert-register-submit" type="submit">
+  Đăng ký
+</button>
+
       </form>
     </div>
   );
