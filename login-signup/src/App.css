@@ -476,64 +476,29 @@ footer i {
   color: var(--white); /* Màu chữ badge */
 }
 .premaritalTestBtn {
-<<<<<<< Updated upstream
   background-color: transparent; /* Nền trong suốt */
   color: white; /* Màu chữ trắng */
   border: 2px solid white; /* Viền trắng */
   padding: 15px 30px;
   font-size: 20px;
-=======
-  background-color: transparent;
-
-  color: #7d8792; /* Màu cam đỏ tươi, thay vì màu trắng */
-  padding: 8px 20px; /* Giữ padding nhỏ để nút vẫn gọn */
-  font-size: 16px;
->>>>>>> Stashed changes
   font-weight: bold;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-<<<<<<< Updated upstream
   border-radius: 50px; /* Bo tròn nút */
   transition: all 0.3s ease; /* Hiệu ứng chuyển tiếp */ 
   width: auto;
 }
 
 .premaritalTestBtn:hover {
-  background-color: #FF6A00; /* Màu nền cam khi hover */
+  background-color: #8f8f8f; /* Màu nền cam khi hover */
   color: white; /* Giữ màu chữ trắng khi hover */
-  border-color: #FF6A00; /* Viền cam khi hover */
+  border-color: #ffffff; /* Viền cam khi hover */
   transform: scale(1.05); /* Tăng kích thước nút một chút khi hover */
 }
 
 .premaritalTestBtn:focus {
   outline: none; /* Bỏ viền focus */
-  box-shadow: 0px 4px 8px rgba(255, 140, 0, 0.6); /* Hiệu ứng focus */
+  box-shadow: 0px 4px 8px #FFD700; /* Hiệu ứng focus */
 }
 
-=======
-  border-radius: 30px; /* Bo tròn hơn một chút để tạo cảm giác mềm mại */
-  transition: all 0.3s ease-in-out;
-  border: 1px solid #FFD700; /* Thêm đường viền màu cam đỏ */
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); /* Tạo bóng đổ nhẹ */
-  width: 180px;
-}
-
-.premaritalTestBtn:hover {
-  background-color: #b7b7b7; /* Màu nền chuyển thành cam đỏ khi hover */
-  color: white; /* Màu chữ trắng khi hover */
-  transform: scale(1.1); /* Phóng to nhẹ khi hover */
-  box-shadow: 0px 5px 10px #FFD700; /* Tăng độ bóng đổ khi hover */
-}
-
-.premaritalTestBtn:focus {
-  outline: none;
-  box-shadow: 0px 4px 10px #FFD700; /* Bóng đổ mạnh hơn khi focus */
-}
-
-.premaritalTestBtn:active {
-  transform: scale(0.98); /* Nút sẽ thu nhỏ khi nhấn */
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Bóng đổ nhẹ khi nhấn */
-}
-
->>>>>>> Stashed changes
