@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
@@ -7,6 +8,13 @@ import styles from "./AdminHeader.module.css"; // Import CSS
 export const AdminHeader = ({ isLoggedIn, setIsLoggedIn }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const navigate = useNavigate();
+    useEffect(() => {
+        // Đảm bảo màu sáng cho biểu tượng khi trang tải lại
+        const icon = document.getElementById("account-icon");
+        if (icon) {
+          icon.style.color = "#ffffff"; // Màu sáng mặc định
+        }
+      }, []); // Chạy một lần khi trang tải lại
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -37,12 +45,13 @@ export const AdminHeader = ({ isLoggedIn, setIsLoggedIn }) => {
                     {/* User Menu */}
 {isLoggedIn && (
   <>
-    <IconButton
-      onClick={(e) => setAnchorEl(e.currentTarget)}
-      className={styles.menuIcon}
-    >
-      <AccountCircle fontSize="large" />
-    </IconButton>
+  <IconButton
+  onClick={(e) => setAnchorEl(e.currentTarget)}
+  className={styles.menuIcon}
+  id="account-icon"  // Thêm ID duy nhất cho biểu tượng
+>
+  <AccountCircle fontSize="large" />
+</IconButton>
     <Menu
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}

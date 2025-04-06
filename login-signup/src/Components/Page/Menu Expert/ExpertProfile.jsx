@@ -114,26 +114,28 @@ const ExpertProfile = () => {
         navigate("/");
     };
      // Hàm để hiển thị tất cả chuyên môn nếu "ALL" được chọn
-     const displaySpecialty = expertData.specialty.includes("ALL")
-     ? ["Tâm lý", "Tài chính", "Gia đình", "Sức khỏe", "Giao tiếp", "Tôn giáo"]
-     : expertData.specialty.map((specialty) => {
-         switch (specialty) {
-             case "TAMLY":
-                 return "Tâm lý";
-             case "TAICHINH":
-                 return "Tài chính";
-             case "GIADINH":
-                 return "Gia đình";
-             case "SUCKHOE":
-                 return "Sức khỏe";
-             case "GIAOTIEP":
-                 return "Giao tiếp";
-             case "TONGIAO":
-                 return "Tôn giáo";
-             default:
-                 return "";
-         }
-     });
+     const displaySpecialty = expertData && expertData.specialty
+    ? expertData.specialty.includes("ALL")
+        ? ["Tâm lý", "Tài chính", "Gia đình", "Sức khỏe", "Giao tiếp", "Tôn giáo"]
+        : expertData.specialty.map((specialty) => {
+            switch (specialty) {
+                case "TAMLY":
+                    return "Tâm lý";
+                case "TAICHINH":
+                    return "Tài chính";
+                case "GIADINH":
+                    return "Gia đình";
+                case "SUCKHOE":
+                    return "Sức khỏe";
+                case "GIAOTIEP":
+                    return "Giao tiếp";
+                case "TONGIAO":
+                    return "Tôn giáo";
+                default:
+                    return "";
+            }
+        })
+    : []; // Default to an empty array if expertData or specialty is not available
 
     if (error) return <p className={styles.error}>{error}</p>;
     if (!expertData) return <p>Đang tải...</p>;

@@ -50,64 +50,72 @@
 
 /* Avatar + Dropdown */
 .avatar-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
+/* Biểu tượng menu */
 .menuIcon {
-  font-size: 30px;  /* Tăng kích thước biểu tượng */
-  color: #ffffff;  /* Đảm bảo màu icon luôn trắng */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;  /* Kích thước vòng tròn avatar */
-  height: 50px;  /* Kích thước vòng tròn avatar */
-  border-radius: 50%;  /* Làm cho avatar thành hình tròn */
-  background-color: rgba(255, 255, 255, 0.2);  /* Màu nền sáng hơn */
-  transition: background-color 0.3s ease;  /* Thêm hiệu ứng chuyển nền khi hover */
+    font-size: 30px;  /* Tăng kích thước biểu tượng */
+    color: #ffffff;   /* Màu biểu tượng sáng (trắng) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;  /* Kích thước vòng tròn avatar */
+    height: 50px;  /* Kích thước vòng tròn avatar */
+    border-radius: 50%;  /* Làm cho avatar thành hình tròn */
+    background-color: rgba(255, 255, 255, 0.2);  /* Nền sáng mờ */
+    transition: background-color 0.3s ease, color 0.3s ease;  /* Hiệu ứng chuyển màu */
 }
 
+/* Khi hover vào biểu tượng */
 .menuIcon:hover {
-  background-color: rgba(255, 255, 255, 0.3);  /* Nền sáng hơn khi hover */
+    background-color: rgba(255, 255, 255, 0.3);  /* Nền sáng hơn khi hover */
+    color: white;  /* Đổi màu biểu tượng thành màu sáng khi hover (màu vàng) */
+}
+
+/* Đảm bảo rằng khi hover vào icon, biểu tượng sáng lên */
+.menuIcon:hover svg {
+    color: white;  /* Đổi màu biểu tượng thành vàng sáng khi hover */
 }
 
 /* Dropdown menu */
 #user-menu {
-  position: absolute;
-  top: 50px;  /* Hiển thị ngay dưới avatar */
-  right: 0;
-  background: white;
-  color: black;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 180px;
-  display: none;
-  flex-direction: column;
-  padding: 10px 0;
-  z-index: 1001; /* Đảm bảo menu luôn hiển thị trên các phần tử khác */
+    position: absolute;
+    top: 50px;  /* Hiển thị ngay dưới avatar */
+    right: 0;
+    background: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 180px;
+    display: none;
+    flex-direction: column;
+    padding: 10px 0;
+    z-index: 1001; /* Đảm bảo menu luôn hiển thị trên các phần tử khác */
 }
 
 /* Khi menu được kích hoạt (active) */
 #user-menu.active {
-  display: flex;
+    display: flex;
 }
 
 /* Mục menu trong dropdown */
 .dropdown-item {
-  padding: 10px 16px;
-  font-size: 14px;
-  text-decoration: none;
-  color: black;
-  display: block;
-  transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 10px 16px;
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+    display: block;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Hover effect cho menu items */
 .dropdown-item:hover {
-  background-color: #f0f0f0;
-  color: #0275d8;  /* Màu chữ xanh khi hover */
+    background-color: #f0f0f0;  /* Màu nền sáng khi hover */
+    color: #0275d8;  /* Màu chữ xanh khi hover */
 }
 
 /* Responsive Styles */
