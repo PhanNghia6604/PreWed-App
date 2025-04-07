@@ -532,5 +532,36 @@ footer i {
   opacity: 1; /* Phần tử hoàn toàn hiển thị */
 }
 
+/* CSS cho ảnh trong phần about */
+.about .left img {
+  width: 100%; /* Đảm bảo ảnh chiếm hết chiều rộng phần tử chứa */
+  max-width: 500px; /* Giới hạn chiều rộng tối đa cho ảnh */
+  height: auto; /* Đảm bảo tỉ lệ ảnh được giữ nguyên */
+  object-fit: cover; /* Cắt bớt ảnh để vừa khung mà không làm ảnh bị biến dạng */
+  border-radius: 8px; /* Nếu bạn muốn bo góc ảnh */
+  margin-bottom: 20px; /* Thêm khoảng cách dưới ảnh */
+}
+
+/* Căn chỉnh cho .about */
+.about .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  flex-wrap: wrap; /* Đảm bảo phần tử không bị đẩy ra ngoài khi trên màn hình nhỏ */
+}
+
+.about .left {
+  flex: 1 1 45%; /* Chiếm 45% chiều rộng của container */
+  max-width: 500px; /* Đảm bảo không chiếm quá nhiều không gian */
+}
+
+.about .right {
+  flex: 1 1 50%;
+}
+
+
+
+/* Các ảnh khác sẽ có id khác, giúp bạn quản lý dễ dàng hơn */
 
 
