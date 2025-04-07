@@ -51,6 +51,9 @@ import CustomerManagement from './Menu Admin/CustomerMagnament';
 import ExpertManagement from './Menu Admin/ExpertManagment';
 import PendingExperts from './Menu Admin/PendingExpert';
 import RescheduleBooking from './Menu Customer/RescheduleBooking';
+import { ForgotPassword } from "./Login/ForgotPassword";
+import { VerifyCode } from "./Login/VerifyCode";
+import { ResetPassword } from "./Login/ResetPassword";
 
 
 
@@ -94,6 +97,9 @@ export const Page = () => {
           <Route exact path="/expert" element={<ExpertsList />} />
           <Route path="/expert/:name" element={<ExpertDetail />} />
           <Route exact path="/login" element={<ChooseRole />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-code" element={<VerifyCode />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
           <Route exact path="/customer-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
           <Route exact path="/expert-register" element={<ExpertRegister />} />

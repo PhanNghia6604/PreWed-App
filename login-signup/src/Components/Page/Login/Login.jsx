@@ -95,7 +95,7 @@ export const Login = ({ setIsLoggedIn }) => {
             </div>
             <div className={styles["forgot-password"]}>
               {/* Thay đổi onClick để điều hướng tới trang ForgotPassword */}
-              <span onClick={() => navigate()}>Forgot Password?</span>
+              <span onClick={() => navigate("/forgot-password")}>Forgot Password?</span>
             </div>
             <button type="submit" className={styles.btn} disabled={formik.isSubmitting}>
               {formik.isSubmitting ? "Logging in..." : "Login"}

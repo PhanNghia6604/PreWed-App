@@ -152,10 +152,10 @@ const ExpertRegister = () => {
   };
 
   return (
-    <div className={styles["register-container"]}>
-      <h2>Expert Registration</h2>
+    <div className={styles["register-container"]} id="expert-register-h2">
+      <h2 >Expert Registration</h2>
       {message && <p className={styles.message}>{message}</p>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} id="expert-register-form">
         <label>Username:</label>
         <input type="text" name="username" value={formData.username} onChange={handleChange} onBlur={validateForm} required />
         {errors.username && <p className={styles.error}>{errors.username}</p>}

@@ -11,7 +11,7 @@
 }
 
 /* Tiêu đề */
-h2 {
+#expert-register-h2 h2 {
   text-align: center;
   color: #333;
   margin-bottom: 20px;
@@ -28,19 +28,15 @@ h2 {
   font-size: 16px;
 }
 /* Định dạng cho các thông báo lỗi */
-.error {
-  color: red; /* Màu chữ đỏ */
-  font-size: 12px; /* Kích thước chữ nhỏ hơn */
-  margin-top: 5px; /* Khoảng cách giữa các lỗi */
-  text-align: left; /* Căn trái */
-}
-
-/* Nếu muốn tăng độ nổi bật cho thông báo lỗi, có thể thêm nền cho phần lỗi */
-.error {
-  background-color: #f8d7da; /* Nền màu đỏ nhạt */
-  border: 1px solid #f5c6cb; /* Viền màu đỏ nhạt */
+#expert-register-form .error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: left;
+  background-color: #f8d7da; /* Red background for error */
+  border: 1px solid #f5c6cb; /* Light red border */
   padding: 5px;
-  border-radius: 3px; /* Bo tròn các góc */
+  border-radius: 3px;
 }
 
 /* Form */
@@ -50,24 +46,24 @@ form {
   gap: 12px;
 }
 
-/* Nhãn */
-label {
+/* Specific styles for Expert Registration Form */
+#expert-register-form label {
   font-weight: bold;
   color: #000 !important;
   font-size: 15px;
   margin-bottom: 5px;
 }
 
-/* Input */
-input {
+/* Input styles within Expert Registration */
+#expert-register-form input {
   width: 100%;
   font-size: 14px;
   border-radius: 6px;
   padding: 8px;
-  border: 3px solid #444; /* Viền dày */
+  border: 3px solid #444;
 }
 
-input:focus {
+#expert-register-form input:focus {
   border-color: #0056b3;
   box-shadow: 0 0 8px rgba(0, 86, 179, 0.5);
 }
