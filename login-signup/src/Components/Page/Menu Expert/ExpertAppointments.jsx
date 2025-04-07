@@ -1,6 +1,29 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ExpertAppointments.module.css"; // Import CSS Module
 
+const getStatusText = (status, meetLink) => {
+  switch (status) {
+    case "PENDING":
+      return "Khách hàng đang chờ xác nhận, chấp nhận hoặc từ chối lịch hẹn";
+    case "PENDING_PAYMENT":
+      return "Hãy chờ khách hàng thanh toán";
+    case "AWAIT":
+      return "Khách hàng đang đợi, vui lòng đợi tới giờ để tư vấn";
+    case "PROCESSING":
+      if (!meetLink || meetLink.trim() === "") {
+        return "🔗 Chưa có link tư vấn. Vui lòng nhập link Google Meet";
+      } else {
+        return "💬 Tư vấn đang diễn ra, link đã sẵn sàng";
+      }
+    case "FINISHED":
+      return "✅ Đã hoàn thành tư vấn. Khách hàng sẽ đánh giá bạn sau.";
+    case "CANCELLED":
+      return "❌ Đã hủy lịch";
+    default:
+      return status;
+  }
+};
+
 const ExpertAppointment = () => {
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
@@ -86,7 +109,7 @@ const ExpertAppointment = () => {
         const timeDifference = appointmentStartTime - now;
 
         // Nếu thời gian hiện tại chưa tới 10 phút trước thời gian bắt đầu lịch hẹn
-        if (timeDifference > 600000) {
+        if (timeDifference > 60000) {
           // Cho phép nhấn nút nhưng không thể bắt đầu ngay
           alert("⏳ Bạn có thể nhấn bắt đầu để chuẩn bị, nhưng lịch hẹn chưa đến giờ bắt đầu. Đợi ít nhất 10 phút.");
           // Cập nhật trạng thái "AWAIT" hoặc trạng thái sẵn sàng
@@ -122,7 +145,7 @@ const ExpertAppointment = () => {
         )
       );
 
-      alert("✅ Cập nhật trạng thái thành công và bắt đầu tư vấn!");
+      alert("✅ Cập nhật trạng thái thành công");
     } catch (error) {
       console.error("❌ Lỗi khi cập nhật trạng thái:", error);
       alert("Không thể cập nhật trạng thái!");
@@ -166,10 +189,11 @@ const ExpertAppointment = () => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Khách hàng</th>
             <th>Ngày</th>
             <th>Giờ</th>
             <th>Trạng thái</th>
-            <th>Khách hàng</th>
+
             <th>Dịch vụ</th>
             <th>Giá tiền</th>
             <th>Hành động</th>
@@ -179,10 +203,11 @@ const ExpertAppointment = () => {
           {displayedAppointments.map((appointment) => (
             <tr key={appointment.id}>
               <td>{appointment.id}</td>
+              <td>{appointment.user?.name}</td>
               <td>{appointment.slotExpert.date}</td>
               <td>{appointment.slotExpert.slot.startTime} - {appointment.slotExpert.slot.endTime}</td>
-              <td>{appointment.status}</td>
-              <td>{appointment.user?.name} ({appointment.user?.email})</td>
+              <td>{getStatusText(appointment.status, appointment.meetLink)}</td>
+
               <td>
                 {appointment.services.length > 0 ? (
                   <ul className={styles.serviceList}>
@@ -239,8 +264,19 @@ const ExpertAppointment = () => {
                 )}
 
                 {appointment.status === "PROCESSING" && (
-                  <button className={styles.finishButton} onClick={() => updateStatus(appointment.id, "FINISHED")}>Hoàn tất tư vấn</button>
+                  <button
+                    className={styles.finishButton}
+                    onClick={() => {
+                      const confirmUpdate = window.confirm("Bạn có chắc muốn chuyển lại trạng thái về 'Đang chờ' không?");
+                      if (confirmUpdate) {
+                        updateStatus(appointment.id, "AWAIT");
+                      }
+                    }}
+                  >
+                    Cập nhật lại trạng thái
+                  </button>
                 )}
+
               </td>
             </tr>
           ))}

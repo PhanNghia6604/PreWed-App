@@ -10,6 +10,7 @@ const specialtyMap = {
   SUCKHOE: "Sức khỏe",
   GIAOTIEP: "Giao tiếp",
   TONGIAO: "Tôn giáo",
+  ALL:"Chuyên gia toàn diện",
 };
 
 const ExpertManagement = () => {
