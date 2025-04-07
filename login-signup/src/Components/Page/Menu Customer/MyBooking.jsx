@@ -1,6 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./MyBookings.module.css";
+const getStatusText = (status, isReviewed = false, hasMeetLink = false) => {
+  switch (status) {
+    case "PENDING":
+      return "Chờ chuyên gia xác nhận, vui lòng đợi";
+    case "PENDING_PAYMENT":
+      return "Chuyên gia đã xác nhận, hãy thanh toán cho hệ thống";
+    case "AWAIT":
+      return "Đang đợi được tư vấn, vui lòng đợi chuyên gia bắt đầu!";
+    case "PROCESSING":
+      return hasMeetLink 
+        ? "Đang tư vấn - Link đã sẵn sàng" 
+        : "Đang tư vấn - Chưa có link, vui lòng báo cáo tư vấn có vấn đề";
+    case "FINISHED":
+      return isReviewed ? "Tư vấn đã hoàn thành và đã được đánh giá" : "Tư vấn hoàn thành, hãy để lại đánh giá";
+    case "CANCELLED":
+      return "Lịch hẹn đã bị hủy";
+    default:
+      return "Không xác định";
+  }
+};
+
 
 export const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -340,7 +361,8 @@ export const MyBookings = () => {
                   <td>
                     {b.services.length > 0 ? `${b.services[0].price.toLocaleString()} VND` : 'Không có'}
                   </td>
-                  <td><strong>{b.status}</strong></td>
+                  <td><strong>{getStatusText(b.status, reviewedBookings?.[b.id], !!meetLink)}</strong></td>
+
                   <td>
                     {b.status === "PENDING" && <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>}
                     {b.status === "PENDING_PAYMENT" && (
@@ -356,26 +378,45 @@ export const MyBookings = () => {
                         </button>
                       </div>
                     )}
-                    {b.status === "PROCESSING" && meetLink && (
-                      <>
-                        <p>🔗 <a href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={style.link}>
-                          Link tư vấn
-                        </a></p>
-                        <button
-                          className={style.completeButton}
-                          onClick={() => {
-                            if (window.confirm("Bạn có chắc muốn đánh dấu hoàn thành tư vấn?")) {
-                              updateBookingStatus(b.id, "FINISHED");
-                            }
-                          }}
-                        >
-                          ✅ Hoàn thành tư vấn
-                        </button>
-                      </>
-                    )}
+                    {b.status === "PROCESSING" && (
+  <>
+    {meetLink ? (
+      <p>
+        🔗 <a
+          href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={style.link}
+        >
+          Link tư vấn
+        </a>
+      </p>
+    ) : (
+      <p className={style.noLink}>⏳ Chưa có link tư vấn</p>
+    )}
+    <button
+      className={style.completeButton}
+      onClick={() => {
+        if (window.confirm("Bạn có chắc muốn đánh dấu hoàn thành tư vấn?")) {
+          updateBookingStatus(b.id, "FINISHED");
+        }
+      }}
+    >
+      ✅ Hoàn thành tư vấn
+    </button>
+    <button
+      className={style.problemButton}
+      onClick={() => {
+        if (window.confirm("Bạn có muốn thay đổi lịch tư vấn so với hiện tại hay không.")) {
+          updateBookingStatus(b.id, "AWAIT");
+        }
+      }}
+    >
+      ⚠️ Tư vấn có vấn đề
+    </button>
+  </>
+)}
+
                     {b.status === "FINISHED" && (
                       reviewedBookings?.[b.id] ? (
                         <p className={style.reviewedText}>✅ Đã đánh giá</p>
