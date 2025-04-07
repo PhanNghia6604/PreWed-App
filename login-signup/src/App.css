@@ -514,7 +514,7 @@ footer i {
 }
 
 #welcome-text:hover {
-  color: var(--black);  /* Màu vàng nhạt khi hover vào chữ */
+  color: white;  /* Màu vàng nhạt khi hover vào chữ */
   transform: translateY(-3px);  /* Di chuyển chữ lên một chút khi hover */
 }
 

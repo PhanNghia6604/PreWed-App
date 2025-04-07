@@ -11,31 +11,31 @@ const ExpertProfile = () => {
     const fetchExpertData = async () => {
         const token = localStorage.getItem("token");
         let expertId = localStorage.getItem("expertId");
-    
+
         if (!token || !expertId) {
             navigate("/expert-login");
             return;
         }
-    
+
         try {
             const response = await fetch(`/api/expert/profile/${expertId}`, {
                 headers: { "Authorization": `Bearer ${token}` },
             });
-    
+
             if (!response.ok) throw new Error("Không thể tải thông tin chuyên gia.");
-    
+
             const data = await response.json();
-            
+
             const uniqueCertificates = Array.from(
                 new Map(data.certificates.map(c => [c.certificateName, c])).values()
             );
-    
+
             setExpertData({ ...data, certificates: uniqueCertificates });
         } catch (err) {
             setError(err.message);
         }
     };
-    
+
     useEffect(() => {
         fetchExpertData();
     }, []);
@@ -64,9 +64,9 @@ const ExpertProfile = () => {
     };
 
     const handleAddItem = (field) => {
-        setExpertData({ 
-            ...expertData, 
-            [field]: [...expertData[field], { certificateName: "", certificateUrl: "" }] 
+        setExpertData({
+            ...expertData,
+            [field]: [...expertData[field], { certificateName: "", certificateUrl: "" }]
         });
     };
 
@@ -93,7 +93,7 @@ const ExpertProfile = () => {
                 },
                 body: JSON.stringify(expertData),
             });
-            
+
             if (!response.ok) throw new Error("Không thể cập nhật thông tin.");
             alert("Cập nhật thành công!");
             setIsEditing(false);
@@ -113,29 +113,29 @@ const ExpertProfile = () => {
         localStorage.removeItem("userRole");
         navigate("/");
     };
-     // Hàm để hiển thị tất cả chuyên môn nếu "ALL" được chọn
-     const displaySpecialty = expertData && expertData.specialty
-    ? expertData.specialty.includes("ALL")
-        ? ["Tâm lý", "Tài chính", "Gia đình", "Sức khỏe", "Giao tiếp", "Tôn giáo"]
-        : expertData.specialty.map((specialty) => {
-            switch (specialty) {
-                case "TAMLY":
-                    return "Tâm lý";
-                case "TAICHINH":
-                    return "Tài chính";
-                case "GIADINH":
-                    return "Gia đình";
-                case "SUCKHOE":
-                    return "Sức khỏe";
-                case "GIAOTIEP":
-                    return "Giao tiếp";
-                case "TONGIAO":
-                    return "Tôn giáo";
-                default:
-                    return "";
-            }
-        })
-    : []; // Default to an empty array if expertData or specialty is not available
+    // Hàm để hiển thị tất cả chuyên môn nếu "ALL" được chọn
+    const displaySpecialty = expertData && expertData.specialty
+        ? expertData.specialty.includes("ALL")
+            ? ["Tâm lý", "Tài chính", "Gia đình", "Sức khỏe", "Giao tiếp", "Tôn giáo"]
+            : expertData.specialty.map((specialty) => {
+                switch (specialty) {
+                    case "TAMLY":
+                        return "Tâm lý";
+                    case "TAICHINH":
+                        return "Tài chính";
+                    case "GIADINH":
+                        return "Gia đình";
+                    case "SUCKHOE":
+                        return "Sức khỏe";
+                    case "GIAOTIEP":
+                        return "Giao tiếp";
+                    case "TONGIAO":
+                        return "Tôn giáo";
+                    default:
+                        return "";
+                }
+            })
+        : []; // Default to an empty array if expertData or specialty is not available
 
     if (error) return <p className={styles.error}>{error}</p>;
     if (!expertData) return <p>Đang tải...</p>;
@@ -153,7 +153,7 @@ const ExpertProfile = () => {
                     )}
                     {isEditing && (
                         <>
-                            <input type="file" accept="image/*" onChange={handleImageUpload} />
+                            
                             <input type="text" name="avatar" value={expertData.avatar} onChange={handleChange} />
                         </>
                     )}
@@ -171,9 +171,9 @@ const ExpertProfile = () => {
                 ))}
 
                 <label>Chuyên môn:</label>
-<p className={styles.textExpertProfile}>
-  {displaySpecialty.length > 0 ? displaySpecialty.join(", ") : "Chưa cập nhật"}
-</p>
+                <p className={styles.textExpertProfile}>
+                    {displaySpecialty.length > 0 ? displaySpecialty.join(", ") : "Chưa cập nhật"}
+                </p>
 
                 <label>Chứng chỉ:</label>
                 <ul className={styles.certificatesListExpertProfile}>
@@ -195,7 +195,7 @@ const ExpertProfile = () => {
                     ))}
                 </ul>
                 {isEditing && <button type="button" onClick={() => handleAddItem("certificates")} className={styles.addCertificateBtnExpertProfile}>+ Thêm chứng chỉ</button>}
-                
+
                 <div className={styles.buttonGroup}>
                     {isEditing ? (
                         <>
