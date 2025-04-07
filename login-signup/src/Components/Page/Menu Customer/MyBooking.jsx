@@ -8,13 +8,19 @@ const getStatusText = (status, isReviewed = false, hasMeetLink = false) => {
     case "PENDING_PAYMENT":
       return "Chuyên gia đã xác nhận, hãy thanh toán cho hệ thống";
     case "AWAIT":
-      return "Đang đợi được tư vấn, vui lòng đợi chuyên gia bắt đầu!";
+      return (
+        <>
+          Cảm ơn bạn đã thanh toán. Bạn sẽ được tư vấn trong thời gian tới<br />
+          <br style={{ marginBottom: "8px", display: "block" }} />
+          Hoặc bạn có thể thay đổi lịch lại nếu lịch hiện tại không phù hợp với bạn hoặc trong lúc tư vấn có vấn đề
+        </>
+      );
     case "PROCESSING":
-      return hasMeetLink 
-        ? "Đang tư vấn - Link đã sẵn sàng" 
+      return hasMeetLink
+        ? "Đang tư vấn - Link đã sẵn sàng"
         : "Đang tư vấn - Chưa có link, vui lòng báo cáo tư vấn có vấn đề";
     case "FINISHED":
-      return isReviewed ? "Tư vấn đã hoàn thành và đã được đánh giá" : "Tư vấn hoàn thành, hãy để lại đánh giá";
+      return isReviewed ? "Tư vấn đã hoàn thành và đã được đánh giá" : "Tư vấn đã hoàn thành,vui lòng hãy để lại đánh giá cho chuyên gia";
     case "CANCELLED":
       return "Lịch hẹn đã bị hủy";
     default:
@@ -144,10 +150,10 @@ export const MyBookings = () => {
         navigate("/login");
         return;
       }
-  
+
       // Sửa URL để truyền status qua query parameter như API yêu cầu
       const url = `/api/booking/${bookingId}?status=${newStatus}`;
-      
+
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -156,7 +162,7 @@ export const MyBookings = () => {
         }
         // KHÔNG gửi body vì status đã truyền qua URL
       });
-  
+
       if (!response.ok) {
         if (response.status === 401) {
           alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
@@ -164,10 +170,10 @@ export const MyBookings = () => {
         }
         throw new Error(`Cập nhật trạng thái thất bại: ${await response.text()}`);
       }
-  
+
       const updatedBooking = await response.json();
       console.log("✅ Cập nhật booking thành công:", updatedBooking);
-  
+
       setBookings((prev) =>
         prev.map((b) => (b.id === bookingId ? updatedBooking : b))
       );
@@ -278,7 +284,102 @@ export const MyBookings = () => {
     const storedReviews = localStorage.getItem("reviewedBookings");
     return storedReviews ? JSON.parse(storedReviews) : {};
   });
+  const checkAndCancelExpiredBookings = async () => {
+    try {
+      const now = new Date();
+      const token = localStorage.getItem('token');
+      if (!token) return;
+  
+      const bookingsToCheck = bookings.filter(b => 
+        ['PENDING', 'PENDING_PAYMENT'].includes(b.status)
+      );
+  
+      for (const booking of bookingsToCheck) {
+        try {
+          // Parse ngày từ "yyyy-MM-dd" và thời gian từ "HH:mm:ss"
+          const [year, month, day] = booking.slotExpert.date.split('-').map(Number);
+          const [startHour, startMinute] = booking.slotExpert.slot.startTime.split(':').map(Number);
+  
+          // Kiểm tra giá trị hợp lệ
+          if ([year, month, day, startHour, startMinute].some(isNaN)) {
+            console.error('Dữ liệu thời gian không hợp lệ:', booking);
+            continue;
+          }
+  
+          const bookingTime = new Date(year, month - 1, day, startHour, startMinute);
+          const expiryTime = new Date(bookingTime.getTime() + 15 * 60 * 1000);
+  
+          if (now > expiryTime) {
+            console.log(`Tự động hủy booking ${booking.id} do quá hạn`);
+            const response = await fetch(`/api/booking/${booking.id}?status=CANCELLED`, {
+              method: 'PATCH',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+              }
+            });
+  
+            if (response.ok) {
+              const updatedBooking = await response.json();
+              setBookings(prev => 
+                prev.map(b => b.id === booking.id ? updatedBooking : b)
+              );
+            } else {
+              console.error('Lỗi khi hủy booking:', await response.text());
+            }
+          }
+        } catch (error) {
+          console.error(`Lỗi xử lý booking ${booking.id}:`, error);
+        }
+      }
+    } catch (error) {
+      console.error('Lỗi hệ thống khi kiểm tra lịch hẹn quá hạn:', error);
+    }
+  };
+  useEffect(() => {
+    // Kiểm tra ngay khi component load
+    checkAndCancelExpiredBookings();
 
+    // Thiết lập interval kiểm tra mỗi phút
+    const intervalId = setInterval(checkAndCancelExpiredBookings, 60000);
+
+    // Clear interval khi component unmount
+    return () => clearInterval(intervalId);
+  }, [bookings]); // Chạy lại khi bookings thay đổi
+  const getExpiryInfo = (booking) => {
+    if (!['PENDING', 'PENDING_PAYMENT'].includes(booking.status)) return null;
+  
+    try {
+      // Parse ngày từ "yyyy-MM-dd" (ví dụ: "2025-04-07")
+      const [year, month, day] = booking.slotExpert.date.split('-').map(Number);
+      
+      // Parse giờ từ "HH:mm:ss" (ví dụ: "14:00:00")
+      const [startHour, startMinute] = booking.slotExpert.slot.startTime.split(':').map(Number);
+  
+      // Kiểm tra giá trị số hợp lệ
+      if ([day, month, year, startHour, startMinute].some(isNaN)) {
+        throw new Error("Dữ liệu thời gian không hợp lệ");
+      }
+  
+      const bookingTime = new Date(year, month - 1, day, startHour, startMinute);
+      const expiryTime = new Date(bookingTime.getTime() + 15 * 60 * 1000);
+      const now = new Date();
+  
+      if (now > expiryTime) {
+        return <span className={style.expiredText}>⚠️ Đã quá hạn (tự động hủy)</span>;
+      }
+  
+      const remainingMinutes = Math.round((expiryTime - now) / (60 * 1000));
+      return (
+        <span className={style.expiryText}>
+          ⏳ Tự động hủy sau: {remainingMinutes} phút
+        </span>
+      );
+    } catch (error) {
+      console.error("Lỗi tính thời gian hủy:", error);
+      return <span className={style.errorText}>⚠️ Lỗi tính thời gian</span>;
+    }
+  };
 
   // useEffect(() => {
   //   const storedReviews = JSON.parse(localStorage.getItem("reviewedBookings")) || {};
@@ -364,11 +465,18 @@ export const MyBookings = () => {
                   <td><strong>{getStatusText(b.status, reviewedBookings?.[b.id], !!meetLink)}</strong></td>
 
                   <td>
-                    {b.status === "PENDING" && <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>}
-                    {b.status === "PENDING_PAYMENT" && (
-                      <button className={style.payButton} onClick={() => handlePayment(b.id)}>
-                        💳 Thanh toán
-                      </button>
+                    {b.status === "PENDING" && (
+                      <div>
+                        <p className={style.pendingText}>⏳ Đang chờ chuyên gia xác nhận...</p>
+                        {getExpiryInfo(b)}
+                      </div>
+                    )}{b.status === "PENDING_PAYMENT" && (
+                      <div>
+                        <button className={style.payButton} onClick={() => handlePayment(b.id)}>
+                          💳 Thanh toán
+                        </button>
+                        {getExpiryInfo(b)}
+                      </div>
                     )}
                     {b.status === "AWAIT" && (
                       <div className={style.awaitContainer}>
@@ -379,43 +487,43 @@ export const MyBookings = () => {
                       </div>
                     )}
                     {b.status === "PROCESSING" && (
-  <>
-    {meetLink ? (
-      <p>
-        🔗 <a
-          href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={style.link}
-        >
-          Link tư vấn
-        </a>
-      </p>
-    ) : (
-      <p className={style.noLink}>⏳ Chưa có link tư vấn</p>
-    )}
-    <button
-      className={style.completeButton}
-      onClick={() => {
-        if (window.confirm("Bạn có chắc muốn đánh dấu hoàn thành tư vấn?")) {
-          updateBookingStatus(b.id, "FINISHED");
-        }
-      }}
-    >
-      ✅ Hoàn thành tư vấn
-    </button>
-    <button
-      className={style.problemButton}
-      onClick={() => {
-        if (window.confirm("Bạn có muốn thay đổi lịch tư vấn so với hiện tại hay không.")) {
-          updateBookingStatus(b.id, "AWAIT");
-        }
-      }}
-    >
-      ⚠️ Tư vấn có vấn đề
-    </button>
-  </>
-)}
+                      <>
+                        {meetLink ? (
+                          <p>
+                            🔗 <a
+                              href={meetLink.startsWith("http") ? meetLink : `https://${meetLink}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={style.link}
+                            >
+                              Link tư vấn
+                            </a>
+                          </p>
+                        ) : (
+                          <p className={style.noLink}>⏳ Chưa có link tư vấn</p>
+                        )}
+                        <button
+                          className={style.completeButton}
+                          onClick={() => {
+                            if (window.confirm("Bạn có chắc muốn đánh dấu hoàn thành tư vấn?")) {
+                              updateBookingStatus(b.id, "FINISHED");
+                            }
+                          }}
+                        >
+                          ✅ Hoàn thành tư vấn
+                        </button>
+                        <button
+                          className={style.problemButton}
+                          onClick={() => {
+                            if (window.confirm("Bạn có muốn thay đổi lịch tư vấn so với hiện tại hay không.")) {
+                              updateBookingStatus(b.id, "AWAIT");
+                            }
+                          }}
+                        >
+                          ⚠️ Tư vấn có vấn đề
+                        </button>
+                      </>
+                    )}
 
                     {b.status === "FINISHED" && (
                       reviewedBookings?.[b.id] ? (

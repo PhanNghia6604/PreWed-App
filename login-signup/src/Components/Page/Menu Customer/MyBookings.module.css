@@ -195,3 +195,16 @@ button {
 .completeButton:hover {
   background-color: #45a049;
 }
+.expiredText {
+  color: #ff4d4f;
+  font-size: 0.9em;
+  margin-top: 5px;
+  display: block;
+}
+
+.expiryText {
+  color: #faad14;
+  font-size: 0.9em;
+  margin-top: 5px;
+  display: block;
+}
