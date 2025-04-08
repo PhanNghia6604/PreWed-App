@@ -560,6 +560,20 @@ footer i {
   flex: 1 1 50%;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
 
 
 /* Các ảnh khác sẽ có id khác, giúp bạn quản lý dễ dàng hơn */

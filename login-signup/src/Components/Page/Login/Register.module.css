@@ -34,8 +34,8 @@
 }
 
 /* Nhãn */
-.input-box label {
-  color: #ffcc00; /* Màu vàng cho nhãn */
+#Register-Page-CSS label {
+  color: black; /* Màu vàng cho nhãn */
   font-weight: 500;
   display: block;
   margin-bottom: 5px;

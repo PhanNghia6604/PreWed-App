@@ -18,45 +18,46 @@ export const Register = () => {
       address: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Name is required"),
-      username: Yup.string()
-        .matches(/^[a-zA-Z0-9_]+$/, "Only letters, numbers, and underscores are allowed")
-        .required("Username is required"),
-      email: Yup.string().email("Invalid email format").required("Email is required"),
-      password: Yup.string()
-        .min(8, "Password must be at least 8 characters long")
-        .required("Password is required"),
-      phone: Yup.string()
-        .matches(/^[0-9]{9,}$/, "Invalid phone number! Must be at least 9 digits")
-        .required("Phone number is required"),
-      address: Yup.string().required("Address is required"),
-    }),
-    onSubmit: async (values, { setSubmitting, setErrors }) => {
-      try {
-        const response = await fetch("/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        });
+  name: Yup.string().required("Họ và Tên là bắt buộc"),
+  username: Yup.string()
+    .matches(/^[a-zA-Z0-9_]+$/, "Chỉ cho phép chữ cái, số và dấu gạch dưới")
+    .required("Tên đăng nhập là bắt buộc"),
+  email: Yup.string().email("Định dạng email không hợp lệ").required("Email là bắt buộc"),
+  password: Yup.string()
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+    .required("Mật khẩu là bắt buộc"),
+  phone: Yup.string()
+    .matches(/^[0-9]{9,}$/, "Số điện thoại không hợp lệ! Phải có ít nhất 9 chữ số")
+    .required("Số điện thoại là bắt buộc"),
+  address: Yup.string().required("Địa chỉ là bắt buộc"),
+}),
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          setErrors({ server: errorData.message || "Registration failed." });
-          return;
-        }
+onSubmit: async (values, { setSubmitting, setErrors }) => {
+  try {
+    const response = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
 
-        alert("Registration successful! Redirecting to login...");
-        navigate("/login");
-      } catch (error) {
-        setErrors({ server: "An error occurred. Please try again." });
-      } finally {
-        setSubmitting(false);
-      }
-    },
+    if (!response.ok) {
+      const errorData = await response.json();
+      setErrors({ server: errorData.message || "Đăng ký không thành công." });
+      return;
+    }
+
+    alert("Đăng ký thành công! Đang chuyển hướng tới trang đăng nhập...");
+    navigate("/login");
+  } catch (error) {
+    setErrors({ server: "Đã xảy ra lỗi. Vui lòng thử lại." });
+  } finally {
+    setSubmitting(false);
+  }
+},
   });
 
   return (
-    <section className={styles.register}>
+    <section className={styles.register} id="Register-Page-CSS">
       <div className={styles.container}>
         <Heading title="Register" />
         {formik.errors.server && <div className={styles["error-text"]}>{formik.errors.server}</div>}
@@ -79,10 +80,10 @@ export const Register = () => {
               </div>
             ))}
             <button type="submit" className={styles.btn} disabled={formik.isSubmitting}>
-              {formik.isSubmitting ? "Registering..." : "Register"}
+              {formik.isSubmitting ? "Đang đăng kí..." : "Đăng kí"}
             </button>
             <div className={styles["login-link"]}>
-              Already have an account? <span onClick={() => navigate("/login")}>Login</span>
+              Already have an account? <span onClick={() => navigate("/login")}>Đăng nhập</span>
             </div>
           </form>
         </div>

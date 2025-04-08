@@ -43,7 +43,7 @@ export const ForgotPassword = () => {
 
   return (
     <div id="forgot-password-page" className={styles.container}>
-      <h2>Forgot Password</h2>
+      <h2>Quên Mật Khẩu</h2>
       {serverError && <div className={styles.error}>{serverError}</div>}
       <form onSubmit={formik.handleSubmit}>
         <div className={styles.inputBox}>
@@ -60,7 +60,7 @@ export const ForgotPassword = () => {
             <div className={styles.errorText}>{formik.errors.email}</div>
           )}
         </div>
-        <button type="submit" disabled={formik.isSubmitting}>Send Verification Code</button>
+        <button type="submit" disabled={formik.isSubmitting}>Gửi mẫ xác nhận</button>
       </form>
     </div>
   );

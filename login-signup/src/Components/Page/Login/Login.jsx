@@ -14,10 +14,10 @@ export const Login = ({ setIsLoggedIn }) => {
       password: "",
     },
     validationSchema: Yup.object({
-      username: Yup.string().required("User Name is required"),
+      username: Yup.string().required("Tên người dùng là bắt buộc"),
       password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .required("Password is required"),
+        .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+        .required("Mật khẩu phải có ít nhất 8 ký tự"),
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
@@ -29,7 +29,7 @@ export const Login = ({ setIsLoggedIn }) => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          setErrors({ server: errorData.message || "Login failed." });
+          setErrors({ server: errorData.message || "Đăng nhập thất bại." });
           return;
         }
 
@@ -61,12 +61,12 @@ export const Login = ({ setIsLoggedIn }) => {
   return (
     <section className={styles.login}>
       <div className={styles.container}>
-        <Heading title="Customer Login" />
+        <Heading title="Đăng nhập" />
         {formik.errors.server && <div className={styles["error-box"]}>{formik.errors.server}</div>}
         <div className={styles.content}>
           <form onSubmit={formik.handleSubmit} className="login-form">
             <div className={styles["input-box"]}>
-              <label>User Name</label>
+              <label>Tài khoản</label>
               <input
                 type="text"
                 name="username"
@@ -80,7 +80,7 @@ export const Login = ({ setIsLoggedIn }) => {
               )}
             </div>
             <div className={styles["input-box"]}>
-              <label>Password</label>
+              <label>Mật Khẩu</label>
               <input
                 type="password"
                 name="password"
@@ -95,13 +95,13 @@ export const Login = ({ setIsLoggedIn }) => {
             </div>
             <div className={styles["forgot-password"]}>
               {/* Thay đổi onClick để điều hướng tới trang ForgotPassword */}
-              <span onClick={() => navigate("/forgot-password")}>Forgot Password?</span>
+              <span onClick={() => navigate("/forgot-password")}>Quên mật khẩu?</span>
             </div>
             <button type="submit" className={styles.btn} disabled={formik.isSubmitting}>
               {formik.isSubmitting ? "Logging in..." : "Login"}
             </button>
             <div className={styles["register-link"]}>
-              Don't have an account? <span onClick={() => navigate("/register")}>Register</span>
+              Don't have an account? <span onClick={() => navigate("/register")}>Đăng Ký</span>
             </div>
           </form>
           <button
@@ -118,7 +118,7 @@ export const Login = ({ setIsLoggedIn }) => {
               padding: "5px 10px"
             }}
           >
-             Back 
+             Quay lại 
           </button>
         </div>
       </div>

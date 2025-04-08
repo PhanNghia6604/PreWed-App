@@ -3,23 +3,23 @@ import { Favorite, Event, EmojiPeople, School, Chat, Checklist , EventAvailable,
 export const navlink = [
   {
     url: "/",
-    text: "Home",
+    text: "Trang Chủ",
   },
   {
     url: "/services",
-    text: "Services",
+    text: "Dịch Vụ",
   },
   {
     url: "/blog",
-    text: "Blog",
+    text: "Bài viết",
   },
   {
     url: "/contact",
-    text: "Contact",
+    text: "Liên Hệ",
   },
   {
     url: "/expert",
-    text: "Expert",
+    text: "Về Chuyên Gia",
   },
 ]
 export const home = [

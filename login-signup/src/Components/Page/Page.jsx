@@ -86,56 +86,62 @@ export const Page = () => {
         ) : (  
           <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         )}
-
+        <div className="page-wrapper">
+        <main>
         <Routes>
         
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/services" element={<Services />} />
-          <Route exact path="/blog" element={<Blog />} />
-          <Route exact path="/blog/:id" element={<BlogDetail />} />
-          <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="/expert" element={<ExpertsList />} />
-          <Route path="/expert/:name" element={<ExpertDetail />} />
-          <Route exact path="/login" element={<ChooseRole />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-code" element={<VerifyCode />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-          <Route exact path="/customer-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-          <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
-          <Route exact path="/expert-register" element={<ExpertRegister />} />
-          <Route exact path="/feedback/:bookingId/:expertId" element={<FeedbackPage />} />
-          <Route exact path='/expert-dashboard' element={<ExpertDashboard />} />
-          <Route path="expert-profile" element={<ExpertProfile />} />
-          <Route path='expert-earning' element={<Earnings />} />
-          <Route exact path="/expert-appointments" element={<ExpertAppointment />} />
-          <Route exact path="/profile" element={<Profile />} />
-          <Route path="/history-test" element={<HistoryTest/>}/>
-          <Route exact path="/my-booking" element={<MyBookings />} />
-          <Route path="/reschedule/:bookingId" element={<RescheduleBooking/>}/>
-          <Route exact path="/booking-payment/:bookingId" element={<BookingPayment />} />
-          <Route path="/waiting-payment" element={<WaitingPayment/>}/>
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/test" element={<Test />} />
-          <Route path="/history-test" element={<HistoryTest/>}/>
-          <Route exact path="/result" element={<Result />} />
-          <Route exact path="/admin-login" element={<AdminLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
-          <Route exact path="/admin-dashboard" element={<AdminDashboard />} />
-         <Route path="/admin-servicepackage" element={<ServicePackageManagement/>}/>
-          <Route exact path="/admin-register" element={<AdminRegister />} />
-          <Route exact path="/admin-slots" element={<SlotManagement />} />
-          <Route exact path="/admin-users" element={<UserManagement />} />
-          <Route exact path="/admin-reports" element={<AdminReportPage/>} />
-          <Route path="/admin-blogs" element={<AdminBlogManagement/>}/>
-          <Route  path="/admin/blogs/:id"  element={<AdminBlogDetail/>}/>
-          <Route path="/admin-customers" element={<CustomerManagement/>}/>
-          <Route path="/admin-experts" element={<ExpertManagement/>}/>
-          <Route path="/admin-accept" element={<PendingExperts/>}/>
-          <Route exact path="/feedback" element={<FeedbackPage />} />
-          
+        <Route exact path="/" element={<Home />} />
+        <Route exact path="/services" element={<Services />} />
+        <Route exact path="/blog" element={<Blog />} />
+        <Route exact path="/blog/:id" element={<BlogDetail />} />
+        <Route exact path="/contact" element={<Contact />} />
+        <Route exact path="/expert" element={<ExpertsList />} />
+        <Route path="/expert/:name" element={<ExpertDetail />} />
+        <Route exact path="/login" element={<ChooseRole />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/verify-code" element={<VerifyCode />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+        <Route exact path="/customer-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route exact path="/expert-login" element={<ExpertLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
+        <Route exact path="/expert-register" element={<ExpertRegister />} />
+        <Route exact path="/feedback/:bookingId/:expertId" element={<FeedbackPage />} />
+        <Route exact path='/expert-dashboard' element={<ExpertDashboard />} />
+        <Route path="expert-profile" element={<ExpertProfile />} />
+        <Route path='expert-earning' element={<Earnings />} />
+        <Route exact path="/expert-appointments" element={<ExpertAppointment />} />
+        <Route exact path="/profile" element={<Profile />} />
+        <Route path="/history-test" element={<HistoryTest/>}/>
+        <Route exact path="/my-booking" element={<MyBookings />} />
+        <Route path="/reschedule/:bookingId" element={<RescheduleBooking/>}/>
+        <Route exact path="/booking-payment/:bookingId" element={<BookingPayment />} />
+        <Route path="/waiting-payment" element={<WaitingPayment/>}/>
+        <Route exact path="/register" element={<Register />} />
+        <Route exact path="/test" element={<Test />} />
+        <Route path="/history-test" element={<HistoryTest/>}/>
+        <Route exact path="/result" element={<Result />} />
+        <Route exact path="/admin-login" element={<AdminLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
+        <Route exact path="/admin-dashboard" element={<AdminDashboard />} />
+       <Route path="/admin-servicepackage" element={<ServicePackageManagement/>}/>
+        <Route exact path="/admin-register" element={<AdminRegister />} />
+        <Route exact path="/admin-slots" element={<SlotManagement />} />
+        <Route exact path="/admin-users" element={<UserManagement />} />
+        <Route exact path="/admin-reports" element={<AdminReportPage/>} />
+        <Route path="/admin-blogs" element={<AdminBlogManagement/>}/>
+        <Route  path="/admin/blogs/:id"  element={<AdminBlogDetail/>}/>
+        <Route path="/admin-customers" element={<CustomerManagement/>}/>
+        <Route path="/admin-experts" element={<ExpertManagement/>}/>
+        <Route path="/admin-accept" element={<PendingExperts/>}/>
+        <Route exact path="/feedback" element={<FeedbackPage />} />
+        
 
-        </Routes>
+      </Routes>
+        </main>
+        
+
+        
 
         <Footer />
+        </div>
       </Router>
     </ExpertProvider>
   );

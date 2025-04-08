@@ -87,7 +87,7 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   ))}
 
   {!isLoggedIn ? (
-    <Link to="/login">Login</Link>
+    <Link to="/login"> Đăng Nhập</Link>
   ) : (
     <>
       {/* Icon Thông Báo */}

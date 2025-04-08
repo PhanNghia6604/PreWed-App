@@ -13,7 +13,7 @@ export const VerifyCode = () => {
       code: "",
     },
     validationSchema: Yup.object({
-      code: Yup.string().length(6, "Code must be 6 digits").required("Verification code is required"),
+      code: Yup.string().length(6, "Mã phải có 6 chữ số").required("Mã xác nhận là bắt buộc"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -25,7 +25,7 @@ export const VerifyCode = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          setServerError(errorData.message || "Invalid or expired verification code.");
+          setServerError(errorData.message || "Mã xác nhận không hợp lệ hoặc đã hết hạn.");
           alert("Mã xác nhận không hợp lệ hoặc đã hết hạn.");
           return;
         }
@@ -35,7 +35,7 @@ export const VerifyCode = () => {
         alert("Mã xác nhận hợp lệ. Bạn có thể thay đổi mật khẩu.");
         navigate("/reset-password"); // Điều hướng đến trang đổi mật khẩu
       } catch (error) {
-        setServerError("An error occurred. Please try again.");
+        setServerError("Đã xảy ra lỗi. Vui lòng thử lại.");
       } finally {
         setSubmitting(false);
       }
@@ -44,24 +44,24 @@ export const VerifyCode = () => {
 
   return (
     <div id="verify-code-page" className={styles.container}>
-      <h2>Enter Verification Code</h2>
+      <h2>Nhập Mã Xác Nhận</h2>
       {serverError && <div className={styles.error}>{serverError}</div>}
       <form onSubmit={formik.handleSubmit}>
         <div className={styles.inputBox}>
-          <label id="Colorlabel">Verification Code</label>
+          <label id="Colorlabel">Mã Xác Nhận</label>
           <input
             type="text"
             name="code"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.code}
-            placeholder="Enter the code sent to your email"
+            placeholder="Nhập mã được gửi đến email của bạn"
           />
           {formik.touched.code && formik.errors.code && (
             <div className={styles.errorText}>{formik.errors.code}</div>
           )}
         </div>
-        <button type="submit" disabled={formik.isSubmitting}>Verify Code</button>
+        <button type="submit" disabled={formik.isSubmitting}>Xác Nhận Mã</button>
       </form>
     </div>
   );

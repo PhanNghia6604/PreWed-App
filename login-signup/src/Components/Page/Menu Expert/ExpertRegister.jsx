@@ -24,41 +24,41 @@ const ExpertRegister = () => {
 
     // Validate các trường thông tin
     if (!formData.username.trim()) {
-      newErrors.username = "Username cannot be empty!";
+      newErrors.username = "Tên người dùng không thể để trống!";
     }
     if (!formData.name.trim()) {
-      newErrors.name = "Full name cannot be empty.";
+      newErrors.name = "Họ và tên không thể để trống.";
     }
     if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number cannot be empty";
+      newErrors.phone = "Số điện thoại không thể để trống";
     } else if (!/^\d{9,11}$/.test(formData.phone)) {
-      newErrors.phone = "Phone number must be between 9 and 11 digits.";
+      newErrors.phone = "Số điện thoại phải có từ 9 đến 11 chữ số.";
     }
     if (!formData.address.trim()) {
-      newErrors.address = "Address cannot be empty";
+      newErrors.address = "Địa chỉ không thể để trống";
     }
     if (!formData.email.trim()) {
-      newErrors.email = "Email cannot be empty";
+      newErrors.email = "Email không thể để trống";
     } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = "Invalid email, must contain '@'.";
+      newErrors.email = "Email không hợp lệ, phải chứa '@'.";
     }
     if (!formData.avatar.trim()) {
-      newErrors.avatar = "Avatar URL cannot be empty";
+      newErrors.avatar = "URL ảnh đại diện không thể để trống";
     }
 
     // Kiểm tra specialty
     if (formData.specialty.length === 0) {
-      newErrors.specialty = "Please select at least one specialty";  // Hiển thị lỗi nếu không có chuyên môn nào được chọn
+      newErrors.specialty = "Vui lòng chọn ít nhất một chuyên môn";  // Hiển thị lỗi nếu không có chuyên môn nào được chọn
     } else {
       delete newErrors.specialty;  // Nếu có ít nhất một chuyên môn được chọn, loại bỏ lỗi
     }
 
     formData.certificates.forEach((certificate, index) => {
       if (!certificate.certificateUrl.trim()) {
-        newErrors[`certificateUrl${index}`] = "Certificate URL cannot be empty";
+        newErrors[`certificateUrl${index}`] = "URL chứng chỉ không thể để trống";
       }
       if (!certificate.certificateName.trim()) {
-        newErrors[`certificateName${index}`] = "Certificate name cannot be empty";
+        newErrors[`certificateName${index}`] = "Tên chứng chỉ không thể để trống";
       }
     });
 
@@ -140,8 +140,8 @@ const ExpertRegister = () => {
 
       const result = await response.json();
       if (response.ok) {
-        setMessage("Registration successful!");
-        alert("You have successfully registered! Please wait for the approval email from the admin.");
+        setMessage("Đăng ký thành công!");
+        alert("Bạn đã đăng ký thành công! Vui lòng đợi email phê duyệt từ admin.");
         navigate("/expert-login");
       } else {
         setMessage(result.message || "Đăng ký thất bại.");
@@ -153,34 +153,34 @@ const ExpertRegister = () => {
 
   return (
     <div className={styles["register-container"]} id="expert-register-h2">
-      <h2 >Expert Registration</h2>
+      <h2 >Đăng ký Chuyên Gia</h2>
       {message && <p className={styles.message}>{message}</p>}
       <form onSubmit={handleSubmit} id="expert-register-form">
-        <label>Username:</label>
+        <label>Tên người dùng:</label>
         <input type="text" name="username" value={formData.username} onChange={handleChange} onBlur={validateForm} required />
         {errors.username && <p className={styles.error}>{errors.username}</p>}
 
-        <label>Password:</label>
+        <label>Mật khẩu:</label>
         <input type="password" name="password" value={formData.password} onChange={handleChange} onBlur={() => validateForm("password")} required />
         {errors.password && <p className={styles.error}>{errors.password}</p>}
 
-        <label>Full Name:</label>
+        <label>Họ và tên:</label>
         <input type="text" name="name" value={formData.name} onChange={handleChange} onBlur={validateForm} required />
 
         <label>Email:</label>
         <input type="email" name="email" value={formData.email} onChange={handleChange} onBlur={() => validateForm("email")} required />
         {errors.email && <p className={styles.error}>{errors.email}</p>}
 
-        <label>Phone:</label>
+        <label>Số điện thoại:</label>
         <input type="text" name="phone" value={formData.phone} onChange={handleChange} onBlur={() => validateForm("phone")} required />
         {errors.phone && <p className={styles.error}>{errors.phone}</p>}
 
-        <label>Address:</label>
+        <label>Địa chỉ:</label>
         <input type="text" name="address" value={formData.address} onChange={handleChange} onBlur={validateForm} required />
 
-        <label>Specialties:</label>
-        <select name="specialty"   value={formData.specialty[0] || ""} onChange={handleSelectChange} required>
-          <option value="">Select Specialty</option>
+        <label>Chuyên môn:</label>
+        <select name="specialty" value={formData.specialty[0] || ""} onChange={handleSelectChange} required>
+          <option value="">Chọn chuyên môn</option>
           <option value="TAMLY">Tâm lý</option>
           <option value="TAICHINH">Tài chính</option>
           <option value="GIADINH">Gia đình</option>
@@ -191,11 +191,11 @@ const ExpertRegister = () => {
         </select>
         {errors.specialty && <p className={styles.error}>{errors.specialty}</p>}
 
-        <label>Avatar (URL):</label>
+        <label>Ảnh đại diện (URL):</label>
         <input type="text" name="avatar" value={formData.avatar} onChange={handleChange} onBlur={validateForm} required />
         {errors.avatar && <p className={styles.error}>{errors.avatar}</p>}
 
-        <label>Certificates:</label>
+        <label>Chứng chỉ:</label>
         {formData.certificates.map((certificate, index) => (
           <div key={index} className={styles["certificate-container"]}>
             <label>URL chứng chỉ:</label>

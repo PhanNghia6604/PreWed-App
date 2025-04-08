@@ -51,7 +51,7 @@ export const BlogDetail = () => {
       </div>
       <h1 className={styles.title}>{blog.title}</h1>
       <p className={styles.meta}>
-        <strong>By:</strong> {blog.authorName} | <strong>Date:</strong> {blog.createdAt}
+        <strong>By:</strong> {blog.authorName} | <strong>Ngày:</strong> {blog.createdAt}
       </p>
       <p className={styles.desc}>
         {showMore ? blog.content : blog.content.slice(0, 300) + "..."}

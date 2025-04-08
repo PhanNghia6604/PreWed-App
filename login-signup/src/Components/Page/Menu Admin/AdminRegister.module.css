@@ -1,4 +1,4 @@
-/* AdminRegister.module.css */
+AdminRegister.module.css
 .register-container {
     background: #1e1e1e;
     padding: 2rem;
@@ -21,7 +21,7 @@ label {
     font-weight: bold;
     text-align: left;
     margin: 10px 0 5px;
-    color: #ffd700;
+    color: black;
 }
 
 input {
@@ -62,6 +62,6 @@ button:hover {
     cursor: pointer;
 }
 
-.login-link span:hover {
+.login-link span:hover { 
     text-decoration: underline;
 }

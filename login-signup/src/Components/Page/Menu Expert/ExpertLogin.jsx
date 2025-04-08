@@ -14,10 +14,10 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
       password: "",
     },
     validationSchema: Yup.object({
-      username: Yup.string().required("User Name is required"),
+      username: Yup.string().required("Tên người dùng là bắt buộc"),
       password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .required("Password is required"),
+        .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+        .required("Mật khẩu là bắt buộc"),
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
@@ -45,7 +45,7 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
         }
       } catch (error) {
         setErrors({ server: "Lỗi kết nối! Vui lòng thử lại." });
-        console.error("Login error:", error);
+        console.error("Lỗi đăng nhập:", error);
       } finally {
         setSubmitting(false);
       }
@@ -55,16 +55,16 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
   return (
     <section className={styles.login}>
       <div className={styles.container}>
-        <Heading title="Expert Login" />
+        <Heading title="Đăng nhập Chuyên Gia" />
         {formik.errors.server && <div className={styles["error-box"]}>{formik.errors.server}</div>}
         <div className={styles.content}>
           <form onSubmit={formik.handleSubmit} className="login-form">
             <div className={styles["input-box"]}>
-              <label>User Name</label>
+              <label>Tên người dùng</label>
               <input
                 type="text"
                 name="username"
-                placeholder="User Name"
+                placeholder="Tên người dùng"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.username}
@@ -74,11 +74,11 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
               )}
             </div>
             <div className={styles["input-box"]}>
-              <label>Password</label>
+              <label>Mật khẩu</label>
               <input
                 type="password"
                 name="password"
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.password}
@@ -88,13 +88,13 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
               )}
             </div>
             <div className={styles["forgot-password"]}>
-              <span onClick={() => alert("Redirect to Forgot Password")}>Forgot Password?</span>
+              <span onClick={() => alert("Chuyển hướng đến trang Quên mật khẩu")}>Quên mật khẩu?</span>
             </div>
             <button type="submit" className={styles.btn} disabled={formik.isSubmitting}>
-              {formik.isSubmitting ? "Logging in..." : "Login"}
+              {formik.isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
             <div className={styles["register-link"]}>
-              Don't have an account? <span onClick={() => navigate("/expert-register")}>Register</span>
+              Chưa có tài khoản? <span onClick={() => navigate("/expert-register")}>Đăng ký</span>
             </div>
           </form>
           <button
@@ -111,7 +111,7 @@ export const ExpertLogin = ({ setIsLoggedIn, setUserRole }) => {
               padding: "5px 10px"
             }}
           >
-             Back 
+            Quay lại
           </button>
         </div>
       </div>
