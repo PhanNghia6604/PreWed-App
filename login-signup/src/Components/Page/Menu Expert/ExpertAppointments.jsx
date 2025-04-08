@@ -109,7 +109,7 @@ const ExpertAppointment = () => {
         const timeDifference = appointmentStartTime - now;
 
         // Nếu thời gian hiện tại chưa tới 10 phút trước thời gian bắt đầu lịch hẹn
-        if (timeDifference > 60000) {
+        if (timeDifference > 10 * 60 * 1000) {
           // Cho phép nhấn nút nhưng không thể bắt đầu ngay
           alert("⏳ Bạn có thể nhấn bắt đầu để chuẩn bị, nhưng lịch hẹn chưa đến giờ bắt đầu. Đợi ít nhất 10 phút.");
           // Cập nhật trạng thái "AWAIT" hoặc trạng thái sẵn sàng
