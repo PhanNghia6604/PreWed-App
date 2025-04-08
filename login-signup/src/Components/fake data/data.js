@@ -25,10 +25,10 @@ export const navlink = [
 export const home = [
   {
     text: "CHÀO MỪNG ĐẾN VỚI",
-    name: "Premarital Preparation Hub",
-    post: "Hướng bạn đến một cuộc sống hôn nhân hạnh phúc và lâu dài trong tương lai",
-    design: "Được các chuyên gia đã có bằng cấp chứng chỉ trong lĩnh vực tư vấn hôn nhân và thiết kế gia đình cho bạn",
-    desc: "Chúng tôi cung cấp các dịch vụ tư vấn và hỗ trợ cho các cặp đôi chuẩn bị trước khi kết hôn, giúp họ và cả chính bản thân bạn có thể chuẩn bị tốt nhất cho cuộc sống hôn nhân lâu dài",
+    name: "Premarital Preparation Hub ",
+    post: "Hướng bạn đến một cuộc sống hôn nhân hạnh phúc và lâu dài trong tương lai. ",
+    design: "Được các chuyên gia đã có bằng cấp chứng chỉ trong lĩnh vực tư vấn hôn nhân và thiết kế gia đình cho bạn. ",
+    desc: "Chúng tôi cung cấp các dịch vụ tư vấn và hỗ trợ cho các cặp đôi chuẩn bị trước khi kết hôn, giúp họ và cả chính bản thân bạn có thể chuẩn bị tốt nhất cho cuộc sống hôn nhân lâu dài. ",
   },
 ]
 export const about = [
