@@ -13,7 +13,9 @@ export const Hero = () => {
   // Hàm xử lý khi nhấn nút
   const handleButtonClick = () => {
     if (!isLoggedIn) {
-      navigate("/login"); // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+      alert("Cần đăng nhập để làm bài kiểm tra !");
+      navigate("/login");
+     // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
     } else {
       navigate("/test"); // Nếu đã đăng nhập, tiếp tục đến trang kiểm tra
     }
@@ -58,7 +60,7 @@ export const Hero = () => {
           </h1>
           <p style={{ color: "white" }}>{val.desc}</p>
           <button onClick={handleButtonClick} className="premaritalTestBtn">
-            <span>Start Now</span>
+            <span>Thực hiện kiểm tra ! </span>
           </button>
         </div>
       ))}
